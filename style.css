@@ -129,3 +129,29 @@ footer {
     font-size: 2.4rem;
   }
 }
+
+.background-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+  margin-top: 20px;
+}
+
+.background-grid h3 {
+  margin-bottom: 10px;
+}
+
+.background-grid ul {
+  padding-left: 20px;
+  margin-top: 0;
+}
+
+.background-grid li {
+  margin-bottom: 6px;
+}
+
+@media (max-width: 700px) {
+  .background-grid {
+    grid-template-columns: 1fr;
+  }
+}
