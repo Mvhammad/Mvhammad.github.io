@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Mathematical Journey.</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0d1112;
+        --panel: rgba(18, 23, 25, 0.86);
+        --panel-solid: #151b1d;
+        --border: rgba(223, 231, 234, 0.11);
+        --line: rgba(223, 231, 234, 0.14);
+        --text: #eef2f2;
+        --muted: #a7b1b5;
+        --accent-strong: #8fe6dd;
+        --accent-line: rgba(143, 230, 221, 0.9);
+        --accent-soft: rgba(143, 230, 221, 0.14);
+        --cluster-analysis: rgba(143, 230, 221, 0.05);
+        --cluster-discrete: rgba(154, 170, 255, 0.05);
+        --cluster-prob: rgba(255, 213, 143, 0.045);
+        --cluster-applied: rgba(155, 225, 170, 0.045);
+        --grid: rgba(220, 230, 232, 0.04);
+        --shadow: 0 18px 56px rgba(0, 0, 0, 0.34);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--text);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(var(--grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+          radial-gradient(circle at 18% 14%, var(--accent-soft), transparent 24%);
+        background-size: 42px 42px, 42px 42px, auto;
+      }
+
+      a { color: inherit; text-decoration: none; }
+
+      .shell {
+        position: relative;
+        z-index: 1;
+        width: min(98vw, 1680px);
+        margin: 0 auto;
+        padding: 16px;
+      }
+
+      .frame {
+        border: 1px solid var(--border);
+        border-radius: 30px;
+        background: var(--panel);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px 22px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .brand-name { font-size: 0.98rem; font-weight: 600; letter-spacing: -0.03em; }
+
+      .brand-meta,
+      .section-tag,
+      .detail-kicker,
+      .eq-tag,
+      .cluster-label,
+      .branching-note-title {
+        color: var(--muted);
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.22em;
+      }
+
+      .top-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+      .top-link {
+        border: 1px solid var(--border);
+        background: var(--panel-solid);
+        color: var(--muted);
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-size: 0.84rem;
+      }
+
+      .theme-toggle {
+        border: 1px solid var(--border);
+        background: var(--panel-solid);
+        color: var(--text);
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-size: 0.84rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+      }
+
+      .theme-toggle:hover {
+        transform: translateY(-1px);
+        border-color: var(--accent-strong);
+      }
+
+      body.light {
+        color-scheme: light;
+        --bg: #f6f1e8;
+        --panel: rgba(239, 231, 218, 0.96);
+        --panel-solid: #efe7da;
+        --border: rgba(42, 38, 34, 0.14);
+        --line: rgba(42, 38, 34, 0.12);
+        --text: #241f1a;
+        --muted: #5f564d;
+        --accent-strong: #b08a57;
+        --accent-line: rgba(176, 138, 87, 0.82);
+        --accent-soft: rgba(176, 138, 87, 0.10);
+        --cluster-analysis: rgba(176, 138, 87, 0.05);
+        --cluster-discrete: rgba(111, 143, 184, 0.045);
+        --cluster-prob: rgba(176, 138, 87, 0.04);
+        --cluster-applied: rgba(111, 143, 184, 0.04);
+        --grid: rgba(42, 38, 34, 0.04);
+      }
+
+      body.light .frame,
+      body.light .panel,
+      body.light .intro-panel,
+      body.light .space-panel,
+      body.light .top-link,
+      body.light .theme-toggle,
+      body.light .course-label,
+      body.light .branching-note,
+      body.light .math-block,
+      body.light .span-block,
+      body.light .detail-grid {
+        box-shadow: none;
+      }
+
+      body.light .frame,
+      body.light .panel,
+      body.light .intro-panel,
+      body.light .space-panel {
+        background: var(--panel);
+      }
+
+      body.light .detail-grid,
+      body.light .math-block,
+      body.light .span-block,
+      body.light .branching-note {
+        background: rgba(255, 255, 255, 0.28);
+      }
+
+      body.light .top-link,
+      body.light .theme-toggle,
+      body.light .course-label {
+        background: rgba(255, 255, 255, 0.34);
+      }
+
+      body.light .intro-panel::before,
+      body.light .space-panel::before {
+        opacity: 0.85;
+      }
+
+      body.light .brand-name,
+      body.light .hero p,
+      body.light .panel h2,
+      body.light .detail-line,
+      body.light .concept-title,
+      body.light .lead-list li,
+      body.light .detail-note,
+      body.light .concept-meta,
+      body.light .branching-note-text,
+      body.light .panel p,
+      body.light .chip-label,
+      body.light .theme-toggle,
+      body.light .top-link {
+        color: var(--text);
+      }
+
+      body.light .hero p,
+      body.light .panel p,
+      body.light .detail-note,
+      body.light .concept-meta,
+      body.light .branching-note-text,
+      body.light .lead-list li {
+        font-weight: 500;
+      }
+
+      body.light .section-tag,
+      body.light .detail-kicker,
+      body.light .eq-tag,
+      body.light .cluster-label,
+      body.light .branching-note-title,
+      body.light .detail-tag,
+      body.light .brand-meta,
+      body.light .origin-label,
+      body.light .panel-note,
+      body.light .coefficient-scale,
+      body.light .chip-meta {
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      body.light .course-label.dimmed {
+        opacity: 0.52;
+      }
+
+      body.light .vector-line {
+        stroke: rgba(80, 68, 54, 0.20);
+      }
+
+      body.light .vector-line.foundation {
+        stroke: rgba(80, 68, 54, 0.32);
+      }
+
+      body.light .vector-line.derived {
+        stroke: rgba(176, 138, 87, 0.42);
+      }
+
+      body.light .vector-line.active,
+      body.light .vector-line.dependency {
+        stroke: rgba(176, 138, 87, 0.86);
+      }
+
+      body.light .point-marker {
+        background: rgba(42, 38, 34, 0.82);
+        border-color: rgba(42, 38, 34, 0.24);
+      }
+
+      .hero {
+        display: block;
+        padding: 24px 24px 12px;
+      }
+
+      .intro-panel {
+        border: 1px solid var(--line);
+        border-radius: 32px;
+        background:
+          linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015)),
+          rgba(21,27,29,0.78);
+        padding: 24px 72px 22px;
+        max-width: 1240px;
+        margin: 0 auto;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .intro-panel::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+          radial-gradient(circle at 50% 0%, rgba(143,230,221,0.10), transparent 32%),
+          linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+      }
+
+      .intro-panel > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero h1 {
+        margin: 0 auto;
+        font-size: clamp(3.15rem, 5.6vw, 6rem);
+        line-height: 0.92;
+        letter-spacing: -0.08em;
+        font-weight: 720;
+        color: var(--accent-strong);
+        max-width: none;
+        text-align: center;
+      }
+
+      .hero p {
+        margin: 16px auto 0;
+        color: var(--text);
+        line-height: 1.9;
+        max-width: 88ch;
+        font-size: 1.12rem;
+        font-weight: 500;
+        text-align: center;
+      }
+
+      .space-panel {
+        position: relative;
+        min-height: 920px;
+        border: 1px solid var(--line);
+        border-radius: 30px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent), var(--panel-solid);
+        overflow: hidden;
+      }
+
+      .space-panel::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          radial-gradient(circle at 22% 45%, var(--cluster-discrete), transparent 27%),
+          radial-gradient(circle at 56% 18%, var(--cluster-analysis), transparent 24%),
+          radial-gradient(circle at 68% 38%, var(--cluster-applied), transparent 18%),
+          radial-gradient(circle at 79% 70%, var(--cluster-prob), transparent 24%),
+          linear-gradient(var(--grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+        background-size: auto, auto, auto, auto, 38px 38px, 38px 38px;
+      }
+
+      .space-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+      .vector-line,
+      .helper-line,
+      .overlay-line {
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .vector-line {
+        stroke: rgba(223, 231, 234, 0.17);
+        stroke-width: 1.7;
+        transition: stroke 180ms ease, stroke-width 180ms ease, opacity 180ms ease;
+      }
+
+      .vector-line.foundation { stroke: rgba(223, 231, 234, 0.33); stroke-width: 2.15; }
+      .vector-line.derived { stroke: rgba(119, 193, 186, 0.28); }
+      .vector-line.active,
+      .vector-line.dependency { stroke: rgba(143, 230, 221, 0.72); stroke-width: 2.7; }
+
+      .helper-line {
+        stroke: var(--accent-line);
+        stroke-width: 2.1;
+        stroke-dasharray: 10 10;
+        opacity: 0;
+        transition: opacity 180ms ease;
+      }
+
+      .helper-line.visible { opacity: 1; }
+
+      .overlay-line {
+        stroke: var(--accent-strong);
+        stroke-width: 3.3;
+        opacity: 0;
+        transition: opacity 180ms ease;
+      }
+
+      .overlay-line.visible { opacity: 1; }
+
+      .origin {
+        position: absolute;
+        left: 46.97%;
+        top: 47.78%;
+        width: 18px;
+        height: 18px;
+        transform: translate(-50%, -50%);
+        border-radius: 999px;
+        background: rgba(223, 231, 234, 0.3);
+        border: 1px solid rgba(223, 231, 234, 0.24);
+        box-shadow: 0 0 0 12px rgba(255,255,255,0.02);
+      }
+
+      .origin-label,
+      .panel-note,
+      .coefficient-scale,
+      .cluster-label {
+        position: absolute;
+        pointer-events: none;
+      }
+
+      .origin-label,
+      .panel-note,
+      .coefficient-scale,
+      .branching-note-text,
+      .detail-note,
+      .concept-meta {
+        color: var(--muted);
+      }
+
+      .origin-label,
+      .panel-note,
+      .coefficient-scale {
+        font-size: 0.74rem;
+        letter-spacing: 0.08em;
+      }
+
+      .origin-label { left: 47.95%; top: 49.9%; }
+      .panel-note.right { right: 26px; top: 26px; text-align: right; }
+      .branching-note {
+        position: absolute;
+        left: 26px;
+        bottom: 26px;
+        max-width: 34ch;
+        padding: 14px 16px;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: rgba(255,255,255,0.03);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+      }
+      .branching-note-title {
+        color: var(--muted);
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.22em;
+      }
+      .branching-note-text {
+        margin-top: 8px;
+        color: var(--muted);
+        line-height: 1.64;
+        font-size: 0.9rem;
+      }
+      .coefficient-scale { right: 26px; bottom: 26px; text-align: right; max-width: 30ch; }
+      .cluster-label { font-size: 0.68rem; opacity: 0.48; }
+      .cluster-discrete-label { left: 8%; top: 40%; }
+      .cluster-analysis-label { left: 56%; top: 9%; transform: translateX(-50%); }
+      .cluster-applied-label { right: 10%; top: 31%; text-align: right; }
+      .cluster-prob-label { right: 8%; top: 74%; text-align: right; }
+
+      .course-label {
+        z-index: 2;
+        position: absolute;
+        transform: translate(-50%, -50%);
+        min-width: 128px;
+        max-width: 172px;
+        padding: 12px 13px 11px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,0.03);
+        color: var(--text);
+        text-align: center;
+        cursor: pointer;
+        transition: transform 160ms ease, border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
+        box-shadow: 0 10px 26px rgba(0,0,0,0.14);
+      }
+
+      .course-label:hover,
+      .course-label.active {
+        transform: translate(-50%, calc(-50% - 4px));
+        border-color: rgba(119,193,186,0.48);
+        background: rgba(119,193,186,0.09);
+        box-shadow: 0 16px 34px rgba(0,0,0,0.2);
+      }
+
+      .course-label.foundation { background: rgba(255,255,255,0.045); }
+      .course-label.dimmed { opacity: 0.34; }
+
+      .point-label {
+        min-width: 0;
+        max-width: none;
+        padding: 0;
+        width: auto;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+      }
+
+      .point-label:hover,
+      .point-label.active {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+      }
+
+      .point-marker {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 999px;
+        background: rgba(238,242,242,0.82);
+        border: 1px solid rgba(238,242,242,0.24);
+        box-shadow: 0 0 0 8px rgba(255,255,255,0.02);
+      }
+
+      .point-text {
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        white-space: nowrap;
+        text-align: left;
+      }
+
+      .point-label .chip-label { font-size: 0.72rem; }
+      .point-label .chip-meta { font-size: 0.5rem; margin-top: 4px; }
+      .chip-label { display: block; font-size: 0.82rem; font-weight: 600; letter-spacing: -0.03em; line-height: 1.16; }
+      .chip-meta { display: block; margin-top: 6px; color: var(--muted); font-size: 0.56rem; letter-spacing: 0.18em; }
+
+      .body-grid {
+        display: grid;
+        grid-template-columns: 1.22fr 0.78fr;
+        gap: 22px;
+        padding: 0 24px 24px;
+      }
+
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        background: rgba(21,27,29,0.72);
+        padding: 22px;
+      }
+
+      .detail-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) minmax(290px, 0.6fr);
+        gap: 16px;
+        margin-top: 16px;
+        padding: 16px 18px;
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        background: rgba(255,255,255,0.02);
+      }
+
+      .detail-line { margin-top: 8px; font-size: 1.04rem; font-weight: 600; letter-spacing: -0.03em; }
+      .detail-tag { margin-top: 6px; color: var(--muted); font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; }
+      .panel h2 { margin: 10px 0 0; font-size: 1.66rem; letter-spacing: -0.05em; }
+      .panel p, .lead-list li, .detail-note, .concept-meta, .branching-note-text { line-height: 1.74; }
+      .lead-list { margin: 10px 0 0; padding-left: 18px; }
+
+      
+
+      .math-block,
+      .span-block {
+        margin-top: 14px;
+        padding: 16px;
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        background: rgba(255,255,255,0.02);
+      }
+
+      .math-code,
+      .span-equation,
+      .branch-key { margin-top: 10px; color: var(--text); }
+      .math-code .katex-display,
+      .span-equation .katex-display,
+      .branch-key .katex-display { margin: 0.55rem 0; }
+
+      .concept-list { display: grid; gap: 14px; margin-top: 18px; }
+      .concept-item { padding-top: 14px; border-top: 1px solid var(--line); }
+      .concept-title { font-size: 1rem; font-weight: 600; letter-spacing: -0.03em; }
+      .span-panel { margin: 0 24px 24px; }
+
+      @media (max-width: 1180px) {
+        .body-grid,
+        .detail-grid { grid-template-columns: 1fr; }
+      }
+
+      @media (max-width: 860px) {
+        .shell { padding: 10px; width: 100%; }
+        .frame { border-radius: 24px; }
+        .topbar { padding: 14px 16px; align-items: flex-start; flex-direction: column; }
+        .hero, .body-grid { padding-inline: 16px; }
+        .intro-panel { padding: 20px 22px 18px; }
+        .hero h1 { font-size: clamp(2.5rem, 9vw, 4.1rem); }
+        .hero p { font-size: 1rem; max-width: 100%; }
+        .span-panel { margin: 0 16px 16px; }
+        .space-panel { min-height: 820px; }
+        .course-label { min-width: 104px; max-width: 128px; padding: 8px 10px; }
+        .chip-label { font-size: 0.72rem; }
+        .chip-meta { font-size: 0.5rem; }
+        .cluster-label { display: none; }
+      }
+    </style>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  </head>
+  <body>
+    <div class="shell">
+      <div class="frame">
+        <header class="topbar">
+          <div>
+            <div class="brand-name">Muhammad</div>
+            <div class="brand-meta">Mathematics</div>
+          </div>
+          <div class="top-actions">
+            <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light mode">Light mode</button>
+            <a class="top-link" href="index.html">Home</a>
+            <a class="top-link" href="https://github.com/Mvhammad" target="_blank" rel="noreferrer">GitHub</a>
+            <a class="top-link" href="#">LinkedIn</a>
+          </div>
+        </header>
+
+        <section class="hero">
+          <div class="intro-panel">
+            <h1>My Mathematical Journey.</h1>
+            <p>I never thought of myself as a math person. For most of my life, it was the subject that felt the hardest and the least rewarding, so I stayed with it mostly because of the opportunities it could open up. College changed that. For the first time, I had professors whose passion for mathematics made it feel alive, and that pushed me to take more rigorous classes. Over time, what started as a practical choice became something much deeper: an appreciation for the beauty, structure, and meaning of the subject itself. Mathematics has become a lens through which I understand the world. Here is how I understand my mathematical journey up to now:</p>
+          </div>
+        </section>
+
+        <section class="hero" style="padding-top: 0;">
+          <div class="space-panel" id="spacePanel">
+            <div class="panel-note right">select a course to reveal its construction</div>
+            <div class="branching-note">
+              <div class="branching-note-title">Branching directions</div>
+              <div class="branching-note-text">Complex Numbers and Optimization are conceptual points rather than courses. They are included to explain why Complex Analysis and Statistical Learning branch away instead of continuing as scalar extensions.</div>
+            </div>
+            <div class="cluster-label cluster-discrete-label">Discrete / Algebra</div>
+            <div class="cluster-label cluster-analysis-label">Analysis</div>
+            <div class="cluster-label cluster-applied-label">Scientific Applications</div>
+            <div class="cluster-label cluster-prob-label">Probability / Statistics / Learning</div>
+            <div class="origin"></div>
+            <div class="origin-label">0</div>
+            <div class="coefficient-scale">single parent → highlight parent to child<br />multiple parents → dashed construction guides</div>
+
+            <svg class="space-svg" viewBox="0 0 1320 900" preserveAspectRatio="none" aria-hidden="true">
+              <line class="helper-line" id="helper-a" x1="620" y1="430" x2="620" y2="430"></line>
+              <line class="helper-line" id="helper-b" x1="620" y1="430" x2="620" y2="430"></line>
+              <line class="helper-line" id="helper-c" x1="620" y1="430" x2="620" y2="430"></line>
+              <line class="overlay-line" id="overlay-main" x1="620" y1="430" x2="620" y2="430"></line>
+
+              <line class="vector-line foundation" id="vec-d" x1="620" y1="430" x2="400" y2="520"></line>
+              <line class="vector-line foundation" id="vec-u" x1="620" y1="430" x2="485" y2="325"></line>
+              <line class="vector-line foundation" id="vec-m" x1="620" y1="430" x2="670" y2="585"></line>
+              <line class="vector-line derived" id="vec-g" x1="620" y1="430" x2="250" y2="430"></line>
+              <line class="vector-line derived" id="vec-a" x1="620" y1="430" x2="250" y2="270"></line>
+              <line class="vector-line derived" id="vec-r" x1="620" y1="430" x2="640" y2="250"></line>
+              <line class="vector-line derived" id="vec-t" x1="620" y1="430" x2="648" y2="148"></line>
+              <line class="vector-line derived" id="vec-z" x1="620" y1="430" x2="880" y2="318"></line>
+              <line class="vector-line derived" id="vec-c" x1="620" y1="430" x2="900" y2="138"></line>
+              <line class="vector-line derived" id="vec-f" x1="620" y1="430" x2="420" y2="110"></line>
+              <line class="vector-line derived" id="vec-e" x1="620" y1="430" x2="820" y2="410"></line>
+              <line class="vector-line derived" id="vec-p" x1="620" y1="430" x2="850" y2="500"></line>
+              <line class="vector-line derived" id="vec-s" x1="620" y1="430" x2="1080" y2="570"></line>
+              <line class="vector-line derived" id="vec-o" x1="620" y1="430" x2="620" y2="690"></line>
+              <line class="vector-line derived" id="vec-w" x1="620" y1="430" x2="850" y2="760"></line>
+            </svg>
+
+            <button class="course-label foundation" data-node="d" style="left: 30.3%; top: 57.8%;"><span><span class="chip-label">Discrete Math</span><span class="chip-meta">d</span></span></button>
+            <button class="course-label foundation" data-node="u" style="left: 36.7%; top: 36.7%;"><span><span class="chip-label">Linear Algebra</span><span class="chip-meta">u</span></span></button>
+            <button class="course-label foundation" data-node="m" style="left: 50.8%; top: 65.3%;"><span><span class="chip-label">Multivariable Calculus</span><span class="chip-meta">m</span></span></button>
+            <button class="course-label" data-node="g" style="left: 19.7%; top: 47.8%;"><span><span class="chip-label">Graph Theory</span><span class="chip-meta">g</span></span></button>
+            <button class="course-label" data-node="a" style="left: 19.7%; top: 30.0%;"><span><span class="chip-label">Abstract Linear Algebra</span><span class="chip-meta">a</span></span></button>
+            <button class="course-label" data-node="r" style="left: 48.5%; top: 24.8%;"><span><span class="chip-label">Real Analysis</span><span class="chip-meta">r</span></span></button>
+            <button class="course-label" data-node="t" style="left: 49.1%; top: 16.4%;"><span><span class="chip-label">Measure Theory</span><span class="chip-meta">t</span></span></button>
+            <button class="course-label" data-node="f" style="left: 31.8%; top: 12.3%;"><span><span class="chip-label">Functional Analysis</span><span class="chip-meta">f</span></span></button>
+            <button class="course-label point-label" data-node="z" style="left: 66.7%; top: 35.3%;"><span class="point-marker" aria-hidden="true"></span><span class="point-text"><span class="chip-label">Complex Numbers</span><span class="chip-meta">z</span></span></button>
+            <button class="course-label" data-node="c" style="left: 68.2%; top: 15.3%;"><span><span class="chip-label">Complex Analysis</span><span class="chip-meta">c</span></span></button>
+            <button class="course-label" data-node="e" style="left: 62.1%; top: 45.6%;"><span><span class="chip-label">Differential Equations</span><span class="chip-meta">e</span></span></button>
+            <button class="course-label" data-node="p" style="left: 64.4%; top: 55.6%;"><span><span class="chip-label">Probability</span><span class="chip-meta">p</span></span></button>
+            <button class="course-label" data-node="s" style="left: 81.8%; top: 63.3%;"><span><span class="chip-label">Mathematical Statistics</span><span class="chip-meta">s</span></span></button>
+            <button class="course-label point-label" data-node="o" style="left: 47.0%; top: 76.7%;"><span class="point-marker" aria-hidden="true"></span><span class="point-text"><span class="chip-label">Optimization</span><span class="chip-meta">o</span></span></button>
+            <button class="course-label active" data-node="w" style="left: 64.4%; top: 84.4%;"><span><span class="chip-label">Statistical Learning</span><span class="chip-meta">w</span></span></button>
+          </div>
+        </section>
+
+        <section class="body-grid">
+          <article class="panel">
+            <div class="section-tag">Selected vector</div>
+            <div class="detail-grid">
+              <div>
+                <div class="detail-kicker">Course and interpretation</div>
+                <div class="detail-line" id="detailHeader">MATH 455/555 — Statistical Learning</div>
+                <div class="detail-tag" id="detailTag">Derived vector</div>
+                <p id="detailText">Statistical Learning studies supervised and unsupervised learning, including regression, classification, clustering, dimensionality reduction, model evaluation, and model selection. In the map, it branches from Probability through the added direction of Optimization, reflecting the move from stochastic structure alone to learning by fitting and selection.</p>
+                <div class="math-block">
+                  <div class="eq-tag">Vector relationship</div>
+                  <div class="math-code" id="detailMath"></div>
+                  <div class="detail-note" id="detailInterpretation">Interpretation: Statistical Learning is modeled as Probability extended by the added direction of Optimization.</div>
+                  <div class="detail-note" id="detailNote">Note: This is an interpretive modeling choice for the interactive, not a canonical decomposition.</div>
+                </div>
+              </div>
+              <div>
+                <div class="detail-kicker">Structure</div>
+                <div class="detail-tag">Leads to</div>
+                <ul class="lead-list" id="detailLeads"></ul>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="section-tag">What the interactive means</div>
+            <h2>A radial vector-space metaphor</h2>
+            <p>
+              Related subjects point in nearby directions, basis vectors stay closer to the origin, and later subjects appear either as scalar extensions or as combinations of earlier directions. Conceptual points such as Complex Numbers and Optimization explain why some branches bend away rather than continue collinearly.
+            </p>
+            <div class="concept-list">
+              <div class="concept-item"><div class="concept-title">Basis vectors</div><div class="concept-meta">Discrete Math, Linear Algebra, and Multivariable Calculus are the chosen basis directions of the interactive.</div></div>
+              <div class="concept-item"><div class="concept-title">Analysis branch</div><div class="concept-meta">Real Analysis is built from foundations, Measure Theory extends it, and Complex Analysis branches away through the added conceptual direction of Complex Numbers.</div></div>
+              <div class="concept-item"><div class="concept-title">Learning branch</div><div class="concept-meta">Probability anchors the branch, Mathematical Statistics extends it collinearly, and Statistical Learning branches away through the added conceptual direction of Optimization.</div></div>
+              <div class="concept-item"><div class="concept-title">Scientific Applications</div><div class="concept-meta">Differential Equations represents the applied side of the map, where continuous mathematics is used to model dynamics, systems, and scientific change.</div></div>
+            </div>
+          </article>
+        </section>
+
+        <section class="panel span-panel">
+          <div class="section-tag">What this span currently means</div>
+          <p>My current mathematical span is organized around four interacting branches: discrete and algebraic structure, the analysis sequence, probability/statistics/learning, and scientific applications. Together, they support both my theoretical and applied interests in machine learning by combining proof, abstraction, representation, uncertainty, inference, optimization, and modeling into one coherent mathematical foundation.</p>
+          <div class="span-block">
+            <div class="eq-tag">Span summary</div>
+            <div class="span-equation" id="spanEquation"></div>
+            <div class="detail-note branch-key" id="spanBranchKey"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      const labels = Array.from(document.querySelectorAll('.course-label'));
+      const themeToggle = document.getElementById('themeToggle');
+      const detailHeader = document.getElementById('detailHeader');
+      const detailTag = document.getElementById('detailTag');
+      const detailText = document.getElementById('detailText');
+      const detailMath = document.getElementById('detailMath');
+      const detailInterpretation = document.getElementById('detailInterpretation');
+      const detailNote = document.getElementById('detailNote');
+      const detailLeads = document.getElementById('detailLeads');
+      const spanEquation = document.getElementById('spanEquation');
+      const spanBranchKey = document.getElementById('spanBranchKey');
+      const helperA = document.getElementById('helper-a');
+      const helperB = document.getElementById('helper-b');
+      const helperC = document.getElementById('helper-c');
+      const overlayMain = document.getElementById('overlay-main');
+      const vectors = {
+        d: document.getElementById('vec-d'), u: document.getElementById('vec-u'), m: document.getElementById('vec-m'),
+        g: document.getElementById('vec-g'), a: document.getElementById('vec-a'), r: document.getElementById('vec-r'),
+        t: document.getElementById('vec-t'), z: document.getElementById('vec-z'), c: document.getElementById('vec-c'),
+        f: document.getElementById('vec-f'), e: document.getElementById('vec-e'), p: document.getElementById('vec-p'),
+        s: document.getElementById('vec-s'), o: document.getElementById('vec-o'), w: document.getElementById('vec-w')
+      };
+      const origin = { x: 620, y: 430 };
+      const spanSummaryBlocks = [
+        String.raw`\mathcal M_{\mathrm{current}} \approx \mathcal D + \mathcal A + \mathcal P + \mathcal S`,
+        String.raw`\mathcal D = \operatorname{span}\{d,u,a,g\}, \qquad \mathcal A = \operatorname{span}\{r,t,c,f\}`,
+        String.raw`\mathcal P = \operatorname{span}\{p,s,w\}, \qquad \mathcal S = \operatorname{span}\{e\}`
+      ];
+      const spanBranchKeyTex = String.raw`\mathcal D:\ \text{Discrete / Algebra} \qquad \mathcal A:\ \text{Analysis} \qquad \mathcal P:\ \text{Probability / Statistics / Learning} \qquad \mathcal S:\ \text{Scientific Applications}`;
+      const courseData = {
+        d: { header: 'MATH 214 — Discrete Math', tag: 'Basis vector', text: 'Discrete Math introduces propositional logic, quantifiers, methods of proof, naive set theory, induction, relations, orders, functions, and countability. In the map, it serves as one of the chosen basis directions because it develops formal reasoning and discrete structure from which several later courses grow.', mathBlocks: [String.raw`d = v_{\mathrm{DM}}`], interpretation: 'Interpretation: Basis direction of logic, proof, and discrete structure.', note: '', leadsTo: ['Graph Theory', 'Abstract Linear Algebra', 'Real Analysis', 'Probability'], dependenciesKeys: [], relation: 'foundation', type: 'foundation' },
+        u: { header: 'MATH 211 — Linear Algebra', tag: 'Basis vector', text: 'Linear Algebra develops linear equations, matrices, determinants, vector spaces, linear transformations, eigenvalues, and orthogonality. In the map, it is a basis direction of structure and transformation, supporting both abstract and applied branches.', mathBlocks: [String.raw`u = v_{\mathrm{LA}}`], interpretation: 'Interpretation: Basis direction of structure, transformation, and representation.', note: '', leadsTo: ['Abstract Linear Algebra', 'Graph Theory', 'Differential Equations'], dependenciesKeys: [], relation: 'foundation', type: 'foundation' },
+        m: { header: 'MATH 213 — Multivariable Calculus', tag: 'Basis vector', text: 'Multivariable Calculus extends vector calculus into higher dimensions, including topics associated with Gauss’ and Stokes’ theorems. In the map, it is a basis direction of continuous change, geometry, and higher-dimensional intuition.', mathBlocks: [String.raw`m = v_{\mathrm{MVC}}`], interpretation: 'Interpretation: Basis direction of geometry, change, and continuous modeling.', note: '', leadsTo: ['Real Analysis', 'Probability', 'Differential Equations'], dependenciesKeys: [], relation: 'foundation', type: 'foundation' },
+        g: { header: 'MATH 332 — Graph Theory', tag: 'Derived vector', text: 'Graph Theory studies paths, Eulerian circuits, trees, distance, matchings, connectivity, network flows, colorings, planarity, and spanning cycles, together with applications to social and natural sciences. In the map, it represents a discrete-structural direction built from combinatorial reasoning and organized relationships.', mathBlocks: [String.raw`g = 0.8d + 0.2u`, String.raw`g \in \operatorname{span}\{d,u\}`], interpretation: 'Interpretation: Mostly discrete in origin, with a smaller structural contribution from Linear Algebra.', note: 'Note: Coefficients are interpretive rather than canonical; they visualize relative dependence and direction in this map.', leadsTo: [], dependenciesKeys: ['d', 'u'], relation: 'combination', type: 'derived', construction: { helpers: [{ x1: 400, y1: 520, x2: 250, y2: 430 }, { x1: 485, y1: 325, x2: 250, y2: 430 }] } },
+        a: { header: 'MATH 309 — Abstract Linear Algebra', tag: 'Derived vector', text: 'Abstract Linear Algebra develops complex numbers, inner product spaces, adjoints, projections, unitary transformations, spectral theory, singular-value decompositions, eigenvalues and eigenvectors, Jordan canonical form, bilinear and quadratic forms, dual spaces, and tensors. In the map, it deepens the structural viewpoint of linear algebra into a more abstract setting centered on spaces, operators, and invariants.', mathBlocks: [String.raw`a = 0.6u + 0.4d`, String.raw`a \in \operatorname{span}\{u,d\}`], interpretation: 'Interpretation: Combination of structural thinking from Linear Algebra and proof-oriented reasoning from Discrete Math.', note: 'Note: Coefficients are interpretive rather than canonical; they visualize relative dependence and direction in this map.', leadsTo: ['Functional Analysis'], dependenciesKeys: ['u', 'd'], relation: 'combination', type: 'derived', construction: { helpers: [{ x1: 485, y1: 325, x2: 250, y2: 270 }, { x1: 400, y1: 520, x2: 250, y2: 270 }] } },
+        r: { header: 'MATH 311 — Real Analysis', tag: 'Derived vector', text: 'Real Analysis introduces the theory of real variables, including the topology of the real line, convergence and uniform convergence, limits and continuity, differentiation, Riemann integration, and the Fundamental Theorem of Calculus. In the map, it marks the point where continuous intuition is joined with proof-based rigor and becomes the anchor of the analysis branch.', mathBlocks: [String.raw`r = 0.55m + 0.45d`, String.raw`r \in \operatorname{span}\{m,d\}`], interpretation: 'Interpretation: Combination of continuous intuition from Multivariable Calculus and proof-based structure from Discrete Math.', note: 'Note: Coefficients are interpretive rather than canonical; they visualize relative dependence and direction in this map.', leadsTo: ['Measure Theory', 'Complex Analysis', 'Functional Analysis'], dependenciesKeys: ['m', 'd'], relation: 'combination', type: 'derived', construction: { helpers: [{ x1: 670, y1: 585, x2: 640, y2: 250 }, { x1: 400, y1: 520, x2: 640, y2: 250 }] } },
+        t: { header: 'MATH 403 — Measure Theory', tag: 'Derived vector', text: 'Measure Theory extends Real Analysis into sequences and series of functions, analysis in metric and normed linear spaces, and more general theories of integration and differentiation. In the map, it is treated as a continuation of the analytical direction established by Real Analysis.', mathBlocks: [String.raw`t = 1.4r`, String.raw`t \in \operatorname{span}\{r\}`], interpretation: 'Interpretation: Scalar extension of Real Analysis into a more general analytical framework.', note: 'Note: The scalar is interpretive rather than canonical; it marks continuation along the same analytical branch.', leadsTo: ['Functional Analysis'], dependenciesKeys: ['r'], relation: 'scalar', type: 'derived' },
+        z: { header: 'Complex Numbers', tag: 'Conceptual point', text: 'Complex Numbers is included as a conceptual point rather than a course. In the map, it provides the extra direction needed to explain why Complex Analysis branches away from the Real Analysis ray instead of remaining a scalar continuation of it.', mathBlocks: [String.raw`z = v_{\mathrm{Complex}}`], interpretation: 'Interpretation: Conceptual direction added to make the Complex Analysis geometry mathematically legible.', note: '', leadsTo: ['Complex Analysis'], dependenciesKeys: [], relation: 'foundation', type: 'derived' },
+        c: { header: 'MATH 405 — Complex Analysis', tag: 'Derived vector', text: 'Complex Analysis studies the complex plane, analytic functions, Cauchy’s Integral Theorem, the calculus of residues, Taylor and Laurent series, and analytic continuation. In the map, it remains part of the analysis side, but branches into a distinct direction because the complex-variable viewpoint adds new structure beyond real-variable analysis alone.', mathBlocks: [String.raw`c = r + z`], interpretation: 'Interpretation: Combination of Real Analysis with the added conceptual direction of Complex Numbers.', note: 'Note: This is an interpretive modeling choice for the interactive, not a canonical decomposition.', leadsTo: [], dependenciesKeys: ['r', 'z'], relation: 'combination', type: 'derived', construction: { helpers: [{ x1: 640, y1: 250, x2: 900, y2: 138 }, { x1: 880, y1: 318, x2: 900, y2: 138 }] } },
+        f: { header: 'MATH 428 — Functional Analysis', tag: 'Derived vector', text: 'Functional Analysis introduces the geometry of Hilbert spaces, bounded linear operators, compact operators, spectral theory of compact self-adjoint operators, integral operators, and related applications. In the map, it sits at the intersection of analysis and linear structure, since it is fundamentally about spaces and operators equipped with analytical structure.', mathBlocks: [String.raw`f = 0.55t + 0.45a`, String.raw`f \in \operatorname{span}\{t,a\}`], interpretation: 'Interpretation: In this map, Functional Analysis is modeled as a synthesis of Measure Theory and Abstract Linear Algebra.', note: 'Note: This is an interpretive modeling choice for the interactive, not a claim about a unique mathematical pathway.', leadsTo: [], dependenciesKeys: ['t', 'a'], relation: 'combination', type: 'derived', construction: { helpers: [{ x1: 648, y1: 148, x2: 420, y2: 110 }, { x1: 250, y1: 270, x2: 420, y2: 110 }] } },
+        e: { header: 'MATH 302 — Differential Equations', tag: 'Derived vector', text: 'Differential Equations studies first-order separable, linear, and nonlinear differential equations, first-order systems, forced second-order linear equations, systems of linear equations and linearization, numerical methods, bifurcations, and qualitative analysis. In the map, it occupies the applied branch because it turns continuous mathematics into a language for dynamics and modeling.', mathBlocks: [String.raw`e = 0.6m + 0.4u`, String.raw`e \in \operatorname{span}\{m,u\}`], interpretation: 'Interpretation: Combination of continuous modeling from Multivariable Calculus and structural/system-level thinking from Linear Algebra.', note: 'Note: Coefficients are interpretive rather than canonical; they visualize relative dependence and direction in this map.', leadsTo: [], dependenciesKeys: ['m', 'u'], relation: 'combination', type: 'derived', construction: { helpers: [{ x1: 670, y1: 585, x2: 820, y2: 410 }, { x1: 485, y1: 325, x2: 820, y2: 410 }] } },
+        p: { header: 'MATH 451/551 — Probability', tag: 'Derived vector', text: 'Probability develops probability laws, counting techniques, discrete and continuous random variables, cumulative distribution functions, marginal and conditional distributions, transformations, multivariate transformations, order statistics, sampling distributions, and the central limit theorem. In the map, it is the stochastic direction that supports the statistics and learning branch.', mathBlocks: [String.raw`p = 0.65m + 0.35d`, String.raw`p \in \operatorname{span}\{m,d\}`], interpretation: 'Interpretation: Combination of continuous intuition from Multivariable Calculus and counting/formal structure from Discrete Math.', note: 'Note: Coefficients are interpretive rather than canonical; they visualize relative dependence and direction in this map.', leadsTo: ['Mathematical Statistics', 'Statistical Learning'], dependenciesKeys: ['m', 'd'], relation: 'combination', type: 'derived', construction: { helpers: [{ x1: 670, y1: 585, x2: 850, y2: 500 }, { x1: 400, y1: 520, x2: 850, y2: 500 }] } },
+        s: { header: 'MATH 452/552 — Mathematical Statistics', tag: 'Derived vector', text: 'Mathematical Statistics develops statistical inference through point and interval estimation, consistency, convergence in distribution, sufficient statistics, minimum-variance unbiased estimators, method of moments, maximum likelihood estimation, and hypothesis testing. In the map, it extends the probability branch outward toward principled inference.', mathBlocks: [String.raw`s = 2p`, String.raw`s \in \operatorname{span}\{p\}`], interpretation: 'Interpretation: Scalar extension of Probability toward inference and estimation.', note: 'Note: The scalar is interpretive rather than canonical; it represents continuation along the same branch, not a literal quantitative multiplier.', leadsTo: [], dependenciesKeys: ['p'], relation: 'scalar', type: 'derived' },
+        o: { header: 'Optimization', tag: 'Conceptual point', text: 'Optimization is included as a conceptual point rather than a course. In the map, it provides the extra direction needed to explain why Statistical Learning branches away from pure Probability into fitting, selection, and learning-oriented modeling.', mathBlocks: [String.raw`o = v_{\mathrm{Opt}}`], interpretation: 'Interpretation: Conceptual direction added to make the Statistical Learning branch mathematically legible.', note: '', leadsTo: ['Statistical Learning'], dependenciesKeys: [], relation: 'foundation', type: 'derived' },
+        w: { header: 'MATH 455/555 — Statistical Learning', tag: 'Derived vector', text: 'Statistical Learning studies supervised and unsupervised learning, including regression, classification, clustering, dimensionality reduction, model evaluation, and model selection. In the map, it branches from Probability through the added direction of Optimization, reflecting the move from stochastic structure alone to learning by fitting and selection.', mathBlocks: [String.raw`w = p + o`], interpretation: 'Interpretation: Statistical Learning is modeled as Probability extended by the added direction of Optimization.', note: 'Note: This is an interpretive modeling choice for the interactive, not a canonical decomposition.', leadsTo: [], dependenciesKeys: ['p', 'o'], relation: 'combination', type: 'derived', construction: { helpers: [{ x1: 850, y1: 500, x2: 850, y2: 760 }, { x1: 620, y1: 690, x2: 850, y2: 760 }] } }
+      };
+
+      function helperLines() { return [helperA, helperB, helperC]; }
+
+      function getVectorEnd(nodeId) {
+        const line = vectors[nodeId];
+        return { x: Number(line.getAttribute('x2')), y: Number(line.getAttribute('y2')) };
+      }
+
+      function clearLine(line, x = origin.x, y = origin.y) {
+        line.setAttribute('x1', String(x));
+        line.setAttribute('y1', String(y));
+        line.setAttribute('x2', String(x));
+        line.setAttribute('y2', String(y));
+        line.classList.remove('visible');
+      }
+
+      function setLine(line, coords) {
+        line.setAttribute('x1', String(coords.x1));
+        line.setAttribute('y1', String(coords.y1));
+        line.setAttribute('x2', String(coords.x2));
+        line.setAttribute('y2', String(coords.y2));
+      }
+
+      function clearVectorState() {
+        Object.values(vectors).forEach((line) => line.classList.remove('active', 'dependency'));
+        helperLines().forEach((line) => clearLine(line));
+        clearLine(overlayMain);
+      }
+
+      function showOverlay(start, end) {
+        setLine(overlayMain, { x1: start.x, y1: start.y, x2: end.x, y2: end.y });
+        overlayMain.classList.add('visible');
+      }
+
+      function renderKatexBlock(container, texList) {
+        container.innerHTML = '';
+        texList.forEach((tex) => {
+          const block = document.createElement('div');
+          katex.render(tex, block, { displayMode: true, throwOnError: false });
+          container.appendChild(block);
+        });
+      }
+
+      function renderSpanSummary() {
+        renderKatexBlock(spanEquation, spanSummaryBlocks);
+        spanBranchKey.innerHTML = '';
+        const block = document.createElement('div');
+        katex.render(spanBranchKeyTex, block, { displayMode: true, throwOnError: false });
+        spanBranchKey.appendChild(block);
+      }
+
+      function setSelection(nodeId) {
+        const detail = courseData[nodeId];
+        if (!detail) return;
+
+        labels.forEach((label) => {
+          const isSelected = label.dataset.node === nodeId;
+          const isDependency = detail.dependenciesKeys.includes(label.dataset.node);
+          label.classList.toggle('active', isSelected);
+          label.classList.toggle('dimmed', detail.type === 'derived' && !isSelected && !isDependency);
+        });
+
+        clearVectorState();
+        if (vectors[nodeId]) vectors[nodeId].classList.add('active');
+        detail.dependenciesKeys.forEach((depKey) => {
+          if (vectors[depKey]) vectors[depKey].classList.add('dependency');
+        });
+
+        if (detail.relation === 'foundation') {
+          showOverlay(origin, getVectorEnd(nodeId));
+        } else if (detail.relation === 'scalar') {
+          showOverlay(getVectorEnd(detail.dependenciesKeys[0]), getVectorEnd(nodeId));
+        } else {
+          showOverlay(origin, getVectorEnd(nodeId));
+          (detail.construction?.helpers || []).forEach((coords, index) => {
+            const line = helperLines()[index];
+            if (!line) return;
+            setLine(line, coords);
+            line.classList.add('visible');
+          });
+        }
+
+        detailHeader.textContent = detail.header;
+        detailTag.textContent = detail.tag;
+        detailText.textContent = detail.text;
+        renderKatexBlock(detailMath, detail.mathBlocks);
+        detailInterpretation.textContent = detail.interpretation;
+        detailNote.textContent = detail.note || '';
+        detailNote.style.display = detail.note ? 'block' : 'none';
+        detailLeads.innerHTML = detail.leadsTo.length
+          ? detail.leadsTo.map((item) => `<li>${item}</li>`).join('')
+          : '<li>Terminal node in the current map.</li>';
+      }
+
+      function runSelfTests() {
+        const keys = ['d','u','m','g','a','r','t','z','c','f','e','p','s','o','w'];
+        console.assert(labels.length === 15, 'Expected 15 vector labels.');
+        console.assert(keys.every((key) => key in courseData), 'Missing course data.');
+      }
+
+      function applyTheme(theme) {
+        document.body.classList.toggle('light', theme === 'light');
+        if (themeToggle) {
+          themeToggle.textContent = theme === 'light' ? 'Dark mode' : 'Light mode';
+          themeToggle.setAttribute('aria-label', theme === 'light' ? 'Toggle dark mode' : 'Toggle light mode');
+        }
+        try {
+          localStorage.setItem('math-theme', theme);
+        } catch (error) {}
+      }
+
+      function initialize() {
+        renderSpanSummary();
+        runSelfTests();
+        const savedTheme = (() => {
+          try {
+            return localStorage.getItem('math-theme') || 'dark';
+          } catch (error) {
+            return 'dark';
+          }
+        })();
+        applyTheme(savedTheme);
+        setSelection('w');
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initialize);
+      } else {
+        initialize();
+      }
+
+      labels.forEach((label) => {
+        label.addEventListener('mouseenter', () => setSelection(label.dataset.node));
+        label.addEventListener('focus', () => setSelection(label.dataset.node));
+        label.addEventListener('click', () => setSelection(label.dataset.node));
+      });
+
+      if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+          const nextTheme = document.body.classList.contains('light') ? 'dark' : 'light';
+          applyTheme(nextTheme);
+        });
+      }
+    </script>
+  </body>
+</html>
