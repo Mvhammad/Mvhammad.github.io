@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Machine Learning | Pre-3D Recovery</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #071014;
+        --panel: rgba(10, 16, 18, 0.82);
+        --panel-strong: rgba(10, 16, 18, 0.94);
+        --border: rgba(223, 231, 234, 0.1);
+        --line: rgba(223, 231, 234, 0.14);
+        --text: #edf3f4;
+        --muted: #9aa8ae;
+        --accent: #8fe6dd;
+        --grid: rgba(220, 232, 235, 0.035);
+        --shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          radial-gradient(circle at 18% 82%, rgba(95, 131, 255, 0.08), transparent 22%),
+          radial-gradient(circle at 49% 52%, rgba(56, 191, 178, 0.08), transparent 22%),
+          radial-gradient(circle at 78% 20%, rgba(211, 154, 83, 0.08), transparent 20%),
+          var(--bg);
+        color: var(--text);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(var(--grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+        background-size: 38px 38px;
+      }
+
+      .page {
+        position: relative;
+        width: 100vw;
+        min-height: 100vh;
+        padding: 8px;
+      }
+
+      .frame {
+        position: relative;
+        min-height: calc(100vh - 16px);
+        border: 1px solid var(--border);
+        border-radius: 30px;
+        background: rgba(6, 12, 14, 0.76);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .terrain-svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .terrain-shadow {
+        fill: rgba(0, 0, 0, 0.2);
+      }
+
+      .terrain-plane {
+        fill: url(#terrainFill);
+        opacity: 0.97;
+        stroke: rgba(223, 231, 234, 0.14);
+        stroke-width: 1.2;
+      }
+
+      .contour-group {
+        transition: opacity 160ms ease, filter 160ms ease;
+      }
+
+      .contour-group.dimmed {
+        opacity: 0.36;
+      }
+
+      .contour-group.active {
+        opacity: 1;
+        filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.08));
+      }
+
+      .contour-group .local-contour {
+        fill: none;
+        stroke: rgba(214, 222, 226, 0.12);
+        stroke-width: 1.05;
+      }
+
+      .contour-group .local-contour.major {
+        stroke: rgba(214, 222, 226, 0.2);
+        stroke-width: 1.35;
+      }
+
+      .contour-group.active .local-contour {
+        stroke: rgba(229, 236, 240, 0.2);
+      }
+
+      .contour-group.active .local-contour.major {
+        stroke: rgba(239, 244, 247, 0.34);
+      }
+
+      .path-line {
+        fill: none;
+        stroke: rgba(245, 248, 250, 0.62);
+        stroke-width: 2;
+        stroke-dasharray: 8 9;
+        transition: stroke 160ms ease, stroke-width 160ms ease;
+      }
+
+      .path-line.active {
+        stroke: rgba(255, 255, 255, 1);
+        stroke-width: 2.8;
+      }
+
+      .overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+      }
+
+      .hero {
+        position: absolute;
+        top: 18px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(940px, calc(100% - 320px));
+        text-align: center;
+        z-index: 8;
+      }
+
+      .page-title {
+        margin: 0;
+        font-size: clamp(4rem, 6.8vw, 7rem);
+        line-height: 0.92;
+        letter-spacing: -0.08em;
+        font-weight: 760;
+        color: var(--active-accent, var(--accent));
+        text-shadow: 0 0 24px var(--active-accent-soft, rgba(143, 230, 221, 0.08));
+        transition: color 160ms ease, text-shadow 160ms ease;
+      }
+
+      .page-copy {
+        margin: 24px auto 0;
+        max-width: 72ch;
+        color: rgba(237, 243, 244, 0.98);
+        line-height: 1.8;
+        font-size: 1.24rem;
+        font-weight: 650;
+        text-shadow: 0 0 18px rgba(0, 0, 0, 0.22);
+      }
+
+      .top-actions {
+        position: absolute;
+        top: 22px;
+        right: 22px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 9;
+      }
+
+      .top-link,
+      .icon-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--border);
+        background: var(--panel);
+        color: var(--muted);
+        text-decoration: none;
+        backdrop-filter: blur(12px);
+        transition: border-color 160ms ease, color 160ms ease, transform 160ms ease, background 160ms ease;
+      }
+
+      .top-link {
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-size: 0.84rem;
+      }
+
+      .icon-link {
+        width: 42px;
+        height: 42px;
+        border-radius: 999px;
+      }
+
+      .top-link:hover,
+      .icon-link:hover,
+      .top-link:focus-visible,
+      .icon-link:focus-visible {
+        border-color: rgba(143, 230, 221, 0.52);
+        color: var(--accent);
+        transform: translateY(-1px);
+        outline: none;
+      }
+
+      .icon-link svg {
+        width: 18px;
+        height: 18px;
+        fill: currentColor;
+      }
+
+      .map-note,
+      .region-sub,
+      .detail-kicker {
+        color: var(--muted);
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+      }
+
+      .map-note {
+        position: absolute;
+        left: 50%;
+        top: 310px;
+        transform: translateX(-50%);
+        white-space: nowrap;
+      }
+
+      .axis-text-x,
+      .axis-text-y,
+      .elevation-top,
+      .elevation-bottom,
+      .elevation-label {
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        font-size: 0.8rem;
+      }
+
+      .axis-arrow {
+        font-size: 1.34em;
+        line-height: 0;
+        vertical-align: -0.06em;
+        font-weight: 800;
+      }
+
+      .axis-x,
+      .axis-y {
+        position: absolute;
+        z-index: 7;
+        pointer-events: none;
+      }
+
+      .axis-x {
+        left: 76px;
+        right: 358px;
+        bottom: 42px;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        align-items: center;
+        justify-content: flex-end;
+      }
+
+      .axis-y {
+        left: 36px;
+        top: 1000px;
+        width: 678px;
+        height: 44px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        justify-content: center;
+        align-items: center;
+        transform: rotate(-63.5deg);
+        transform-origin: left center;
+      }
+
+      .axis-line-x,
+      .axis-line-y {
+        width: 100%;
+        height: 3px;
+        border-radius: 999px;
+        background: rgba(237, 243, 244, 0.76);
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
+      }
+
+      .axis-line-x {
+        order: 1;
+      }
+
+      .axis-text-x {
+        color: rgba(237, 243, 244, 0.96);
+        text-align: center;
+        font-weight: 680;
+        text-shadow: 0 0 12px rgba(0, 0, 0, 0.25);
+        width: 100%;
+        order: 2;
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .axis-text-y-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+      }
+
+      .axis-text-y {
+        color: rgba(237, 243, 244, 0.96);
+        font-weight: 680;
+        text-align: center;
+        text-shadow: 0 0 12px rgba(0, 0, 0, 0.25);
+        width: 100%;
+      }
+
+      .elevation-key {
+        position: absolute;
+        right: 48px;
+        top: 60%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        z-index: 8;
+        padding: 12px 12px 14px;
+        border: 1px solid rgba(236, 170, 93, 0.2);
+        border-radius: 18px;
+        background: rgba(10, 16, 18, 0.62);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
+      }
+
+      .elevation-line {
+        position: relative;
+        width: 6px;
+        height: 176px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, rgba(236, 170, 93, 1), rgba(143, 230, 221, 0.96), rgba(95, 131, 255, 1));
+        box-shadow: 0 0 22px rgba(236, 170, 93, 0.16), 0 0 22px rgba(95, 131, 255, 0.16);
+      }
+
+      .elevation-line::before,
+      .elevation-line::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        width: 18px;
+        height: 2px;
+        border-radius: 999px;
+        background: rgba(237, 243, 244, 0.7);
+        transform: translateX(-50%);
+      }
+
+      .elevation-line::before {
+        top: -7px;
+      }
+
+      .elevation-line::after {
+        bottom: -7px;
+      }
+
+      .elevation-top,
+      .elevation-bottom {
+        white-space: nowrap;
+        color: rgba(237, 243, 244, 0.94);
+        font-weight: 700;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+      }
+
+      .elevation-label {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%) rotate(-90deg);
+        transform-origin: center;
+        white-space: nowrap;
+        color: rgba(237, 243, 244, 0.96);
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+      }
+
+      .region-button {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        padding: 14px 18px 13px;
+        min-width: 168px;
+        max-width: 290px;
+        border-radius: 18px;
+        border: 1px solid rgba(220, 232, 235, 0.16);
+        background: rgba(10, 16, 18, 0.74);
+        color: var(--text);
+        text-align: center;
+        cursor: pointer;
+        transition: transform 160ms ease, border-color 160ms ease, background-color 160ms ease, opacity 160ms ease, box-shadow 160ms ease;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+        z-index: 7;
+      }
+
+      .region-button:hover,
+      .region-button.active {
+        transform: translate(-50%, calc(-50% - 4px));
+        border-color: rgba(143, 230, 221, 0.56);
+        background: rgba(143, 230, 221, 0.14);
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.24), 0 0 0 1px rgba(143, 230, 221, 0.12) inset;
+      }
+
+      .region-button.dimmed {
+        opacity: 0.36;
+      }
+
+      .region-name {
+        display: block;
+        font-size: 0.92rem;
+        line-height: 1.18;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: rgba(237, 243, 244, 0.98);
+      }
+
+      .region-sub {
+        display: block;
+        margin-top: 8px;
+        font-size: 0.6rem;
+        line-height: 1;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        color: rgba(154, 168, 174, 0.96);
+      }
+
+      .selected-region {
+        position: absolute;
+        right: 420px;
+        bottom: 144px;
+        width: 468px;
+        padding: 10px 18px 9px;
+        border: 1px solid var(--selected-line, rgba(143, 230, 221, 0.28));
+        border-radius: 20px;
+        background: linear-gradient(180deg, var(--selected-glow, rgba(143, 230, 221, 0.08)), rgba(10, 16, 18, 0.94) 32%), var(--panel-strong);
+        box-shadow: var(--shadow);
+        z-index: 7;
+      }
+
+      .selected-title {
+        margin-top: 4px;
+        font-size: 1.14rem;
+        line-height: 1.24;
+        letter-spacing: -0.03em;
+        font-weight: 700;
+        color: var(--selected-title, var(--accent));
+      }
+
+      .selected-body {
+        margin-top: 6px;
+        color: rgba(237, 243, 244, 0.9);
+        line-height: 1.68;
+        font-size: 0.96rem;
+      }
+
+      @media (max-width: 1100px) {
+        .hero {
+          width: min(860px, calc(100% - 300px));
+        }
+
+        .axis-x {
+          left: 68px;
+          right: 326px;
+          bottom: 42px;
+        }
+
+        .axis-y {
+          left: 24px;
+          top: 1000px;
+          width: 678px;
+        }
+
+        .elevation-key {
+          right: 36px;
+          top: 60%;
+        }
+
+        .selected-region {
+          width: 404px;
+        }
+      }
+
+      @media (max-width: 920px) {
+        .hero {
+          width: calc(100% - 56px);
+        }
+
+        .top-actions {
+          top: 18px;
+          right: 18px;
+        }
+
+        .map-note {
+          top: 344px;
+          white-space: normal;
+          text-align: center;
+          max-width: 60ch;
+        }
+
+        .axis-x {
+          left: 60px;
+          right: 306px;
+          bottom: 42px;
+        }
+
+        .axis-y {
+          left: 18px;
+          top: 1000px;
+          width: 678px;
+        }
+
+        .elevation-key {
+          right: 26px;
+          top: 60%;
+        }
+
+        .region-button {
+          min-width: 152px;
+          max-width: 250px;
+          padding: 12px 15px 11px;
+        }
+
+        .region-name {
+          font-size: 0.84rem;
+        }
+
+        .region-sub {
+          font-size: 0.56rem;
+        }
+      }
+
+      @media (max-width: 820px) {
+        .top-actions {
+          position: static;
+          justify-content: center;
+          margin-top: 18px;
+        }
+
+        .hero {
+          top: 20px;
+          width: calc(100% - 36px);
+        }
+
+        .map-note {
+          top: 380px;
+        }
+
+        .axis-y,
+        .elevation-key {
+          display: none;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .page {
+          padding: 4px;
+        }
+
+        .frame {
+          min-height: calc(100vh - 8px);
+          border-radius: 24px;
+        }
+
+        .selected-region {
+          left: 18px;
+          right: 18px;
+          bottom: 18px;
+          width: auto;
+        }
+
+        .axis-x {
+          left: 18px;
+          right: 18px;
+          bottom: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <div class="frame">
+        <svg id="terrainSvg" class="terrain-svg" viewBox="0 0 1200 760" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="terrainFill" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#284c74"></stop>
+              <stop offset="26%" stop-color="#3a7199"></stop>
+              <stop offset="52%" stop-color="#2e9388"></stop>
+              <stop offset="76%" stop-color="#ca8f4b"></stop>
+              <stop offset="100%" stop-color="#ecaa5d"></stop>
+            </linearGradient>
+          </defs>
+
+          <polygon class="terrain-shadow" points="74,700 1018,700 1168,258 242,258"></polygon>
+          <polygon class="terrain-plane" points="58,680 1002,680 1148,276 226,276"></polygon>
+
+          <g id="localContours"></g>
+
+          <path id="path-ds-algo" class="path-line"></path>
+          <path id="path-ds-pl" class="path-line"></path>
+          <path id="path-algo-aiml" class="path-line"></path>
+          <path id="path-aiml-dm" class="path-line"></path>
+          <path id="path-aiml-nn" class="path-line"></path>
+          <path id="path-aiml-hdg" class="path-line"></path>
+          <path id="path-pl-llm" class="path-line"></path>
+          <path id="path-nn-llm" class="path-line"></path>
+        </svg>
+
+        <div class="overlay">
+          <div class="hero">
+            <h1 class="page-title">My ML Landscape.</h1>
+            <p class="page-copy">Each course appears here as a region on a contour map of my machine learning coursework. Location reflects its role in the landscape, contour rings suggest its conceptual neighborhood, and dashed paths trace how ideas develop across the map.</p>
+          </div>
+
+          <div class="top-actions">
+            <a class="top-link" href="index.html">Home</a>
+            <a class="icon-link" href="https://github.com/Mvhammad" target="_blank" rel="noreferrer" aria-label="GitHub" title="GitHub">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.66.5 12.02c0 5.08 3.29 9.39 7.86 10.91.57.11.78-.25.78-.56 0-.28-.01-1.2-.02-2.18-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.2 1.77 1.2 1.03 1.76 2.69 1.25 3.35.96.1-.75.4-1.26.73-1.55-2.55-.29-5.23-1.28-5.23-5.68 0-1.25.45-2.27 1.18-3.07-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.17a10.9 10.9 0 0 1 5.77 0c2.19-1.48 3.16-1.17 3.16-1.17.63 1.59.24 2.76.12 3.05.74.8 1.18 1.82 1.18 3.07 0 4.41-2.69 5.39-5.25 5.67.41.36.78 1.07.78 2.17 0 1.56-.01 2.81-.01 3.19 0 .31.2.68.79.56A11.53 11.53 0 0 0 23.5 12C23.5 5.66 18.35.5 12 .5Z"></path></svg>
+            </a>
+            <a class="icon-link" href="https://www.linkedin.com/in/muhammad-ali-544477187/" target="_blank" rel="noreferrer" aria-label="LinkedIn" title="LinkedIn">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5A2.49 2.49 0 1 0 5 8.48 2.49 2.49 0 0 0 4.98 3.5ZM3 9.5h4v11H3v-11Zm7 0h3.84v1.5h.05c.53-1 1.84-2.05 3.79-2.05 4.05 0 4.8 2.66 4.8 6.12v5.43h-4v-4.81c0-1.15-.02-2.62-1.6-2.62-1.61 0-1.86 1.25-1.86 2.54v4.89h-4v-11Z"></path></svg>
+            </a>
+          </div>
+
+          <div class="map-note">hover or select a region to preview how that area fits into the landscape</div>
+
+          <div class="axis-x" aria-hidden="true">
+            <div class="axis-line-x"></div>
+            <div class="axis-text-x">structure <span class="axis-arrow">⟶</span> representation</div>
+          </div>
+
+          <div class="axis-y" aria-hidden="true">
+            <div class="axis-text-y-wrap">
+              <div class="axis-text-y">foundational <span class="axis-arrow">⟶</span> abstract</div>
+            </div>
+            <div class="axis-line-y"></div>
+          </div>
+
+          <div class="elevation-key" aria-hidden="true">
+            <div class="elevation-top">higher</div>
+            <div class="elevation-line"></div>
+            <div class="elevation-label">modeling complexity</div>
+            <div class="elevation-bottom">lower</div>
+          </div>
+
+          <button class="region-button" data-region="data-structures" style="left: 14.8%; top: 84.8%;">
+            <span class="region-name">Data Structures</span>
+            <span class="region-sub">lower-left base</span>
+          </button>
+          <button class="region-button" data-region="algorithms" style="left: 27.8%; top: 74.8%;">
+            <span class="region-name">Algorithms</span>
+            <span class="region-sub">foundational rise</span>
+          </button>
+          <button class="region-button" data-region="programming-languages" style="left: 28.6%; top: 43.2%; max-width: 290px;">
+            <span class="region-name">Principles of Programming Languages</span>
+            <span class="region-sub">structural ridge</span>
+          </button>
+          <button class="region-button active" data-region="fundamentals-ai-ml" style="left: 41.8%; top: 67.2%; max-width: 260px;">
+            <span class="region-name">Fundamentals of AI / ML</span>
+            <span class="region-sub">central bridge</span>
+          </button>
+          <button class="region-button" data-region="data-mining" style="left: 61.8%; top: 60.4%;">
+            <span class="region-name">Data Mining</span>
+            <span class="region-sub">applied branch</span>
+          </button>
+          <button class="region-button" data-region="high-dimensional-geometry" style="left: 46.8%; top: 50.8%; max-width: 290px;">
+            <span class="region-name">High-Dimensional Geometry of Data</span>
+            <span class="region-sub">theory ridge</span>
+          </button>
+          <button class="region-button" data-region="neural-networks" style="left: 69.4%; top: 47.8%;">
+            <span class="region-name">Neural Networks</span>
+            <span class="region-sub">modeling ascent</span>
+          </button>
+          <button class="region-button" data-region="large-language-models" style="left: 85.4%; top: 42.0%; max-width: 240px;">
+            <span class="region-name">Large Language Models</span>
+            <span class="region-sub">outer frontier</span>
+          </button>
+
+          <aside class="selected-region">
+            <div class="detail-kicker">Selected region</div>
+            <div class="selected-title" id="selectedTitle">Fundamentals of AI / ML</div>
+            <p class="selected-body" id="selectedBody">Introduces central machine learning ideas, from linear regression to boosting, support vector machines, and expectation maximization, with attention to how, why, and when these methods work. It sits in the middle because it is where the landscape begins to hold together as machine learning rather than as separate prerequisites.</p>
+          </aside>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const regionButtons = Array.from(document.querySelectorAll('.region-button'));
+      const frame = document.querySelector('.frame');
+      const rootStyle = document.documentElement.style;
+      const terrainSvg = document.getElementById('terrainSvg');
+      const localContours = document.getElementById('localContours');
+      let contourGroups = [];
+      const selectedTitle = document.getElementById('selectedTitle');
+      const selectedBody = document.getElementById('selectedBody');
+      const detailKicker = document.querySelector('.detail-kicker');
+      const allPaths = Array.from(document.querySelectorAll('.path-line'));
+      let buttonHoverLocked = false;
+
+      const contourConfig = {
+        'data-structures': [[38, 18, false], [54, 26, false], [76, 36, true], [104, 50, false], [140, 68, true]],
+        'algorithms': [[40, 18, false], [58, 28, false], [80, 38, true], [108, 52, false], [146, 72, true]],
+        'programming-languages': [[42, 18, false], [60, 28, false], [84, 38, true], [114, 52, false], [150, 70, true]],
+        'fundamentals-ai-ml': [[44, 18, false], [64, 28, false], [90, 40, true], [124, 56, false], [166, 78, true]],
+        'data-mining': [[40, 18, false], [58, 26, false], [82, 38, true], [112, 52, false], [148, 70, true]],
+        'high-dimensional-geometry': [[42, 18, false], [60, 28, false], [84, 38, true], [116, 54, false], [152, 72, true]],
+        'neural-networks': [[44, 20, false], [64, 30, false], [90, 42, true], [122, 58, false], [162, 78, true]],
+        'large-language-models': [[42, 18, false], [60, 28, false], [86, 38, true], [118, 54, false], [156, 74, true]]
+      };
+
+      const contourBias = {
+        'data-structures': { skewX: -0.22, skewY: 0.08, tilt: -0.12, pinch: 0.03, ripple: 0.06 },
+        'algorithms': { skewX: -0.1, skewY: 0.05, tilt: -0.06, pinch: 0.04, ripple: 0.055 },
+        'programming-languages': { skewX: -0.14, skewY: -0.08, tilt: 0.08, pinch: 0.05, ripple: 0.05 },
+        'fundamentals-ai-ml': { skewX: -0.03, skewY: 0.03, tilt: -0.03, pinch: 0.05, ripple: 0.05 },
+        'data-mining': { skewX: 0.12, skewY: -0.03, tilt: 0.04, pinch: 0.05, ripple: 0.055 },
+        'high-dimensional-geometry': { skewX: 0.04, skewY: -0.14, tilt: 0.1, pinch: 0.07, ripple: 0.05 },
+        'neural-networks': { skewX: 0.12, skewY: -0.04, tilt: 0.06, pinch: 0.06, ripple: 0.055 },
+        'large-language-models': { skewX: 0.22, skewY: -0.08, tilt: 0.1, pinch: 0.05, ripple: 0.06 }
+      };
+
+      const regionData = {
+        'data-structures': {
+          title: 'Data Structures',
+          body: 'Focuses on data abstraction, data representation, and core structures such as lists, stacks, queues, trees, priority queues, and hashing. It sits at the lower-left base because it is one of the most concrete computational foundations for everything that comes later.',
+          line: 'rgba(95, 131, 255, 0.42)',
+          glow: 'rgba(95, 131, 255, 0.14)',
+          titleColor: '#9fb8ff',
+          paths: ['path-ds-algo', 'path-ds-pl']
+        },
+        'algorithms': {
+          title: 'Algorithms',
+          body: 'Studies algorithm design and complexity through searching, sorting, graph algorithms, greedy methods, divide-and-conquer, dynamic programming, and backtracking. Its placement reflects that it is still foundational, but already begins moving upward into more abstract reasoning.',
+          line: 'rgba(110, 160, 255, 0.40)',
+          glow: 'rgba(110, 160, 255, 0.12)',
+          titleColor: '#a9c3ff',
+          paths: ['path-ds-algo', 'path-algo-aiml']
+        },
+        'programming-languages': {
+          title: 'Principles of Programming Languages',
+          body: 'Studies syntax, semantics, programming paradigms, and implementation issues such as memory management and parameter passing. It sits high on the structural side because it is less about building ML systems directly and more about understanding the formal structure of computation itself.',
+          line: 'rgba(94, 203, 196, 0.42)',
+          glow: 'rgba(94, 203, 196, 0.12)',
+          titleColor: '#95e7de',
+          paths: ['path-ds-pl', 'path-pl-llm']
+        },
+        'fundamentals-ai-ml': {
+          title: 'Fundamentals of AI / ML',
+          body: 'Introduces central machine learning ideas, from linear regression to boosting, support vector machines, and expectation maximization, with attention to how, why, and when these methods work. It sits in the middle because it is where the landscape begins to hold together as machine learning rather than as separate prerequisites.',
+          line: 'rgba(143, 230, 221, 0.42)',
+          glow: 'rgba(143, 230, 221, 0.12)',
+          titleColor: '#8fe6dd',
+          paths: ['path-algo-aiml', 'path-aiml-dm', 'path-aiml-hdg', 'path-aiml-nn']
+        },
+        'data-mining': {
+          title: 'Data Mining',
+          body: 'Introduces core data mining concepts and techniques, including graph mining, clustering, classification, and recent deep learning methods. It sits above and to the right of introductory ML because it extends those ideas into more applied, data-centered settings.',
+          line: 'rgba(120, 211, 176, 0.40)',
+          glow: 'rgba(120, 211, 176, 0.12)',
+          titleColor: '#9de3bf',
+          paths: ['path-aiml-dm']
+        },
+        'high-dimensional-geometry': {
+          title: 'High-Dimensional Geometry of Data',
+          body: 'Introduces topological data analysis through ideas such as topological spaces, simplicial complexes, persistent homology, topological descriptors, and stability, with applications to machine learning models. It sits on a theory ridge because it is specialized and structural at the same time.',
+          line: 'rgba(224, 181, 104, 0.42)',
+          glow: 'rgba(224, 181, 104, 0.12)',
+          titleColor: '#f0c47a',
+          paths: ['path-aiml-hdg']
+        },
+        'neural-networks': {
+          title: 'Neural Networks',
+          body: 'Moves from foundational topics in pattern recognition and machine learning into nonlinear models and artificial neural networks, with attention to modern applications and research papers. Its placement reflects a higher, more model-heavy region of the map.',
+          line: 'rgba(234, 171, 92, 0.42)',
+          glow: 'rgba(234, 171, 92, 0.12)',
+          titleColor: '#f1bf82',
+          paths: ['path-aiml-nn', 'path-nn-llm']
+        },
+        'large-language-models': {
+          title: 'Large Language Models',
+          body: 'Focuses on the theory, architecture, and real-world applications of LLMs, combining coding, critical analysis, and implementation. It sits at the outer frontier because it is one of the most modern and specialized parts of the landscape.',
+          line: 'rgba(236, 170, 93, 0.50)',
+          glow: 'rgba(236, 170, 93, 0.14)',
+          titleColor: '#ecaa5d',
+          paths: ['path-pl-llm', 'path-nn-llm']
+        }
+      };
+
+      function buttonCenterInSvg(button) {
+        const frameRect = frame.getBoundingClientRect();
+        const buttonRect = button.getBoundingClientRect();
+        const viewBox = terrainSvg.viewBox.baseVal;
+        const scaleX = viewBox.width / frameRect.width;
+        const scaleY = viewBox.height / frameRect.height;
+        return {
+          x: (buttonRect.left - frameRect.left + buttonRect.width / 2) * scaleX,
+          y: (buttonRect.top - frameRect.top + buttonRect.height / 2) * scaleY
+        };
+      }
+
+      function curveBetween(a, b, bend = 0.18) {
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const c1x = a.x + dx * 0.32;
+        const c1y = a.y + dy * bend;
+        const c2x = a.x + dx * 0.72;
+        const c2y = b.y - dy * bend;
+        return `M ${a.x} ${a.y} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${b.x} ${b.y}`;
+      }
+
+      function updatePaths() {
+        const buttons = {
+          ds: document.querySelector('[data-region="data-structures"]'),
+          algo: document.querySelector('[data-region="algorithms"]'),
+          pl: document.querySelector('[data-region="programming-languages"]'),
+          aiml: document.querySelector('[data-region="fundamentals-ai-ml"]'),
+          dm: document.querySelector('[data-region="data-mining"]'),
+          hdg: document.querySelector('[data-region="high-dimensional-geometry"]'),
+          nn: document.querySelector('[data-region="neural-networks"]'),
+          llm: document.querySelector('[data-region="large-language-models"]')
+        };
+
+        const p = Object.fromEntries(Object.entries(buttons).map(([key, button]) => [key, buttonCenterInSvg(button)]));
+        document.getElementById('path-ds-algo').setAttribute('d', curveBetween(p.ds, p.algo, 0.18));
+        document.getElementById('path-ds-pl').setAttribute('d', curveBetween(p.ds, p.pl, 0.24));
+        document.getElementById('path-algo-aiml').setAttribute('d', curveBetween(p.algo, p.aiml, 0.08));
+        document.getElementById('path-aiml-dm').setAttribute('d', curveBetween(p.aiml, p.dm, 0.08));
+        document.getElementById('path-aiml-nn').setAttribute('d', curveBetween(p.aiml, p.nn, 0.14));
+        document.getElementById('path-aiml-hdg').setAttribute('d', curveBetween(p.aiml, p.hdg, 0.12));
+        document.getElementById('path-pl-llm').setAttribute('d', curveBetween(p.pl, p.llm, 0.22));
+        document.getElementById('path-nn-llm').setAttribute('d', curveBetween(p.nn, p.llm, 0.08));
+      }
+
+      function contourPath(cx, cy, rx, ry, seedX, seedY, bias = {}) {
+        const points = [];
+        const count = 36;
+        const skewX = bias.skewX || 0;
+        const skewY = bias.skewY || 0;
+        const tilt = bias.tilt || 0;
+        const pinch = bias.pinch || 0;
+        const ripple = bias.ripple || 0.05;
+
+        for (let i = 0; i < count; i += 1) {
+          const t = (Math.PI * 2 * i) / count;
+          const directional = 1 + (Math.cos(t) * skewX) + (Math.sin(t) * skewY);
+          const lowFreq = 1 + ripple * Math.sin((t * 2.2) + seedX) + (ripple * 0.7) * Math.cos((t * 3.1) + seedY);
+          const highFreq = 1 + (ripple * 0.35) * Math.sin((t * 5.4) + (seedX * 0.8)) + (ripple * 0.2) * Math.cos((t * 7.2) + (seedY * 0.7));
+          const pinchFactor = 1 - pinch * Math.pow(Math.sin(t), 2);
+          const localRx = rx * directional * lowFreq * highFreq;
+          const localRy = ry * pinchFactor * (1 + ripple * 0.8 * Math.cos((t * 2.5) + seedY)) * (1 + ripple * 0.22 * Math.sin((t * 6.1) + seedX));
+          const x = cx + Math.cos(t + tilt) * localRx + Math.sin((t * 1.7) + seedX) * (rx * 0.018);
+          const y = cy + Math.sin(t) * localRy + Math.cos((t * 2.4) + seedY) * (ry * 0.016);
+          points.push([x, y]);
+        }
+
+        let d = `M ${points[0][0]} ${points[0][1]}`;
+        for (let i = 0; i < points.length; i += 1) {
+          const current = points[i];
+          const next = points[(i + 1) % points.length];
+          const prev = points[(i - 1 + points.length) % points.length];
+          const after = points[(i + 2) % points.length];
+          const c1x = current[0] + (next[0] - prev[0]) * 0.12;
+          const c1y = current[1] + (next[1] - prev[1]) * 0.12;
+          const c2x = next[0] - (after[0] - current[0]) * 0.12;
+          const c2y = next[1] - (after[1] - current[1]) * 0.12;
+          d += ` C ${c1x} ${c1y}, ${c2x} ${c2y}, ${next[0]} ${next[1]}`;
+        }
+        return `${d} Z`;
+      }
+
+      function updateLocalContours() {
+        const centers = Object.fromEntries(
+          regionButtons.map((button) => [button.dataset.region, buttonCenterInSvg(button)])
+        );
+
+        const localMarkup = regionButtons.map((button, buttonIndex) => {
+          const regionId = button.dataset.region;
+          const center = centers[regionId];
+          const sizes = contourConfig[regionId] || [];
+          const bias = contourBias[regionId] || {};
+
+          const rings = sizes.map(([rx, ry, major], ringIndex) => {
+            const seedX = ((buttonIndex + 1) * 0.73) + (ringIndex * 0.41);
+            const seedY = ((buttonIndex + 1) * 0.51) + (ringIndex * 0.37);
+            const d = contourPath(center.x, center.y, rx, ry, seedX, seedY, bias);
+            return `<path class="local-contour${major ? ' major' : ''}" d="${d}"></path>`;
+          }).join('');
+
+          return `<g class="contour-group" data-region="${regionId}">${rings}</g>`;
+        }).join('');
+
+        localContours.innerHTML = localMarkup;
+        contourGroups = Array.from(localContours.querySelectorAll('.contour-group'));
+      }
+
+      function refreshGeometry() {
+        updatePaths();
+        updateLocalContours();
+      }
+
+      function clamp01(value) {
+        return Math.max(0, Math.min(1, value));
+      }
+
+      function lerp(a, b, t) {
+        return a + ((b - a) * t);
+      }
+
+      function mixRgb(a, b, t) {
+        return [
+          Math.round(lerp(a[0], b[0], t)),
+          Math.round(lerp(a[1], b[1], t)),
+          Math.round(lerp(a[2], b[2], t))
+        ];
+      }
+
+      function rgbString(rgb, alpha = 1) {
+        return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`;
+      }
+
+      function terrainColorAt(point) {
+        const topY = 276;
+        const bottomY = 680;
+        const yT = clamp01((point.y - topY) / (bottomY - topY));
+        const leftX = lerp(226, 58, yT);
+        const rightX = lerp(1148, 1002, yT);
+        const xT = clamp01((point.x - leftX) / (rightX - leftX));
+        const blue = [40, 76, 116];
+        const teal = [46, 147, 136];
+        const orange = [236, 170, 93];
+        const rgb = xT < 0.58 ? mixRgb(blue, teal, xT / 0.58) : mixRgb(teal, orange, (xT - 0.58) / 0.42);
+        return { rgb, xT, yT };
+      }
+
+      function applyActiveColors(line, glow, titleColor) {
+        rootStyle.setProperty('--selected-line', line);
+        rootStyle.setProperty('--selected-glow', glow);
+        rootStyle.setProperty('--selected-title', titleColor);
+        rootStyle.setProperty('--active-accent', titleColor);
+        rootStyle.setProperty('--active-accent-soft', glow);
+      }
+
+      function terrainPointFromEvent(event) {
+        const rect = terrainSvg.getBoundingClientRect();
+        const viewBox = terrainSvg.viewBox.baseVal;
+        return {
+          x: ((event.clientX - rect.left) / rect.width) * viewBox.width,
+          y: ((event.clientY - rect.top) / rect.height) * viewBox.height
+        };
+      }
+
+      function pointInTerrain(point) {
+        const topY = 276;
+        const bottomY = 680;
+        if (point.y < topY || point.y > bottomY) return false;
+        const yT = (point.y - topY) / (bottomY - topY);
+        const leftX = lerp(226, 58, yT);
+        const rightX = lerp(1148, 1002, yT);
+        return point.x >= leftX && point.x <= rightX;
+      }
+
+      function setContourHighlight(regionId = null) {
+        contourGroups.forEach((group) => {
+          const active = regionId && group.dataset.region === regionId;
+          group.classList.toggle('active', Boolean(active));
+          group.classList.toggle('dimmed', Boolean(regionId) && !active);
+        });
+      }
+
+      function describeHoveredRegion(point) {
+        const { rgb, xT, yT } = terrainColorAt(point);
+        const complexity = clamp01((xT * 0.62) + ((1 - yT) * 0.38));
+        const structureLabel = xT < 0.33 ? 'Structural' : xT < 0.66 ? 'Mixed' : 'Representational';
+        const abstractionLabel = yT > 0.66 ? 'Foundational' : yT > 0.33 ? 'Intermediate' : 'Abstract';
+        const complexityLabel = complexity < 0.33 ? 'Lower' : complexity < 0.66 ? 'Moderate' : 'Higher';
+        const title = `${abstractionLabel} + ${structureLabel}`;
+        const body = `This part of the map leans ${structureLabel.toLowerCase()} on the x-axis, ${abstractionLabel.toLowerCase()} on the y-axis, and ${complexityLabel.toLowerCase()} in modeling complexity.`;
+        const accent = rgbString(rgb, 1);
+        const line = rgbString(rgb, 0.44);
+        const glow = rgbString(rgb, 0.14);
+
+        detailKicker.textContent = 'Hovered region';
+        selectedTitle.textContent = title;
+        selectedBody.textContent = body;
+        applyActiveColors(line, glow, accent);
+
+        regionButtons.forEach((button) => {
+          button.classList.remove('active');
+          button.classList.remove('dimmed');
+        });
+        allPaths.forEach((path) => path.classList.remove('active'));
+        setContourHighlight(null);
+      }
+
+      function setSelection(regionId) {
+        const detail = regionData[regionId];
+        if (!detail) return;
+
+        regionButtons.forEach((button) => {
+          const active = button.dataset.region === regionId;
+          button.classList.toggle('active', active);
+          button.classList.toggle('dimmed', !active);
+        });
+
+        allPaths.forEach((path) => path.classList.remove('active'));
+        detail.paths.forEach((id) => {
+          const path = document.getElementById(id);
+          if (path) path.classList.add('active');
+        });
+        setContourHighlight(regionId);
+
+        detailKicker.textContent = 'Selected region';
+        selectedTitle.textContent = detail.title;
+        selectedBody.textContent = detail.body;
+        applyActiveColors(detail.line, detail.glow, detail.titleColor);
+      }
+
+      regionButtons.forEach((button) => {
+        const handler = () => {
+          buttonHoverLocked = true;
+          setSelection(button.dataset.region);
+        };
+
+        button.addEventListener('mouseenter', handler);
+        button.addEventListener('focus', handler);
+        button.addEventListener('click', handler);
+        button.addEventListener('mouseleave', () => {
+          buttonHoverLocked = false;
+        });
+        button.addEventListener('blur', () => {
+          buttonHoverLocked = false;
+        });
+      });
+
+      frame.addEventListener('mousemove', (event) => {
+        if (buttonHoverLocked) return;
+        const point = terrainPointFromEvent(event);
+        if (!pointInTerrain(point)) return;
+        describeHoveredRegion(point);
+      });
+
+      frame.addEventListener('mouseleave', () => {
+        if (buttonHoverLocked) return;
+        setSelection('fundamentals-ai-ml');
+      });
+
+      console.assert(regionButtons.length === 8, 'Expected 8 region buttons.');
+      console.assert(typeof regionData['fundamentals-ai-ml']?.body === 'string', 'Region descriptions should be defined.');
+      console.assert(typeof contourBias['algorithms']?.skewX === 'number', 'Contour bias entries must contain numeric shape values.');
+      console.assert(localContours instanceof SVGGElement, 'Contour group should exist.');
+      console.assert(typeof setContourHighlight === 'function', 'Contour highlight helper should exist.');
+      console.assert(document.getElementById('path-aiml-dm'), 'Expected AIML to Data Mining path.');
+      console.assert(typeof frame?.addEventListener === 'function', 'Frame should exist for empty-region hover.');
+      console.assert(Array.isArray(contourConfig['data-mining']) && contourConfig['data-mining'].length === 5, 'Each class should keep five contour rings.');
+
+      refreshGeometry();
+      window.addEventListener('resize', refreshGeometry);
+      setSelection('fundamentals-ai-ml');
+    </script>
+  </body>
+</html>
