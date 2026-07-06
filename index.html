@@ -164,7 +164,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.34rem;
+        gap: 0.44rem;
         pointer-events: none;
       }
 
@@ -179,19 +179,20 @@
 
       .map-description {
         margin: 0;
-        max-width: 38rem;
-        font-size: 0.84rem;
-        line-height: 1.34;
+        max-width: 64rem;
+        font-size: 0.78rem;
+        line-height: 1.2;
         font-weight: 500;
         text-align: center;
         color: rgba(58, 52, 46, 0.94);
+        white-space: nowrap;
       }
 
       .map-hint {
-        margin: 0;
-        max-width: 34rem;
-        font-size: 0.73rem;
-        line-height: 1.2;
+        margin: 0.04rem 0 0;
+        max-width: 42rem;
+        font-size: 0.71rem;
+        line-height: 1.18;
         font-weight: 500;
         letter-spacing: 0.008em;
         text-align: center;
@@ -202,7 +203,7 @@
         position: absolute;
         left: 1rem;
         right: calc(1rem + var(--selected-card-width) + 1rem);
-        top: 5rem;
+        top: 5.8rem;
         z-index: 7;
         display: grid;
         grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -283,6 +284,7 @@
         letter-spacing: 0.22em;
         text-transform: uppercase;
         color: var(--text-meta);
+        text-align: center;
       }
 
       .selected-head {
@@ -393,6 +395,7 @@
         letter-spacing: 0.2em;
         text-transform: uppercase;
         color: var(--text-meta);
+        text-align: center;
       }
 
       .camera-widget {
@@ -748,9 +751,9 @@
           <div class="map-topband">
             <h2 class="map-title" id="knowledge-map-title">Knowledge Map</h2>
             <p class="map-description">
-              A loss landscape for learning systems, where each region represents a different area of focus.
+              This map uses a loss landscape as a metaphor for learning systems: each region marks an area of focus, and each minimum represents a local center of study.
             </p>
-            <p class="map-hint">Hover a region or minimum, or click a button to explore.</p>
+            <p class="map-hint">Hover a region or minimum, or drag to rotate.</p>
           </div>
 
           <div class="selector-row" id="selector-row" aria-label="Select a knowledge area"></div>
@@ -817,7 +820,7 @@
 
           <div class="map-frame" id="map-frame">
             <svg id="map-svg" viewBox="0 0 1520 920" preserveAspectRatio="none" role="img" aria-label="Interactive loss landscape knowledge map">
-              <g transform="translate(28 138)">
+              <g transform="translate(28 176)">
                 <g id="plane-base" class="plane-base"></g>
                 <g id="plane" class="plane"></g>
                 <g id="plane-active" class="plane-active"></g>
@@ -849,7 +852,7 @@
           key: "computer-science",
           label: "Computer Science",
           cardLabel: "Computer Science",
-          href: "/computer-science.html",
+          href: "#",
           blurb: "The computational foundation for turning learning ideas into algorithms, programs, and executable procedures.",
           cta: "Explore Computer Science"
         },
@@ -857,7 +860,7 @@
           key: "mathematics",
           label: "Mathematics",
           cardLabel: "Mathematics",
-          href: "/mathematics.html",
+          href: "#",
           blurb: "The formal language for reasoning about structure, uncertainty, optimization, and generalization in learning systems.",
           cta: "Explore Mathematics"
         },
@@ -865,7 +868,7 @@
           key: "machine-learning",
           label: "Machine Learning",
           cardLabel: "Machine Learning",
-          href: "/machine-learning.html",
+          href: "#",
           blurb: "The central area where models learn from data through representation, training, evaluation, and generalization.",
           cta: "Explore Machine Learning"
         },
@@ -873,7 +876,7 @@
           key: "systems",
           label: "Systems",
           cardLabel: "Systems",
-          href: "/systems.html",
+          href: "#",
           blurb: "The practical architecture around learned models: deployment, monitoring, feedback, reliability, and scale.",
           cta: "Explore Systems"
         },
@@ -881,7 +884,7 @@
           key: "projects",
           label: "Projects",
           cardLabel: "Projects",
-          href: "/projects.html",
+          href: "#",
           blurb: "Concrete experiments, implementations, and reviews that make the landscape visible.",
           cta: "Explore Projects"
         }
@@ -1147,15 +1150,15 @@
         const start = (event) => {
           if (event.pointerType === "mouse" && event.button !== 0) return;
           if (event.target.closest(".selector-row, .selected-card, .mobile-card, a, button, input, label")) return;
-          const rect = mapFrame.getBoundingClientRect();
-          if (
-            event.clientX < rect.left ||
-            event.clientX > rect.right ||
-            event.clientY < rect.top ||
-            event.clientY > rect.bottom
-          ) {
+
+          const svgRect = mapSvg.getBoundingClientRect();
+          const localX = ((event.clientX - svgRect.left) / svgRect.width) * 1520;
+          const localY = ((event.clientY - svgRect.top) / svgRect.height) * 920;
+
+          if (localY < 150) {
             return;
           }
+
           dragging = true;
           isDraggingLandscape = true;
           pointerId = event.pointerId;
@@ -1459,7 +1462,7 @@
         const minProjectedY = Math.min(...points.map((point) => point.y));
         const maxProjectedY = Math.max(...points.map((point) => point.y));
 
-        const target = { minX: -430, maxX: 1506, minY: -4, maxY: 1060 };
+        const target = { minX: -360, maxX: 1534, minY: -72, maxY: 980 };
         const width = Math.max(1, maxProjectedX - minProjectedX);
         const height = Math.max(1, maxProjectedY - minProjectedY);
         const targetWidth = target.maxX - target.minX;
@@ -1467,8 +1470,8 @@
         const scale = Math.min(targetWidth / width, targetHeight / height);
 
         projectionFit.scale = scale;
-        projectionFit.offsetX = target.minX + (targetWidth - width * scale) / 2 - minProjectedX * scale;
-        projectionFit.offsetY = target.minY + (targetHeight - height * scale) / 2 - minProjectedY * scale;
+        projectionFit.offsetX = target.minX + (targetWidth - width * scale) / 2 - minProjectedX * scale - 28;
+        projectionFit.offsetY = target.minY + (targetHeight - height * scale) / 2 - minProjectedY * scale - 34;
       }
 
       function pointsString(points) {
