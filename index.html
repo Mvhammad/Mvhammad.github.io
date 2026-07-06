@@ -6,46 +6,49 @@
     <title>Muhammad Ali</title>
     <style>
       :root {
+        --page-bg: #F7F3EA;
+        --panel-bg: #FFFCF5;
+        --overlay-bg: rgba(255, 252, 245, 0.94);
+        --text-main: #1F1B16;
+        --text-muted: #6E665C;
+        --text-meta: #8A8379;
+        --graphite: #8E887E;
+        --border-soft: #DED6C8;
         --header-right-width: clamp(18rem, 20vw, 21rem);
-        --selected-card-width: clamp(11.8rem, 13.2vw, 13.8rem);
+        --selected-card-width: clamp(17.2rem, 18.8vw, 20.4rem);
         --map-height: clamp(760px, 52vw, 940px);
-        --page-bg: #f6f3ed;
-        --panel-bg: rgba(252, 250, 246, 0.92);
-        --overlay-bg: rgba(252, 250, 246, 0.9);
-        --text-primary: #1c1917;
-        --text-strong: #0c0a09;
-        --text-secondary: #57534e;
-        --text-meta: #78716c;
-        --line-soft: rgba(133, 125, 116, 0.11);
-        --line-mid: rgba(107, 98, 89, 0.2);
-        --line-strong: rgba(53, 48, 43, 0.72);
-        --accent: #c69333;
-        --accent-soft: rgba(198, 147, 51, 0.16);
-        --accent-strong: rgba(171, 122, 28, 0.94);
-        --shadow-lg: 0 18px 60px rgba(28, 25, 23, 0.05);
-        --radius-xl: 34px;
-        --radius-lg: 28px;
-        --radius-pill: 999px;
-        --shell-max: 1920px;
+        --radius-panel: 34px;
+        --radius-card: 26px;
+        --radius-pill: 18px;
         --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, "Times New Roman", serif;
         --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       }
 
-      * { box-sizing: border-box; }
-      html, body { margin: 0; min-height: 100%; }
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
       body {
-        min-height: 100vh;
+        margin: 0;
+        min-height: 100%;
+      }
+
+      body {
         background: var(--page-bg);
-        color: var(--text-primary);
+        color: var(--text-main);
         font-family: var(--sans);
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;
       }
 
-      a { color: inherit; text-decoration: none; }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
 
       .page-shell {
-        max-width: var(--shell-max);
+        max-width: 1920px;
         min-height: 100vh;
         margin: 0 auto;
         padding: 1rem 1.25rem 1.25rem;
@@ -56,15 +59,10 @@
       .site-header {
         display: grid;
         grid-template-columns: minmax(0, 1fr) var(--header-right-width);
-        align-items: start;
         column-gap: 1.5rem;
-        row-gap: 0.3rem;
-        padding-bottom: 0.35rem;
-        flex-shrink: 0;
-      }
-
-      .site-header-right {
-        display: contents;
+        row-gap: 0.35rem;
+        align-items: start;
+        padding-bottom: 0.42rem;
       }
 
       .site-name {
@@ -73,43 +71,71 @@
         font-family: var(--serif);
         font-size: 1.15rem;
         letter-spacing: -0.02em;
-        color: var(--text-strong);
+        color: var(--text-main);
+      }
+
+      .hero-copy {
+        grid-column: 1;
+        grid-row: 2;
+        max-width: min(66rem, 100%);
+      }
+
+      .hero-copy h1 {
+        margin: 0;
+        font-family: var(--serif);
+        font-size: clamp(1.64rem, 1.2rem + 0.92vw, 2rem);
+        line-height: 1.08;
+        letter-spacing: -0.03em;
+        color: var(--text-main);
+      }
+
+      .hero-emphasis {
+        color: inherit;
+        font-weight: inherit;
+        transition: color 180ms ease, font-weight 180ms ease;
+      }
+
+      .header-right {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.45rem;
+        min-width: 0;
       }
 
       .site-nav {
-        grid-column: 2;
-        grid-row: 1;
         display: flex;
         flex-wrap: nowrap;
         justify-content: flex-end;
-        gap: 0.18rem 0.86rem;
+        gap: 0.9rem;
         font-size: 0.9rem;
-        color: var(--text-secondary);
+        color: var(--text-muted);
+      }
+
+      .site-nav a:hover {
+        color: var(--text-main);
       }
 
       .site-note {
-        grid-column: 2;
-        grid-row: 2;
-        align-self: stretch;
+        align-self: flex-end;
+        width: min(100%, 17.2rem);
+        min-height: 2.3rem;
+        padding: 0.45rem 0.72rem;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: min(100%, 17.2rem);
-        height: 100%;
-        min-height: 2.1rem;
-        padding: 0.38rem 0.62rem;
-        border: 1px solid rgba(198, 147, 51, 0.56);
-        border-radius: 12px;
-        background: rgba(198, 147, 51, 0.12);
-        box-shadow: 0 8px 18px rgba(198, 147, 51, 0.08);
-        font-size: 0.82rem;
-        font-weight: 700;
-        line-height: 1.2;
-        color: rgba(74, 63, 48, 0.98);
         text-align: center;
+        font-size: 0.82rem;
+        line-height: 1.2;
+        font-weight: 700;
+        color: rgba(74, 63, 48, 0.98);
+        background: rgba(199, 146, 46, 0.10);
+        border: 1px solid rgba(199, 146, 46, 0.42);
+        border-radius: 12px;
+        box-shadow: 0 8px 18px rgba(199, 146, 46, 0.06);
       }
-
-      .site-nav a:hover, .site-name:hover, .overlay-link:hover { color: #000; }
 
       .site-main {
         display: flex;
@@ -119,94 +145,110 @@
         min-height: 0;
       }
 
-      .hero-row {
+      .knowledge-map {
         position: relative;
-        display: block;
-        gap: 0;
-        padding-bottom: 0;
-        min-height: 0;
-        flex-shrink: 0;
-        padding-right: 0;
-      }
-
-      .hero-copy h1 {
-        max-width: min(66rem, 100%);
-        width: 100%;
-        margin: 0;
-        font-family: var(--serif);
-        font-size: clamp(1.64rem, 1.2rem + 0.92vw, 2rem);
-        line-height: 1.08;
-        letter-spacing: -0.03em;
-        color: var(--text-strong);
-      }
-
-      .hero-emphasis {
-        color: rgba(171, 122, 28, 0.96);
-        font-weight: 600;
-      }
-
-      .hero-copy {
-        grid-column: 1;
-        grid-row: 2;
-        max-width: none;
-        padding-top: 0.02rem;
-      }
-
-      .hero-spacer { display: none; }
-      .meta-label {
-        font-size: 0.68rem;
-        letter-spacing: 0.22em;
-        text-transform: uppercase;
-        color: var(--text-meta);
-      }
-
-      .knowledge-map-surface {
         min-height: var(--map-height);
-        position: relative;
-        overflow: hidden;
-        border-radius: var(--radius-xl);
         background: var(--panel-bg);
-        box-shadow: var(--shadow-lg);
-        border: 1px solid rgba(221, 214, 204, 0.84);
-        display: flex;
-        flex: 1;
-        min-height: 0;
+        border: 1px solid var(--border-soft);
+        border-radius: var(--radius-panel);
+        box-shadow: 0 18px 60px rgba(28, 25, 23, 0.05);
+        overflow: hidden;
       }
 
-      .map-intro {
+      .map-topband {
         position: absolute;
         left: 1rem;
-        right: calc(0.8rem + var(--selected-card-width) + 0.8rem);
-        top: 0.72rem;
-        z-index: 6;
+        right: calc(1rem + var(--selected-card-width) + 1rem);
+        top: 0.85rem;
+        z-index: 7;
         display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
+        gap: 0.34rem;
         pointer-events: none;
       }
 
-      .map-intro-title {
-        display: none;
+      .map-title {
+        margin: 0;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: rgba(42, 38, 34, 0.94);
       }
 
-      .map-intro-instruction {
-        display: block;
+      .map-description {
         margin: 0;
-        font-size: 0.72rem;
-        line-height: 1.2;
-        letter-spacing: 0.01em;
-        color: var(--text-meta);
+        max-width: 38rem;
+        font-size: 0.84rem;
+        line-height: 1.34;
+        font-weight: 500;
         text-align: center;
+        color: rgba(58, 52, 46, 0.94);
+      }
+
+      .map-hint {
+        margin: 0;
+        max-width: 34rem;
+        font-size: 0.73rem;
+        line-height: 1.2;
+        font-weight: 500;
+        letter-spacing: 0.008em;
+        text-align: center;
+        color: rgba(104, 95, 86, 0.96);
+      }
+
+      .selector-row {
+        position: absolute;
+        left: 1rem;
+        right: calc(1rem + var(--selected-card-width) + 1rem);
+        top: 5rem;
+        z-index: 7;
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 0.62rem;
+      }
+
+      .selector-pill {
+        min-height: 52px;
+        width: 100%;
+        padding: 0.62rem 0.72rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        white-space: nowrap;
+        font-family: var(--serif);
+        font-size: 0.9rem;
+        font-weight: 600;
+        line-height: 1.1;
+        letter-spacing: -0.01em;
+        color: var(--text-main);
+        background: rgba(255, 252, 245, 0.78);
+        border: 1px solid rgba(222, 214, 200, 0.92);
+        border-radius: var(--radius-pill);
+        transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease, color 160ms ease;
+        pointer-events: auto;
+      }
+
+      .selector-pill:hover,
+      .selector-pill:focus-visible {
+        outline: none;
+        background: rgba(255, 252, 245, 0.98);
+        box-shadow: 0 6px 14px rgba(31, 27, 22, 0.04);
+      }
+
+      .selector-pill.active {
+        box-shadow: inset 0 -2px 0 currentColor;
       }
 
       .map-frame {
-        position: relative;
-        flex: 1;
-        min-height: var(--map-height);
+        position: absolute;
+        inset: 0;
         overflow: hidden;
       }
 
-      #knowledge-map-svg {
+      #map-svg {
         position: absolute;
         inset: 0;
         width: 100%;
@@ -219,175 +261,212 @@
         user-select: none;
       }
 
-      .map-frame.dragging * {
-        user-select: none;
-      }
-
-      .selector-row {
+      .selected-card {
         position: absolute;
-        left: 1rem;
-        right: calc(0.8rem + var(--selected-card-width) + 0.8rem);
-        top: 2.1rem;
-        z-index: 6;
-        display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: 0.34rem;
-        align-items: stretch;
+        top: 1rem;
+        right: 1rem;
+        bottom: 1rem;
+        width: var(--selected-card-width);
+        z-index: 8;
+        background: var(--overlay-bg);
+        border: 1px solid var(--border-soft);
+        border-radius: var(--radius-card);
+        backdrop-filter: blur(8px);
+        box-shadow: 0 14px 36px rgba(28, 25, 23, 0.025);
+        padding: 1.12rem 1.24rem 1.2rem;
+        display: flex;
+        flex-direction: column;
       }
 
-      .selector-pill {
-        --button-accent: rgba(171, 122, 28, 0.96);
-        --button-soft: rgba(171, 122, 28, 0.08);
-        --button-border: rgba(171, 122, 28, 0.34);
-        appearance: none;
-        border: 1px solid rgba(218, 210, 200, 0.92);
-        background: rgba(252, 250, 246, 0.76);
-        color: var(--text-strong);
-        border-radius: 18px;
-        min-height: 50px;
-        min-width: 0;
-        width: 100%;
-        padding: 0.56rem 0.58rem;
-        display: inline-flex;
+      .selected-label {
+        font-size: 0.7rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--text-meta);
+      }
+
+      .selected-head {
+        margin-top: 0.78rem;
+        display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
-        font: inherit;
-        cursor: pointer;
-        transition: border-color 160ms ease, background 160ms ease, color 160ms ease, box-shadow 160ms ease;
-        overflow: hidden;
+        gap: 0.56rem;
+        min-height: 5.45rem;
       }
 
-      .selector-pill:hover,
-      .selector-pill:focus-visible {
-        border-color: var(--button-border);
-        background: rgba(252, 250, 246, 0.92);
-        box-shadow: 0 8px 18px rgba(28, 25, 23, 0.03);
-        outline: none;
-      }
-
-      .selector-pill.active {
-        border-color: var(--button-border);
-        background: var(--button-soft);
-        box-shadow: inset 0 -2px 0 var(--button-accent);
-      }
-
-      .selector-icon {
-        width: 2.42rem;
-        height: 2.42rem;
+      .selected-icon {
+        width: 3rem;
+        height: 3rem;
         border-radius: 999px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        background: rgba(235, 230, 224, 0.92);
-        border: 1px solid rgba(222, 215, 206, 0.94);
-        color: rgba(48, 43, 38, 0.9);
-        flex: 0 0 auto;
+        color: #fffdf8;
+      }
+
+      .selected-title {
+        margin: 0;
+        width: 100%;
+        min-height: 2.5rem;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        text-align: center;
+        font-family: var(--serif);
+        font-size: clamp(1.02rem, 0.88rem + 0.38vw, 1.26rem);
+        line-height: 1.08;
+        letter-spacing: -0.02em;
+        color: var(--text-main);
+      }
+
+      .selected-thumb {
+        margin-top: 0.72rem;
+        border-radius: 18px;
+        border: 1px solid var(--border-soft);
+        background: rgba(255, 252, 245, 0.72);
+        padding: 0.46rem;
+        min-height: 7.6rem;
+        display: flex;
+        align-items: center;
+      }
+
+      .selected-thumb svg {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .selected-accent {
+        width: 1.65rem;
+        height: 2px;
+        margin: 0.86rem 0 0.68rem;
+        border-radius: 999px;
+      }
+
+      .selected-blurb {
+        margin: 0;
+        font-size: 0.8rem;
+        line-height: 1.46;
+        color: var(--text-muted);
+        min-height: 5.9em;
+      }
+
+      .selected-cta-wrap {
+        padding-top: 0.56rem;
+      }
+
+      .selected-cta {
+        width: 100%;
+        min-height: 3rem;
+        padding: 0.72rem 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        border-radius: 14px;
+        border: 1px solid rgba(199, 146, 46, 0.42);
+        background: rgba(199, 146, 46, 0.08);
+        color: rgba(52, 43, 32, 0.98);
+        font-size: 0.82rem;
+        font-weight: 600;
+        line-height: 1.2;
         transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
       }
 
-      .selector-label {
-        font-family: var(--serif);
-        font-size: 0.78rem;
-        line-height: 1.14;
-        letter-spacing: -0.01em;
-        text-align: center;
-        white-space: nowrap;
+      .selected-cta:hover,
+      .selected-cta:focus-visible {
+        outline: none;
+        background: rgba(199, 146, 46, 0.14);
       }
 
-      .camera-controls {
+      .camera-panel {
         margin-top: auto;
-        padding-top: 1rem;
-        border-top: 1px solid rgba(228, 221, 212, 0.86);
+        padding-top: 0.72rem;
+        border-top: 1px solid rgba(222, 214, 200, 0.92);
         display: flex;
         flex-direction: column;
-        gap: 0.72rem;
+        gap: 0.58rem;
       }
 
-      .camera-adjust-title {
-        font-size: 0.62rem;
+      .camera-label {
+        font-size: 0.68rem;
         letter-spacing: 0.2em;
         text-transform: uppercase;
         color: var(--text-meta);
       }
 
-      .camera-axis-widget {
+      .camera-widget {
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: 7rem;
-        padding: 0.02rem 0 0;
+        min-height: 6.2rem;
       }
 
-      .camera-axis-svg {
+      .camera-widget svg {
         width: 100%;
-        max-width: 9.8rem;
+        max-width: 12.8rem;
         height: auto;
         display: block;
       }
 
-      .camera-axis-base {
-        fill: rgba(252, 250, 246, 0.82);
-        stroke: rgba(228, 221, 212, 0.9);
+      .camera-base {
+        fill: rgba(255, 252, 245, 0.82);
+        stroke: rgba(222, 214, 200, 0.95);
         stroke-width: 1;
       }
 
-      .camera-axis-line {
+      .camera-axis {
         fill: none;
-        stroke: rgba(112, 103, 93, 0.62);
+        stroke: rgba(112, 103, 93, 0.64);
         stroke-width: 1.38;
-        vector-effect: non-scaling-stroke;
         stroke-linecap: round;
+        vector-effect: non-scaling-stroke;
       }
 
-      .camera-axis-line.soft {
+      .camera-axis.soft {
         stroke: rgba(112, 103, 93, 0.24);
         stroke-dasharray: 3 4;
       }
 
-      .camera-axis-line.accent {
-        stroke: rgba(112, 103, 93, 0.78);
-      }
-
-      .camera-axis-node {
-        fill: rgba(252, 250, 246, 0.98);
-        stroke: rgba(112, 103, 93, 0.28);
+      .camera-node {
+        fill: rgba(255, 252, 245, 0.98);
+        stroke: rgba(112, 103, 93, 0.32);
         stroke-width: 1;
       }
 
-      .camera-axis-node.accent {
+      .camera-node.accent {
         fill: rgba(112, 103, 93, 0.92);
         stroke: rgba(112, 103, 93, 0.92);
       }
 
-      .camera-axis-label {
+      .camera-text {
         font-family: var(--serif);
-        font-size: 0.9rem;
-        fill: rgba(92, 84, 76, 0.94);
+        font-size: 0.92rem;
+        fill: rgba(92, 84, 76, 0.95);
       }
 
-      .camera-axis-label.loss {
-        font-size: 0.8rem;
+      .camera-text.loss {
+        font-size: 0.82rem;
       }
 
-      .camera-adjust-row {
+      .camera-control {
         display: flex;
         flex-direction: column;
-        gap: 0.32rem;
+        gap: 0.22rem;
       }
 
-      .camera-adjust-head {
+      .camera-head {
         display: flex;
-        align-items: center;
         justify-content: space-between;
-        gap: 0.8rem;
+        gap: 0.7rem;
       }
 
-      .camera-adjust-name {
+      .camera-name {
         font-size: 0.78rem;
-        color: var(--text-secondary);
+        color: var(--text-muted);
       }
 
-      .camera-adjust-value {
+      .camera-value {
         font-size: 0.72rem;
         color: var(--text-meta);
         font-variant-numeric: tabular-nums;
@@ -400,656 +479,147 @@
       }
 
       .camera-reset {
-        align-self: flex-start;
-        min-height: 2rem;
-        padding: 0.42rem 0.7rem;
-        border: 1px solid rgba(202, 194, 184, 0.9);
+        align-self: center;
+        min-height: 1.9rem;
+        padding: 0.38rem 0.68rem;
         border-radius: 999px;
-        background: rgba(252, 250, 246, 0.82);
-        color: var(--text-secondary);
-        font-size: 0.74rem;
-        line-height: 1;
+        border: 1px solid rgba(202, 194, 184, 0.9);
+        background: rgba(255, 252, 245, 0.82);
+        color: var(--text-muted);
+        font-size: 0.72rem;
         cursor: pointer;
-        transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
       }
 
       .camera-reset:hover,
       .camera-reset:focus-visible {
-        border-color: rgba(191, 175, 156, 0.95);
-        background: rgba(252, 250, 246, 0.92);
-        color: var(--text-strong);
         outline: none;
+        background: rgba(255, 252, 245, 0.94);
+        color: var(--text-main);
       }
 
-      .overlay-figure {
-        margin-top: 0.9rem;
-        border-radius: 16px;
-        border: 1px solid rgba(228, 221, 212, 0.9);
-        background: rgba(252, 250, 246, 0.72);
-        padding: 0.42rem;
-        height: 9rem;
-        display: flex;
-        align-items: center;
-      }
-
-      .overlay-figure svg {
-        display: block;
-        width: 100%;
-        height: auto;
-      }
-
-      .overlay-figure-card {
-        fill: rgba(252, 250, 246, 0.96);
-        stroke: rgba(228, 221, 212, 0.94);
+      .thumb-card {
+        fill: rgba(255, 252, 245, 0.96);
+        stroke: rgba(222, 214, 200, 0.92);
         stroke-width: 1;
-      }
-
-      .overlay-figure-line {
-        fill: none;
-        stroke: rgba(154, 143, 131, 0.34);
-        stroke-width: 1;
-      }
-
-      .overlay-figure-line.soft {
-        stroke: rgba(154, 143, 131, 0.2);
-        stroke-width: 0.88;
-      }
-
-      .overlay-figure-accent {
-        fill: none;
-        stroke: rgba(171, 122, 28, 0.72);
-        stroke-width: 1.45;
-      }
-
-      .overlay-figure-dot {
-        fill: rgba(171, 122, 28, 0.9);
-      }
-
-      .overlay-figure-dot.muted {
-        fill: rgba(96, 88, 79, 0.72);
       }
 
       .thumb-contour {
         fill: none;
-        stroke: rgba(96, 88, 79, 0.22);
-        stroke-width: 1;
+        stroke: rgba(98, 90, 82, 0.18);
+        stroke-width: 0.95;
         vector-effect: non-scaling-stroke;
       }
 
       .thumb-contour.soft {
-        stroke: rgba(126, 116, 106, 0.14);
-        stroke-width: 0.88;
-      }
-
-      .thumb-basin-fill {
-        stroke: none;
-      }
-
-      .thumb-base-tint {
-        fill: rgba(181, 156, 108, 0.08);
-        stroke: none;
-      }
-
-      .thumb-minimum {
-        fill: rgba(171, 122, 28, 0.94);
-        stroke: rgba(252, 250, 246, 0.98);
-        stroke-width: 1.15;
-        vector-effect: non-scaling-stroke;
-      }
-
-      .thumb-projection {
-        fill: none;
-        stroke: rgba(171, 122, 28, 0.18);
-        stroke-width: 0.9;
-        stroke-dasharray: 3 4;
-        vector-effect: non-scaling-stroke;
-      }
-
-      .region-thumbnail {
-        width: 100%;
-        height: auto;
-        display: block;
-      }
-
-      .thumb-grid path {
-        fill: none;
-        stroke: rgba(92, 84, 75, 0.14);
-        stroke-width: 0.9;
-        vector-effect: non-scaling-stroke;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-      }
-
-      .thumb-grid path.soft {
-        stroke: rgba(92, 84, 75, 0.09);
-      }
-
-      .thumb-region-fill {
-        fill: rgba(171, 122, 28, 0.16);
-        stroke: none;
-      }
-
-      .thumb-neighbor-fill.math {
-        fill: rgba(145, 139, 151, 0.08);
-        stroke: none;
-      }
-
-      .thumb-neighbor-fill.cs {
-        fill: rgba(133, 142, 151, 0.07);
-        stroke: none;
-      }
-
-      .thumb-neighbor-fill.systems {
-        fill: rgba(132, 143, 134, 0.07);
-        stroke: none;
-      }
-
-      .thumb-neighbor-fill.projects {
-        fill: rgba(158, 136, 129, 0.06);
-        stroke: none;
-      }
-
-      .thumb-inset-contour {
-        fill: none;
-        stroke: rgba(96, 88, 79, 0.2);
-        stroke-width: 0.95;
-        vector-effect: non-scaling-stroke;
-      }
-
-      .thumb-inset-contour.soft {
-        stroke: rgba(126, 116, 106, 0.14);
-        stroke-width: 0.86;
-      }
-
-      .thumb-inset-minimum {
-        fill: rgba(171, 122, 28, 0.96);
-        stroke: rgba(252, 250, 246, 0.98);
-        stroke-width: 1.2;
-        vector-effect: non-scaling-stroke;
-      }
-
-      .thumb-landscape-contour {
-        fill: none;
-        stroke: rgba(93, 85, 76, 0.2);
-        stroke-width: 0.95;
-        vector-effect: non-scaling-stroke;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-      }
-
-      .thumb-landscape-contour.soft {
-        stroke: rgba(124, 115, 105, 0.12);
+        stroke: rgba(124, 115, 105, 0.11);
         stroke-width: 0.82;
       }
 
-      .thumb-landscape-tint {
-        stroke: none;
-      }
-
-      .thumb-landscape-tint.math {
-        fill: rgba(145, 139, 151, 0.11);
-      }
-
-      .thumb-landscape-tint.cs {
-        fill: rgba(133, 142, 151, 0.11);
-      }
-
-      .thumb-landscape-tint.ml {
-        fill: rgba(171, 122, 28, 0.14);
-      }
-
-      .thumb-landscape-tint.systems {
-        fill: rgba(132, 143, 134, 0.11);
-      }
-
-      .thumb-landscape-tint.projects {
-        fill: rgba(158, 136, 129, 0.11);
-      }
-
-      .thumb-landscape-minimum {
-        fill: rgba(171, 122, 28, 0.95);
-        stroke: rgba(252, 250, 246, 0.98);
+      .thumb-minimum {
+        stroke: rgba(255, 252, 245, 0.98);
         stroke-width: 1.15;
         vector-effect: non-scaling-stroke;
       }
 
-      .figure-scaffold line,
-      .figure-scaffold path,
-      .figure-scaffold polyline {
+      .wire path,
+      .wire polyline {
         fill: none;
-        stroke: var(--line-soft);
-        stroke-width: 1;
+        stroke: rgba(98, 89, 80, 0.34);
+        stroke-width: 1.14;
+        vector-effect: non-scaling-stroke;
       }
 
-      .figure-scaffold .axis {
-        stroke: rgba(92, 84, 76, 0.42);
-        stroke-width: 1.1;
+      .wire .rear {
+        stroke: rgba(110, 101, 92, 0.22);
+        stroke-width: 0.98;
       }
 
-      .figure-scaffold .axis-arrow {
-        fill: rgba(92, 84, 76, 0.42);
+      .wire .front {
+        stroke: rgba(84, 76, 68, 0.46);
+        stroke-width: 1.26;
       }
 
-      .figure-scaffold text,
-      .annotation-text,
-      .legend-text,
-      .panel-list,
-      .caption-line {
-        font-family: var(--sans);
-      }
-
-      .figure-scaffold .axis-label,
-      .annotation-copy,
-      .legend-copy,
-      .caption-line {
-        fill: rgba(95, 88, 79, 0.84);
-        font-size: 12px;
-        letter-spacing: 0.02em;
-      }
-
-      .axis-symbol {
-        font-family: var(--serif);
-        font-size: 18px;
-        fill: rgba(28, 25, 23, 0.92);
-      }
-
-      .parameter-plane path,
-      .parameter-plane polyline,
-      .parameter-plane polygon {
+      .plane path,
+      .plane polyline,
+      .plane polygon {
         fill: none;
         stroke: rgba(154, 143, 131, 0.11);
         stroke-width: 0.74;
         vector-effect: non-scaling-stroke;
       }
 
-      .parameter-plane .plane-shell {
-        fill: none;
+      .plane .shell {
         stroke: rgba(154, 143, 131, 0.14);
       }
 
-      .parameter-plane .plane-grid {
+      .plane .grid {
         stroke: rgba(154, 143, 131, 0.085);
       }
 
-      .surface-wire path,
-      .surface-wire polyline {
-        fill: none;
-        stroke: rgba(98, 89, 80, 0.34);
-        stroke-width: 1.14;
-        vector-effect: non-scaling-stroke;
-        transition: opacity 170ms ease, stroke 170ms ease, stroke-width 170ms ease;
-      }
-
-      .surface-wire .rear-line {
-        stroke: rgba(110, 101, 92, 0.22);
-        stroke-width: 0.98;
-      }
-
-      .surface-wire .front-line {
-        stroke: rgba(84, 76, 68, 0.46);
-        stroke-width: 1.26;
-      }
-
-      .surface-contour path,
-      .surface-contour polyline {
+      .contours path,
+      .contours polyline {
         fill: none;
         stroke: rgba(154, 143, 131, 0.07);
         stroke-width: 0.68;
         vector-effect: non-scaling-stroke;
-        transition: opacity 170ms ease, stroke 170ms ease;
       }
 
-      .wire-dim path,
-      .wire-dim polyline,
-      .contour-dim path,
-      .contour-dim polyline {
-        opacity: 0.38;
+      .plane-base polygon,
+      .plane-active polygon,
+      .surface-active polygon {
+        stroke: none;
+        vector-effect: non-scaling-stroke;
       }
 
-      .wire-emphasis path,
-      .wire-emphasis polyline {
-        stroke: rgba(118, 108, 97, 0.3);
-      }
-
-      .wire-accent path,
-      .wire-accent polyline,
-      .contour-accent path,
-      .contour-accent polyline {
-        stroke: rgba(181, 137, 50, 0.24);
-      }
-
-      .minimum-layer .minimum-projection {
-        stroke: rgba(171, 122, 28, 0.18);
+      .minimums .projection {
         stroke-width: 0.9;
         stroke-dasharray: 4 5;
         vector-effect: non-scaling-stroke;
       }
 
-      .minimum-layer .minimum-anchor {
+      .minimum-anchor {
         cursor: pointer;
         outline: none;
       }
 
-      .minimum-layer .minimum-anchor .minimum-halo {
-        fill: var(--point-halo, rgba(171, 122, 28, 0.16));
+      .minimum-anchor .halo {
         opacity: 0;
         transition: opacity 160ms ease;
       }
 
-      .minimum-layer .minimum-anchor .minimum-ring {
-        fill: rgba(252, 250, 246, 0.98);
-        stroke: var(--point-ring, rgba(171, 122, 28, 0.54));
+      .minimum-anchor .ring {
+        fill: rgba(255, 252, 245, 0.98);
         stroke-width: 1.25;
         vector-effect: non-scaling-stroke;
         transition: stroke-width 160ms ease;
       }
 
-      .minimum-layer .minimum-anchor .minimum-core {
-        fill: var(--point-core, rgba(171, 122, 28, 0.96));
-        stroke: rgba(252, 250, 246, 0.98);
+      .minimum-anchor .core {
+        stroke: rgba(255, 252, 245, 0.98);
         stroke-width: 1.05;
         vector-effect: non-scaling-stroke;
       }
 
-      .minimum-layer .minimum-anchor:hover .minimum-halo,
-      .minimum-layer .minimum-anchor:focus-visible .minimum-halo,
-      .minimum-layer .minimum-anchor.active .minimum-halo {
+      .minimum-anchor:hover .halo,
+      .minimum-anchor:focus-visible .halo,
+      .minimum-anchor.active .halo {
         opacity: 1;
       }
 
-      .minimum-layer .minimum-anchor:hover .minimum-ring,
-      .minimum-layer .minimum-anchor:focus-visible .minimum-ring,
-      .minimum-layer .minimum-anchor.active .minimum-ring {
+      .minimum-anchor:hover .ring,
+      .minimum-anchor:focus-visible .ring,
+      .minimum-anchor.active .ring {
         stroke-width: 1.5;
       }
 
-      .annotation-line {
+      .mobile-card {
         display: none;
-      }
-
-      .annotation-title,
-      .annotation-copy,
-      .math-caption,
-      .focus-note {
-        display: none;
-      }
-
-      .base-construction path,
-      .base-construction polyline {
-        fill: none;
-        stroke: rgba(126, 116, 106, 0.14);
-        stroke-width: 0.82;
-        vector-effect: non-scaling-stroke;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-      }
-
-      .base-construction .soft {
-        stroke: rgba(126, 116, 106, 0.1);
-        stroke-dasharray: 3 5;
-      }
-
-      .base-construction circle {
-        display: none;
-      }
-
-      .plane-region-base polygon {
-        stroke: none;
-        vector-effect: non-scaling-stroke;
-      }
-
-      .plane-region-active polygon {
-        stroke: none;
-        vector-effect: non-scaling-stroke;
-      }
-
-      .surface-region-active polygon {
-        stroke: none;
-        vector-effect: non-scaling-stroke;
-      }
-
-      .selected-overlay,
-      .selected-mobile {
-        background: var(--overlay-bg);
-        backdrop-filter: blur(8px);
-      }
-
-      .selected-overlay {
-        position: absolute;
-        top: 1.35rem;
-        right: 1.35rem;
-        bottom: 2.2rem;
-        z-index: 6;
-        width: var(--selected-card-width);
-        padding: 1.16rem 1.08rem 1rem;
-        border-radius: 22px;
-        border: 1px solid rgba(222, 215, 206, 0.9);
-        box-shadow: 0 14px 36px rgba(28, 25, 23, 0.028);
-        display: flex;
-        flex-direction: column;
-      }
-
-      .overlay-title {
-        font-family: var(--serif);
-        font-size: 0.94rem;
-        letter-spacing: -0.01em;
-        color: var(--text-strong);
-      }
-
-      .overlay-meta {
-        margin-top: 0.08rem;
-      }
-
-      .overlay-symbol-row {
-        margin-top: 0.72rem;
-        display: grid;
-        grid-template-columns: 2.6rem minmax(0, 1fr);
-        align-items: start;
-        gap: 0.72rem;
-        height: 3.9rem;
-      }
-
-      .overlay-symbol {
-        width: 2.6rem;
-        height: 2.6rem;
-        border-radius: 999px;
-        background: var(--card-accent, var(--accent));
-        color: #fffdfa;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        flex: 0 0 auto;
-      }
-
-      .overlay-region-title {
-        margin: 0;
-        font-family: var(--serif);
-        font-size: clamp(1.18rem, 0.9rem + 0.9vw, 1.54rem);
-        line-height: 1.02;
-        letter-spacing: -0.03em;
-        color: var(--text-strong);
-        height: 3.6rem;
-        display: flex;
-        align-items: flex-start;
-        text-align: left;
-        overflow: hidden;
-        word-break: keep-all;
-        overflow-wrap: anywhere;
-      }
-
-      .overlay-divider {
-        width: 1.55rem;
-        height: 2px;
-        background: var(--card-accent, var(--accent-strong));
-        margin: 0.74rem 0 0.68rem;
-      }
-
-      .overlay-region-blurb {
-        margin: 0;
-        font-size: 0.84rem;
-        line-height: 1.58;
-        color: var(--text-secondary);
-        height: 9.6em;
-        text-align: left;
-        overflow: hidden;
-      }
-
-      .overlay-cta {
-        margin-top: 0;
-        padding-top: 1rem;
-      }
-
-      .overlay-button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.38rem;
-        width: 100%;
-        height: 3.2rem;
-        padding: 0.72rem 0.9rem;
-        border: 1px solid var(--card-border, rgba(198, 147, 51, 0.56));
-        border-radius: 14px;
-        background: var(--card-soft, rgba(198, 147, 51, 0.1));
-        color: rgba(52, 43, 32, 0.98);
-        font-size: 0.82rem;
-        font-weight: 600;
-        line-height: 1.22;
-        text-align: center;
-        white-space: normal;
-        transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
-      }
-
-      .overlay-button:hover,
-      .overlay-button:focus-visible {
-        background: var(--card-soft-strong, rgba(198, 147, 51, 0.14));
-        border-color: var(--card-accent, rgba(198, 147, 51, 0.7));
-        outline: none;
-      }
-
-      .overlay-list,
-      .overlay-section,
-      .overlay-relation-note {
-        display: none;
-      }
-
-      .overlay-list li {
-        display: flex;
-        align-items: baseline;
-        gap: 0.42rem;
-      }
-
-      .overlay-list li::before {
-        content: '·';
-        color: rgba(171, 122, 28, 0.72);
-        flex: 0 0 auto;
-      }
-
-      .overlay-list li + li {
-        margin-top: 0.18rem;
-      }
-
-      .overlay-relation-note {
-        margin: 0.56rem 0 0;
-        font-size: 0.82rem;
-        line-height: 1.5;
-        color: var(--text-secondary);
-      }
-
-      .overlay-link {
-        display: none;
-      }
-
-      .selected-mobile {
-        position: absolute;
-        inset-inline: 0;
-        bottom: 0;
-        z-index: 6;
-        padding: 1rem;
-        display: none;
-      }
-
-      .selected-mobile-row {
-        display: flex;
-        gap: 1rem;
-        align-items: end;
-        justify-content: space-between;
-      }
-
-      .selected-mobile-title {
-        margin: 0.2rem 0 0;
-        font-family: var(--serif);
-        font-size: 1.35rem;
-        line-height: 1.06;
-        letter-spacing: -0.03em;
-        height: 3.2rem;
-        display: flex;
-        align-items: flex-start;
-        text-align: left;
-        overflow: hidden;
-      }
-
-      .selected-mobile-blurb {
-        margin: 0.45rem 0 0;
-        max-width: 42rem;
-        color: var(--text-secondary);
-        font-size: 0.95rem;
-        line-height: 1.6;
-        height: 6.2em;
-        text-align: left;
-        overflow: hidden;
-      }
-
-      @media (max-width: 1500px) and (min-width: 861px) {
-        :root {
-          --header-right-width: clamp(16.8rem, 18.4vw, 19.6rem);
-          --selected-card-width: clamp(11.8rem, 13.2vw, 13.8rem);
-          --map-height: clamp(760px, 52vw, 940px);
-        }
       }
 
       @media (max-width: 860px) {
-        .map-intro {
-          position: static;
-          padding: 0.95rem 1rem 0;
-          right: auto;
-          left: auto;
+        .page-shell {
+          padding-inline: 1rem;
         }
-
-        .map-intro-instruction {
-          font-size: 0.74rem;
-        }
-
-        .selector-row {
-          position: static;
-          display: flex;
-          grid-template-columns: none;
-          align-items: center;
-          justify-content: flex-start;
-          gap: 0.6rem;
-          padding: 0.95rem 1rem 0;
-          overflow-x: auto;
-          overflow-y: hidden;
-          right: auto;
-          left: auto;
-        }
-
-        .selector-pill {
-          width: auto;
-          min-width: max-content;
-          flex: 0 0 auto;
-          padding-inline: 0.9rem;
-        }
-
-        .selected-overlay { display: none; }
-        .selected-mobile { display: block; }
-
-        .map-frame {
-          min-height: 860px;
-        }
-      }
-
-      @media (max-width: 720px) {
-        .page-shell { padding-inline: 1rem; }
 
         .site-header {
           display: flex;
@@ -1057,36 +627,94 @@
           align-items: flex-start;
         }
 
-        .site-header-right {
-          display: flex;
-          flex-direction: column;
+        .header-right {
+          width: 100%;
           align-items: flex-start;
-          min-width: 0;
-          gap: 0.48rem;
         }
 
         .site-nav {
+          flex-wrap: wrap;
           justify-content: flex-start;
-          gap: 0.35rem 1rem;
+          gap: 0.4rem 1rem;
         }
 
         .site-note {
           align-self: flex-start;
-          white-space: normal;
           text-align: left;
         }
 
-        .hero-copy h1 {
-          max-width: 100%;
-          width: 100%;
+        .knowledge-map {
+          min-height: 980px;
+        }
+
+        .map-topband {
+          position: static;
+          padding: 1rem 1rem 0;
+          right: auto;
+          left: auto;
+          pointer-events: none;
         }
 
         .selector-row {
-          gap: 0.5rem;
+          position: static;
+          right: auto;
+          left: auto;
+          top: auto;
+          display: flex;
+          gap: 0.6rem;
+          padding: 0.95rem 1rem 0;
+          overflow-x: auto;
         }
 
         .selector-pill {
-          padding: 0.7rem 0.78rem;
+          min-width: max-content;
+          flex: 0 0 auto;
+        }
+
+        .selected-card {
+          display: none;
+        }
+
+        .mobile-card {
+          position: absolute;
+          inset-inline: 0;
+          bottom: 0;
+          z-index: 8;
+          display: block;
+          padding: 1rem;
+        }
+
+        .mobile-shell {
+          background: var(--overlay-bg);
+          border: 1px solid var(--border-soft);
+          border-radius: var(--radius-card);
+          padding: 1rem;
+        }
+
+        .mobile-head {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.56rem;
+        }
+
+        .mobile-title {
+          margin: 0;
+          text-align: center;
+          font-family: var(--serif);
+          font-size: 1.18rem;
+          line-height: 1.08;
+        }
+
+        .mobile-blurb {
+          margin: 0.6rem 0 0;
+          color: var(--text-muted);
+          font-size: 0.92rem;
+          line-height: 1.55;
+        }
+
+        .mobile-link {
+          margin-top: 0.8rem;
         }
       }
     </style>
@@ -1095,14 +723,18 @@
     <div class="page-shell">
       <header class="site-header">
         <a class="site-name" href="/">Muhammad Ali</a>
+
         <div class="hero-copy">
           <h1>
-            I’m an aspiring machine learning researcher focused on understanding and building <span class="hero-emphasis">learning systems</span> at both the theoretical and practical levels.
+            I’m an aspiring machine learning researcher focused on understanding and building
+            <span class="hero-emphasis" id="hero-emphasis">learning systems</span>
+            at both the theoretical and practical levels.
           </h1>
         </div>
-        <div class="site-header-right">
+
+        <div class="header-right">
           <nav class="site-nav" aria-label="External links">
-            <a href="/resume.pdf" target="_blank" rel="noreferrer">Resume</a>
+            <a href="/assets/resume/Muhammad_Ali_Resume.pdf" target="_blank" rel="noreferrer">Resume</a>
             <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
             <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a>
             <a href="mailto:hello@example.com">Email</a>
@@ -1112,96 +744,88 @@
       </header>
 
       <main class="site-main">
-        <section class="knowledge-map-surface" aria-labelledby="knowledge-map-title">
-          <div class="map-intro" aria-labelledby="knowledge-map-title">
-            <div class="map-intro-title" id="knowledge-map-title">Knowledge Map</div>
-            <p class="map-intro-instruction">Select a region or drag to rotate the landscape.</p>
+        <section class="knowledge-map" aria-labelledby="knowledge-map-title">
+          <div class="map-topband">
+            <h2 class="map-title" id="knowledge-map-title">Knowledge Map</h2>
+            <p class="map-description">
+              A loss landscape for learning systems, where each region represents a different area of focus.
+            </p>
+            <p class="map-hint">Hover a region or minimum, or click a button to explore.</p>
           </div>
 
           <div class="selector-row" id="selector-row" aria-label="Select a knowledge area"></div>
 
-          <aside class="selected-overlay" id="selected-overlay" aria-live="polite">
-            <div class="meta-label overlay-meta">Selected region</div>
-            <div class="overlay-symbol-row">
-              <div class="overlay-symbol" id="overlay-symbol"></div>
-              <h2 class="overlay-region-title" id="overlay-region-title"></h2>
+          <aside class="selected-card" id="selected-card" aria-live="polite">
+            <div class="selected-label">Selected region</div>
+
+            <div class="selected-head">
+              <div class="selected-icon" id="selected-icon"></div>
+              <h3 class="selected-title" id="selected-title"></h3>
             </div>
-            <div class="overlay-figure" id="overlay-figure" aria-hidden="true"></div>
-            <div class="overlay-divider"></div>
-            <p class="overlay-region-blurb" id="overlay-region-blurb"></p>
-            <div class="overlay-cta">
-              <a class="overlay-button" id="overlay-button" href="#">Explore this area</a>
+
+            <div class="selected-thumb" id="selected-thumb" aria-hidden="true"></div>
+
+            <div class="selected-accent" id="selected-accent"></div>
+
+            <p class="selected-blurb" id="selected-blurb"></p>
+
+            <div class="selected-cta-wrap">
+              <a class="selected-cta" id="selected-cta" href="#">Explore</a>
             </div>
-            <div class="camera-controls" aria-label="Adjust camera orientation">
-              <div class="camera-adjust-title">Camera</div>
-              <div class="camera-axis-widget" aria-hidden="true">
-                <svg class="camera-axis-svg" id="camera-axis-svg" viewBox="0 0 164 118" preserveAspectRatio="xMidYMid meet">
-                  <rect class="camera-axis-base" x="15" y="11" width="134" height="96" rx="16"></rect>
-                  <g id="camera-axis-cap"></g>
+
+            <div class="camera-panel">
+              <div class="camera-label">Camera</div>
+
+              <div class="camera-widget" aria-hidden="true">
+                <svg id="camera-svg" viewBox="0 0 164 118" preserveAspectRatio="xMidYMid meet">
+                  <rect class="camera-base" x="15" y="11" width="134" height="96" rx="16"></rect>
+                  <g id="camera-cap"></g>
                 </svg>
               </div>
-              <div class="camera-adjust-row">
-                <div class="camera-adjust-head">
-                  <div class="camera-adjust-name">Horizontal</div>
-                  <div class="camera-adjust-value" id="camera-horizontal-value">0°</div>
+
+              <div class="camera-control">
+                <div class="camera-head">
+                  <div class="camera-name">Horizontal</div>
+                  <div class="camera-value" id="camera-horizontal-value">0°</div>
                 </div>
-                <input class="camera-slider" id="camera-horizontal" type="range" min="-100" max="100" value="0" step="1" aria-label="Rotate landscape horizontally" />
+                <input class="camera-slider" id="camera-horizontal" type="range" min="-100" max="100" value="0" step="1" />
               </div>
-              <div class="camera-adjust-row">
-                <div class="camera-adjust-head">
-                  <div class="camera-adjust-name">Vertical</div>
-                  <div class="camera-adjust-value" id="camera-vertical-value">0°</div>
+
+              <div class="camera-control">
+                <div class="camera-head">
+                  <div class="camera-name">Vertical</div>
+                  <div class="camera-value" id="camera-vertical-value">0°</div>
                 </div>
-                <input class="camera-slider" id="camera-vertical" type="range" min="-100" max="100" value="0" step="1" aria-label="Tilt landscape vertically" />
+                <input class="camera-slider" id="camera-vertical" type="range" min="-100" max="100" value="0" step="1" />
               </div>
+
               <button class="camera-reset" id="camera-reset" type="button">Reset view</button>
             </div>
           </aside>
 
-          <aside class="selected-mobile" id="selected-mobile" aria-live="polite">
-            <div class="overlay-symbol-row">
-              <div class="overlay-symbol" id="mobile-overlay-symbol"></div>
-              <h2 class="selected-mobile-title" id="mobile-region-title"></h2>
+          <aside class="mobile-card" id="mobile-card" aria-live="polite">
+            <div class="mobile-shell">
+              <div class="selected-label">Selected region</div>
+              <div class="mobile-head">
+                <div class="selected-icon" id="mobile-icon"></div>
+                <h3 class="mobile-title" id="mobile-title"></h3>
+              </div>
+              <p class="mobile-blurb" id="mobile-blurb"></p>
+              <a class="selected-cta mobile-link" id="mobile-cta" href="#">Explore</a>
             </div>
-            <p class="selected-mobile-blurb" id="mobile-region-blurb"></p>
-            <a class="overlay-button" id="mobile-region-link" href="#">Explore this area →</a>
           </aside>
 
-          <div class="map-frame">
-            <svg
-              id="knowledge-map-svg"
-              viewBox="0 0 1520 920"
-              preserveAspectRatio="none"
-              role="img"
-              aria-label="Editorial loss landscape showing optimization, objective surfaces, and selected areas of study"
-            >
-              <defs>
-                <marker id="axis-arrow" markerWidth="8" markerHeight="8" refX="6.2" refY="3.5" orient="auto">
-                  <path d="M 0 0 L 7 3.5 L 0 7" class="axis-arrow"></path>
-                </marker>
-              </defs>
-
-              <g class="figure-scaffold" id="figure-scaffold"></g>
-
-              <g transform="translate(28 84)">
-                <g id="plane-region-base" class="plane-region-base"></g>
-                <g id="parameter-plane" class="parameter-plane"></g>
-                <g id="plane-region-active" class="plane-region-active"></g>
-                <g id="contour-floor" class="surface-contour"></g>
-                <g id="surface-region-active" class="surface-region-active"></g>
-                <g id="wireframe-base" class="surface-wire"></g>
-                <g id="wireframe-accent" class="surface-wire wire-accent"></g>
-                <g id="training-layer"></g>
-                <g class="base-construction" id="base-construction">
-                  <path class="soft" d="M 308 192 C 394 174, 484 182, 582 228"></path>
-                  <path class="soft" d="M 338 302 C 424 278, 520 292, 620 350"></path>
-                  <path class="soft" d="M 448 458 C 526 430, 614 442, 708 500"></path>
-                  <path d="M 452 210 C 518 246, 570 308, 626 390"></path>
-                  <path d="M 612 512 C 666 550, 726 592, 804 642"></path>
-                  <circle cx="448" cy="208" r="3.1"></circle>
-                  <circle cx="682" cy="548" r="3.2"></circle>
-                  <circle cx="840" cy="646" r="2.8"></circle>
-                </g>
+          <div class="map-frame" id="map-frame">
+            <svg id="map-svg" viewBox="0 0 1520 920" preserveAspectRatio="none" role="img" aria-label="Interactive loss landscape knowledge map">
+              <g transform="translate(28 138)">
+                <g id="plane-base" class="plane-base"></g>
+                <g id="plane" class="plane"></g>
+                <g id="plane-active" class="plane-active"></g>
+                <g id="floor-contours" class="contours"></g>
+                <g id="surface-active" class="surface-active"></g>
+                <g id="wire-base" class="wire"></g>
+                <g id="wire-accent" class="wire"></g>
+                <g id="minimums" class="minimums"></g>
               </g>
             </svg>
           </div>
@@ -1210,192 +834,265 @@
     </div>
 
     <script>
+      const SVG_NS = "http://www.w3.org/2000/svg";
+
       const icons = {
+        "computer-science": '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M10 7 5 12l5 5M14 7l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
         mathematics: '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 4 20 19H4Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
-        'computer-science': '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M10 7 5 12l5 5M14 7l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-        'machine-learning': '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="2.1" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="4.8" r="1.45" fill="none" stroke="currentColor" stroke-width="1.35"/><circle cx="18.3" cy="8.4" r="1.45" fill="none" stroke="currentColor" stroke-width="1.35"/><circle cx="18.3" cy="15.6" r="1.45" fill="none" stroke="currentColor" stroke-width="1.35"/><circle cx="12" cy="19.2" r="1.45" fill="none" stroke="currentColor" stroke-width="1.35"/><circle cx="5.7" cy="15.6" r="1.45" fill="none" stroke="currentColor" stroke-width="1.35"/><circle cx="5.7" cy="8.4" r="1.45" fill="none" stroke="currentColor" stroke-width="1.35"/><path d="M12 10.1V6.4M13.5 10.9l3-1.6M13.5 13.1l3 1.6M12 13.9v3.7M10.5 13.1l-3 1.6M10.5 10.9l-3-1.6" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg>',
+        "machine-learning": '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="2.1" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="4.8" r="1.45" fill="none" stroke="currentColor" stroke-width="1.35"/><circle cx="18.3" cy="8.4" r="1.45" fill="none" stroke="currentColor" stroke-width="1.35"/><circle cx="18.3" cy="15.6" r="1.45" fill="none" stroke="currentColor" stroke-width="1.35"/><circle cx="12" cy="19.2" r="1.45" fill="none" stroke="currentColor" stroke-width="1.35"/><circle cx="5.7" cy="15.6" r="1.45" fill="none" stroke="currentColor" stroke-width="1.35"/><circle cx="5.7" cy="8.4" r="1.45" fill="none" stroke="currentColor" stroke-width="1.35"/><path d="M12 10.1V6.4M13.5 10.9l3-1.6M13.5 13.1l3 1.6M12 13.9v3.7M10.5 13.1l-3 1.6M10.5 10.9l-3-1.6" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg>',
         systems: '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 3 19 7v10l-7 4-7-4V7Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 3v8m0 0 7-4m-7 4L5 7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>',
         projects: '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H10l1.8 2H17.5A2.5 2.5 0 0 1 20 9.5v7A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>'
       };
 
       const regions = [
         {
-          key: 'mathematics',
-          label: 'Mathematics',
-          cardLabel: 'Mathematics',
-          href: '/mathematics.html',
-          blurb: 'A formal lens on structure, uncertainty, optimization, and generalization in learning systems.',
-          cta: 'Explore Mathematics',
-          selectorWidth: 178,
+          key: "computer-science",
+          label: "Computer Science",
+          cardLabel: "Computer Science",
+          href: "/computer-science.html",
+          blurb: "The computational foundation for turning learning ideas into algorithms, programs, and executable procedures.",
+          cta: "Explore Computer Science"
         },
         {
-          key: 'computer-science',
-          label: 'Computer Science',
-          cardLabel: 'Computing',
-          href: '/computer-science.html',
-          blurb: 'The computational foundation for turning learning ideas into algorithms, programs, and executable systems.',
-          cta: 'Explore Computer Science',
-          selectorWidth: 208,
+          key: "mathematics",
+          label: "Mathematics",
+          cardLabel: "Mathematics",
+          href: "/mathematics.html",
+          blurb: "The formal language for reasoning about structure, uncertainty, optimization, and generalization in learning systems.",
+          cta: "Explore Mathematics"
         },
         {
-          key: 'machine-learning',
-          label: 'Learning Systems',
-          cardLabel: 'Learning',
-          href: '/learning-systems.html',
-          blurb: 'The central area where models, data, training, evaluation, and real-world behavior meet.',
-          cta: 'Explore Learning Systems',
-          selectorWidth: 216,
-          featured: true,
+          key: "machine-learning",
+          label: "Machine Learning",
+          cardLabel: "Machine Learning",
+          href: "/machine-learning.html",
+          blurb: "The central area where models learn from data through representation, training, evaluation, and generalization.",
+          cta: "Explore Machine Learning"
         },
         {
-          key: 'systems',
-          label: 'Systems',
-          cardLabel: 'Systems',
-          href: '/systems.html',
-          blurb: 'The layer where trained models become reliable software through deployment, monitoring, and feedback.',
-          cta: 'Explore Systems',
-          selectorWidth: 154,
+          key: "systems",
+          label: "Systems",
+          cardLabel: "Systems",
+          href: "/systems.html",
+          blurb: "The practical architecture around learned models: deployment, monitoring, feedback, reliability, and scale.",
+          cta: "Explore Systems"
         },
         {
-          key: 'projects',
-          label: 'Projects',
-          cardLabel: 'Projects',
-          href: '/projects.html',
-          blurb: 'Concrete experiments, implementations, and reviews that test ideas across the learning-systems landscape.',
-          cta: 'Explore Projects',
-          selectorWidth: 148,
-        },
+          key: "projects",
+          label: "Projects",
+          cardLabel: "Projects",
+          href: "/projects.html",
+          blurb: "Concrete experiments, implementations, and reviews that make the landscape visible.",
+          cta: "Explore Projects"
+        }
       ];
 
       const areaThemes = {
-        mathematics: { rgb: [126, 116, 147], accent: 'rgba(126, 116, 147, 0.96)', border: 'rgba(126, 116, 147, 0.48)', soft: 'rgba(126, 116, 147, 0.11)', softStrong: 'rgba(126, 116, 147, 0.18)', halo: 'rgba(126, 116, 147, 0.2)', ring: 'rgba(126, 116, 147, 0.62)' },
-        'computer-science': { rgb: [117, 133, 149], accent: 'rgba(117, 133, 149, 0.96)', border: 'rgba(117, 133, 149, 0.48)', soft: 'rgba(117, 133, 149, 0.11)', softStrong: 'rgba(117, 133, 149, 0.18)', halo: 'rgba(117, 133, 149, 0.2)', ring: 'rgba(117, 133, 149, 0.62)' },
-        'machine-learning': { rgb: [171, 122, 28], accent: 'rgba(171, 122, 28, 0.96)', border: 'rgba(171, 122, 28, 0.5)', soft: 'rgba(171, 122, 28, 0.12)', softStrong: 'rgba(171, 122, 28, 0.2)', halo: 'rgba(171, 122, 28, 0.22)', ring: 'rgba(171, 122, 28, 0.66)' },
-        systems: { rgb: [119, 137, 123], accent: 'rgba(119, 137, 123, 0.96)', border: 'rgba(119, 137, 123, 0.48)', soft: 'rgba(119, 137, 123, 0.11)', softStrong: 'rgba(119, 137, 123, 0.18)', halo: 'rgba(119, 137, 123, 0.2)', ring: 'rgba(119, 137, 123, 0.62)' },
-        projects: { rgb: [152, 122, 112], accent: 'rgba(152, 122, 112, 0.96)', border: 'rgba(152, 122, 112, 0.48)', soft: 'rgba(152, 122, 112, 0.11)', softStrong: 'rgba(152, 122, 112, 0.18)', halo: 'rgba(152, 122, 112, 0.2)', ring: 'rgba(152, 122, 112, 0.62)' },
+        "computer-science": {
+          rgb: [111, 135, 150],
+          accent: "rgba(111, 135, 150, 0.96)",
+          border: "rgba(111, 135, 150, 0.48)",
+          soft: "rgba(111, 135, 150, 0.11)",
+          softStrong: "rgba(111, 135, 150, 0.18)",
+          halo: "rgba(111, 135, 150, 0.2)",
+          ring: "rgba(111, 135, 150, 0.62)"
+        },
+        mathematics: {
+          rgb: [138, 122, 154],
+          accent: "rgba(138, 122, 154, 0.96)",
+          border: "rgba(138, 122, 154, 0.48)",
+          soft: "rgba(138, 122, 154, 0.11)",
+          softStrong: "rgba(138, 122, 154, 0.18)",
+          halo: "rgba(138, 122, 154, 0.2)",
+          ring: "rgba(138, 122, 154, 0.62)"
+        },
+        "machine-learning": {
+          rgb: [199, 146, 46],
+          accent: "rgba(199, 146, 46, 0.96)",
+          border: "rgba(199, 146, 46, 0.50)",
+          soft: "rgba(199, 146, 46, 0.12)",
+          softStrong: "rgba(199, 146, 46, 0.20)",
+          halo: "rgba(199, 146, 46, 0.22)",
+          ring: "rgba(199, 146, 46, 0.66)"
+        },
+        systems: {
+          rgb: [127, 146, 124],
+          accent: "rgba(127, 146, 124, 0.96)",
+          border: "rgba(127, 146, 124, 0.48)",
+          soft: "rgba(127, 146, 124, 0.11)",
+          softStrong: "rgba(127, 146, 124, 0.18)",
+          halo: "rgba(127, 146, 124, 0.20)",
+          ring: "rgba(127, 146, 124, 0.62)"
+        },
+        projects: {
+          rgb: [185, 121, 102],
+          accent: "rgba(185, 121, 102, 0.96)",
+          border: "rgba(185, 121, 102, 0.48)",
+          soft: "rgba(185, 121, 102, 0.11)",
+          softStrong: "rgba(185, 121, 102, 0.18)",
+          halo: "rgba(185, 121, 102, 0.20)",
+          ring: "rgba(185, 121, 102, 0.62)"
+        }
       };
 
-      function getAreaTheme(key) {
-        return areaThemes[key] || areaThemes['machine-learning'];
-      }
+      const regionFields = [
+        { key: "computer-science", center: { x: -1.62, y: -1.08 }, sigmaX: 1.18, sigmaY: 1.0, color: [111, 135, 150], boost: 1.01 },
+        { key: "mathematics", center: { x: -1.64, y: 1.12 }, sigmaX: 1.22, sigmaY: 1.02, color: [138, 122, 154], boost: 1.02 },
+        { key: "machine-learning", center: { x: 0.28, y: 0.24 }, sigmaX: 0.96, sigmaY: 0.86, color: [199, 146, 46], boost: 1.34 },
+        { key: "systems", center: { x: 1.62, y: -1.08 }, sigmaX: 1.20, sigmaY: 0.98, color: [127, 146, 124], boost: 1.0 },
+        { key: "projects", center: { x: 1.58, y: 1.14 }, sigmaX: 1.18, sigmaY: 1.0, color: [185, 121, 102], boost: 1.0 }
+      ];
 
-      function applyAreaThemeVars(node, key) {
-        if (!node) return;
-        const theme = getAreaTheme(key);
-        node.style.setProperty('--card-accent', theme.accent);
-        node.style.setProperty('--card-border', theme.border);
-        node.style.setProperty('--card-soft', theme.soft);
-        node.style.setProperty('--card-soft-strong', theme.softStrong);
-      }
+      const regionFieldMap = new Map(regionFields.map((entry) => [entry.key, entry]));
 
-      const selectorRow = document.getElementById('selector-row');
-      const mapFrame = document.querySelector('.map-frame');
-      const cameraHorizontal = document.getElementById('camera-horizontal');
-      const cameraVertical = document.getElementById('camera-vertical');
-      const cameraAxisCap = document.getElementById('camera-axis-cap');
-      const cameraReset = document.getElementById('camera-reset');
-      const cameraHorizontalValue = document.getElementById('camera-horizontal-value');
-      const cameraVerticalValue = document.getElementById('camera-vertical-value');
-      const overlaySymbol = document.getElementById('overlay-symbol');
-      const overlayFigure = document.getElementById('overlay-figure');
-      const overlayTitle = document.getElementById('overlay-region-title');
-      const overlayBlurb = document.getElementById('overlay-region-blurb');
-      const overlayButton = document.getElementById('overlay-button');
-      const mobileOverlaySymbol = document.getElementById('mobile-overlay-symbol');
-      const mobileTitle = document.getElementById('mobile-region-title');
-      const mobileBlurb = document.getElementById('mobile-region-blurb');
-      const mobileLink = document.getElementById('mobile-region-link');
-      const svgNamespace = 'http://www.w3.org/2000/svg';
-      const wireframeBase = document.getElementById('wireframe-base');
-      const wireframeAccent = document.getElementById('wireframe-accent');
-      const planeRegionBase = document.getElementById('plane-region-base');
-      const planeRegionActive = document.getElementById('plane-region-active');
-      const surfaceRegionActive = document.getElementById('surface-region-active');
-      const parameterPlane = document.getElementById('parameter-plane');
-      const contourFloor = document.getElementById('contour-floor');
-      const trainingLayer = document.getElementById('training-layer');
-      const figureScaffold = document.getElementById('figure-scaffold');
+      const baseLandscapeConfig = {
+        domainX: [-2.05, 2.15],
+        domainY: [-1.55, 1.65],
+        gridX: 27,
+        gridY: 21,
+        planeZ: -1.36,
+        baselineAzimuth: 0.72,
+        baselineElevation: 0.82,
+        yawRange: 0.48,
+        pitchRange: 0.34
+      };
 
-      let activeKey = 'machine-learning';
+      const landscapeConfig = {
+        domainX: [-2.05, 2.15],
+        domainY: [-1.55, 1.65],
+        gridX: 27,
+        gridY: 21,
+        planeZ: -1.36,
+        azimuth: 0.72,
+        elevation: 0.82
+      };
+
+      const selectorRow = document.getElementById("selector-row");
+      const selectedCard = document.getElementById("selected-card");
+      const selectedIcon = document.getElementById("selected-icon");
+      const selectedTitle = document.getElementById("selected-title");
+      const selectedThumb = document.getElementById("selected-thumb");
+      const selectedAccent = document.getElementById("selected-accent");
+      const selectedBlurb = document.getElementById("selected-blurb");
+      const selectedCta = document.getElementById("selected-cta");
+      const mobileIcon = document.getElementById("mobile-icon");
+      const mobileTitle = document.getElementById("mobile-title");
+      const mobileBlurb = document.getElementById("mobile-blurb");
+      const mobileCta = document.getElementById("mobile-cta");
+      const heroEmphasis = document.getElementById("hero-emphasis");
+      const mapFrame = document.getElementById("map-frame");
+      const mapSvg = document.getElementById("map-svg");
+      const planeBase = document.getElementById("plane-base");
+      const planeLayer = document.getElementById("plane");
+      const planeActive = document.getElementById("plane-active");
+      const floorContours = document.getElementById("floor-contours");
+      const surfaceActive = document.getElementById("surface-active");
+      const wireBase = document.getElementById("wire-base");
+      const wireAccent = document.getElementById("wire-accent");
+      const minimums = document.getElementById("minimums");
+      const cameraSvgCap = document.getElementById("camera-cap");
+      const cameraHorizontal = document.getElementById("camera-horizontal");
+      const cameraVertical = document.getElementById("camera-vertical");
+      const cameraHorizontalValue = document.getElementById("camera-horizontal-value");
+      const cameraVerticalValue = document.getElementById("camera-vertical-value");
+      const cameraReset = document.getElementById("camera-reset");
+
+      let activeKey = "machine-learning";
+      let cachedLandscape = null;
       const selectorMap = new Map();
-      let cachedLandscapeSample = null;
-      let isDraggingLandscape = false;
       const projectionFit = { scale: 1, offsetX: 0, offsetY: 0 };
       const dragCameraOffset = { yaw: 0, pitch: 0 };
+      let isDraggingLandscape = false;
+      let rerenderToken = null;
 
-      function renderCameraAxisCap() {
-        if (!cameraAxisCap) {
-          return;
-        }
+      function svgEl(tag, attrs = {}) {
+        const el = document.createElementNS(SVG_NS, tag);
+        Object.entries(attrs).forEach(([key, value]) => {
+          el.setAttribute(key, String(value));
+        });
+        return el;
+      }
 
-        cameraAxisCap.innerHTML = '';
+      function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+      }
+
+      function rgba(rgb, alpha) {
+        return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`;
+      }
+
+      function getTheme(key) {
+        return areaThemes[key] || areaThemes["machine-learning"];
+      }
+
+      function applyCardTheme(key) {
+        const theme = getTheme(key);
+        selectedIcon.style.background = theme.accent;
+        selectedAccent.style.background = theme.accent;
+        selectedCta.style.borderColor = theme.border;
+        selectedCta.style.background = theme.soft;
+        mobileIcon.style.background = theme.accent;
+        mobileCta.style.borderColor = theme.border;
+        mobileCta.style.background = theme.soft;
+      }
+
+      function renderCameraCap() {
+        cameraSvgCap.innerHTML = "";
 
         const yawNorm = clamp(dragCameraOffset.yaw / baseLandscapeConfig.yawRange, -1, 1);
         const pitchNorm = clamp(dragCameraOffset.pitch / baseLandscapeConfig.pitchRange, -1, 1);
         const origin = { x: 82, y: 80 };
 
-        const theta1Tip = {
-          x: origin.x + 34 + yawNorm * 12,
-          y: origin.y - 18 - pitchNorm * 7,
-        };
-        const theta2Tip = {
-          x: origin.x - 30 + yawNorm * 8,
-          y: origin.y - 10 + pitchNorm * 12,
-        };
-        const lossTip = {
-          x: origin.x + yawNorm * 8,
-          y: origin.y - 40 - pitchNorm * 16,
-        };
-
+        const theta1Tip = { x: origin.x + 34 + yawNorm * 12, y: origin.y - 18 - pitchNorm * 7 };
+        const theta2Tip = { x: origin.x - 30 + yawNorm * 8, y: origin.y - 10 + pitchNorm * 12 };
+        const lossTip = { x: origin.x + yawNorm * 8, y: origin.y - 40 - pitchNorm * 16 };
         const theta1Shadow = { x: theta1Tip.x, y: origin.y + 9 };
         const theta2Shadow = { x: theta2Tip.x, y: origin.y + 9 };
 
-        const accentKey = Math.abs(pitchNorm) > Math.abs(yawNorm)
-          ? 'loss'
-          : yawNorm >= 0
-            ? 'theta1'
-            : 'theta2';
+        const accentKey = Math.abs(pitchNorm) > Math.abs(yawNorm) ? "loss" : yawNorm >= 0 ? "theta1" : "theta2";
 
-        const makeLine = (tip, cls) => createSvgElement('line', {
-          x1: origin.x.toFixed(1),
-          y1: origin.y.toFixed(1),
-          x2: tip.x.toFixed(1),
-          y2: tip.y.toFixed(1),
-          class: cls,
-        });
+        function line(to, cls) {
+          return svgEl("line", {
+            x1: origin.x.toFixed(1),
+            y1: origin.y.toFixed(1),
+            x2: to.x.toFixed(1),
+            y2: to.y.toFixed(1),
+            class: cls
+          });
+        }
 
-        cameraAxisCap.appendChild(makeLine(theta1Shadow, 'camera-axis-line soft'));
-        cameraAxisCap.appendChild(makeLine(theta2Shadow, 'camera-axis-line soft'));
-        cameraAxisCap.appendChild(makeLine(lossTip, `camera-axis-line${accentKey === 'loss' ? ' accent' : ''}`));
-        cameraAxisCap.appendChild(makeLine(theta1Tip, `camera-axis-line${accentKey === 'theta1' ? ' accent' : ''}`));
-        cameraAxisCap.appendChild(makeLine(theta2Tip, `camera-axis-line${accentKey === 'theta2' ? ' accent' : ''}`));
+        cameraSvgCap.appendChild(line(theta1Shadow, "camera-axis soft"));
+        cameraSvgCap.appendChild(line(theta2Shadow, "camera-axis soft"));
+        cameraSvgCap.appendChild(line(lossTip, "camera-axis"));
+        cameraSvgCap.appendChild(line(theta1Tip, "camera-axis"));
+        cameraSvgCap.appendChild(line(theta2Tip, "camera-axis"));
 
-        cameraAxisCap.appendChild(createSvgElement('circle', {
+        cameraSvgCap.appendChild(svgEl("circle", {
           cx: origin.x,
           cy: origin.y,
           r: 2.8,
-          class: 'camera-axis-node',
+          class: "camera-node"
         }));
 
         [
-          { key: 'theta1', tip: theta1Tip, text: 'θ₁', dx: 8, dy: 4, cls: 'camera-axis-label' },
-          { key: 'theta2', tip: theta2Tip, text: 'θ₂', dx: -15, dy: 8, cls: 'camera-axis-label' },
-          { key: 'loss', tip: lossTip, text: 'L(θ)', dx: -11, dy: -8, cls: 'camera-axis-label loss' },
-        ].forEach(({ key, tip, text: labelText, dx, dy, cls }) => {
-          const isAccent = key === accentKey;
-          cameraAxisCap.appendChild(createSvgElement('circle', {
+          { key: "theta1", tip: theta1Tip, text: "θ₁", dx: 8, dy: 4, cls: "camera-text" },
+          { key: "theta2", tip: theta2Tip, text: "θ₂", dx: -15, dy: 8, cls: "camera-text" },
+          { key: "loss", tip: lossTip, text: "L(θ)", dx: -11, dy: -8, cls: "camera-text loss" }
+        ].forEach(({ key, tip, text, dx, dy, cls }) => {
+          const circle = svgEl("circle", {
             cx: tip.x.toFixed(1),
             cy: tip.y.toFixed(1),
-            r: isAccent ? 3.25 : 2.55,
-            class: `camera-axis-node${isAccent ? ' accent' : ''}`,
-          }));
-          const text = createSvgElement('text', {
+            r: key === accentKey ? 3.25 : 2.55,
+            class: `camera-node${key === accentKey ? " accent" : ""}`
+          });
+          cameraSvgCap.appendChild(circle);
+          const label = svgEl("text", {
             x: (tip.x + dx).toFixed(1),
             y: (tip.y + dy).toFixed(1),
-            class: cls,
+            class: cls
           });
-          text.textContent = labelText;
-          cameraAxisCap.appendChild(text);
+          label.textContent = text;
+          cameraSvgCap.appendChild(label);
         });
       }
 
@@ -1406,39 +1103,35 @@
         cameraVertical.value = String(verticalValue);
         cameraHorizontalValue.textContent = `${Math.round(horizontalValue * 0.22)}°`;
         cameraVerticalValue.textContent = `${Math.round(verticalValue * 0.18)}°`;
-        renderCameraAxisCap();
+        renderCameraCap();
       }
 
-      let rerenderToken = null;
-
-      function scheduleLandscapeRerender() {
-        if (rerenderToken !== null) {
-          return;
-        }
-        rerenderToken = requestAnimationFrame(() => {
-          rerenderToken = null;
-          rerenderLandscape();
-        });
+      function getResolvedCameraConfig() {
+        return {
+          ...baseLandscapeConfig,
+          azimuth: clamp(baseLandscapeConfig.baselineAzimuth + dragCameraOffset.yaw, 0.34, 1.18),
+          elevation: clamp(baseLandscapeConfig.baselineElevation - dragCameraOffset.pitch, 0.46, 1.18)
+        };
       }
 
       function syncCameraFromInputs() {
         dragCameraOffset.yaw = clamp(
           (Number(cameraHorizontal.value) / 100) * baseLandscapeConfig.yawRange,
           -baseLandscapeConfig.yawRange,
-          baseLandscapeConfig.yawRange,
+          baseLandscapeConfig.yawRange
         );
         dragCameraOffset.pitch = clamp(
           (Number(cameraVertical.value) / 100) * baseLandscapeConfig.pitchRange,
           -baseLandscapeConfig.pitchRange,
-          baseLandscapeConfig.pitchRange,
+          baseLandscapeConfig.pitchRange
         );
         scheduleLandscapeRerender();
       }
 
       function bindCameraInputs() {
-        cameraHorizontal.addEventListener('input', syncCameraFromInputs);
-        cameraVertical.addEventListener('input', syncCameraFromInputs);
-        cameraReset.addEventListener('click', () => {
+        cameraHorizontal.addEventListener("input", syncCameraFromInputs);
+        cameraVertical.addEventListener("input", syncCameraFromInputs);
+        cameraReset.addEventListener("click", () => {
           dragCameraOffset.yaw = 0;
           dragCameraOffset.pitch = 0;
           scheduleLandscapeRerender();
@@ -1446,27 +1139,38 @@
       }
 
       function bindCameraDrag() {
-        let isDragging = false;
+        let dragging = false;
         let pointerId = null;
         let lastX = 0;
         let lastY = 0;
 
-        const startDrag = (event) => {
-          if (event.target.closest('.selector-row, .selected-overlay, .selected-mobile')) return;
-          if (event.button !== 0) return;
-          isDragging = true;
+        const start = (event) => {
+          if (event.pointerType === "mouse" && event.button !== 0) return;
+          if (event.target.closest(".selector-row, .selected-card, .mobile-card, a, button, input, label")) return;
+          const rect = mapFrame.getBoundingClientRect();
+          if (
+            event.clientX < rect.left ||
+            event.clientX > rect.right ||
+            event.clientY < rect.top ||
+            event.clientY > rect.bottom
+          ) {
+            return;
+          }
+          dragging = true;
           isDraggingLandscape = true;
           pointerId = event.pointerId;
           lastX = event.clientX;
           lastY = event.clientY;
-          mapFrame.classList.add('dragging');
-          mapFrame.setPointerCapture(pointerId);
+          mapFrame.classList.add("dragging");
+          if (mapFrame.setPointerCapture) {
+            mapFrame.setPointerCapture(pointerId);
+          }
         };
 
-        const moveDrag = (event) => {
-          if (!isDragging || event.pointerId !== pointerId) return;
-
+        const move = (event) => {
+          if (!dragging || event.pointerId !== pointerId) return;
           event.preventDefault();
+
           const deltaX = event.clientX - lastX;
           const deltaY = event.clientY - lastY;
           lastX = event.clientX;
@@ -1478,22 +1182,22 @@
           dragCameraOffset.yaw = clamp(
             dragCameraOffset.yaw + deltaX * yawStep,
             -baseLandscapeConfig.yawRange,
-            baseLandscapeConfig.yawRange,
+            baseLandscapeConfig.yawRange
           );
           dragCameraOffset.pitch = clamp(
             dragCameraOffset.pitch - deltaY * pitchStep,
             -baseLandscapeConfig.pitchRange,
-            baseLandscapeConfig.pitchRange,
+            baseLandscapeConfig.pitchRange
           );
 
           scheduleLandscapeRerender();
         };
 
-        const endDrag = (event) => {
-          if (!isDragging || event.pointerId !== pointerId) return;
-          isDragging = false;
-          mapFrame.classList.remove('dragging');
-          if (mapFrame.hasPointerCapture(pointerId)) {
+        const end = (event) => {
+          if (!dragging || event.pointerId !== pointerId) return;
+          dragging = false;
+          mapFrame.classList.remove("dragging");
+          if (mapFrame.hasPointerCapture && mapFrame.hasPointerCapture(pointerId)) {
             mapFrame.releasePointerCapture(pointerId);
           }
           pointerId = null;
@@ -1502,74 +1206,127 @@
           });
         };
 
-        mapFrame.addEventListener('pointerdown', startDrag);
-        mapFrame.addEventListener('pointermove', moveDrag);
-        mapFrame.addEventListener('pointerup', endDrag);
-        mapFrame.addEventListener('pointercancel', endDrag);
-        mapFrame.addEventListener('lostpointercapture', () => {
-          isDragging = false;
+        mapFrame.addEventListener("pointerdown", start);
+        mapFrame.addEventListener("pointermove", move, { passive: false });
+        mapFrame.addEventListener("pointerup", end);
+        mapFrame.addEventListener("pointercancel", end);
+        mapFrame.addEventListener("lostpointercapture", () => {
+          dragging = false;
           pointerId = null;
           isDraggingLandscape = false;
-          mapFrame.classList.remove('dragging');
+          mapFrame.classList.remove("dragging");
         });
       }
 
-      const baseLandscapeConfig = {
-        domainX: [-2.05, 2.15],
-        domainY: [-1.55, 1.65],
-        gridX: 27,
-        gridY: 21,
-        planeZ: -1.36,
-        baselineAzimuth: 0.72,
-        baselineElevation: 0.82,
-        yawRange: 0.48,
-        pitchRange: 0.34,
-      };
-
-      const landscapeConfig = {
-        domainX: [-2.05, 2.15],
-        domainY: [-1.55, 1.65],
-        gridX: 27,
-        gridY: 21,
-        planeZ: -1.36,
-        azimuth: 0.72,
-        elevation: 0.82,
-      };
-
-      const ACTIVE_ACCENT_RGB = [171, 122, 28];
-
-      const regionFieldDefinitions = [
-        { key: 'mathematics', center: { x: -1.7, y: -1.12 }, sigmaX: 1.28, sigmaY: 1.02, color: [145, 139, 151], boost: 1.02 },
-        { key: 'computer-science', center: { x: 1.78, y: -1.08 }, sigmaX: 1.18, sigmaY: 1.0, color: [133, 142, 151], boost: 1.01 },
-        { key: 'machine-learning', center: { x: 0.28, y: 0.24 }, sigmaX: 0.96, sigmaY: 0.86, color: [181, 156, 108], boost: 1.34 },
-        { key: 'systems', center: { x: 1.62, y: 1.14 }, sigmaX: 1.2, sigmaY: 0.98, color: [132, 143, 134], boost: 1.0 },
-        { key: 'projects', center: { x: -1.58, y: 1.18 }, sigmaX: 1.2, sigmaY: 1.0, color: [158, 136, 129], boost: 1.0 },
-      ];
-
-      const regionFieldMap = new Map(regionFieldDefinitions.map((definition) => [definition.key, definition]));
-
-      function rgbaString(rgb, alpha) {
-        const [r, g, b] = rgb;
-        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      function gaussianBasin(x, y, cx, cy, sx, sy, amplitude) {
+        return amplitude * Math.exp(-(((x - cx) ** 2) / sx + ((y - cy) ** 2) / sy));
       }
 
+      function lossSurface(x, y) {
+        const broadBowl = 0.038 * ((x - 0.14) ** 2 + 0.9 * (y - 0.12) ** 2);
+        const mlBasin = gaussianBasin(x, y, 0.28, 0.24, 0.28, 0.20, -1.18);
+        const mlShelf = gaussianBasin(x, y, 0.18, 0.12, 0.96, 0.72, -0.18);
+
+        const csBasin = gaussianBasin(x, y, -1.58, -1.02, 0.34, 0.28, -0.62);
+        const mathBasin = gaussianBasin(x, y, -1.56, 1.04, 0.36, 0.30, -0.68);
+        const systemsBasin = gaussianBasin(x, y, 1.56, -1.02, 0.40, 0.32, -0.56);
+        const projectsBasin = gaussianBasin(x, y, 1.48, 1.08, 0.38, 0.32, -0.58);
+
+        const ridgeNorth = 0.7 * Math.exp(-(((x + 0.08) ** 2) / 1.36 + ((y + 0.78 + 0.12 * Math.sin(1.4 * x)) ** 2) / 0.15));
+        const ridgeDiagonal = 0.5 * Math.exp(-(((x - 0.86 + 0.1 * Math.sin(1.8 * y)) ** 2) / 0.2 + ((y - 0.06) ** 2) / 0.84));
+        const ridgeSouth = 0.2 * Math.exp(-(((x + 0.12) ** 2) / 1.8 + ((y - 0.98 - 0.08 * Math.cos(1.7 * x)) ** 2) / 0.22));
+
+        const warpedCoupling = 0.08 * x * y - 0.034 * x + 0.02 * y;
+        const lowFrequencyRoughness =
+          0.08 * Math.sin(1.32 * x - 0.16) * Math.cos(1.08 * y + 0.18) +
+          0.04 * Math.sin(2.3 * x + 1.5 * y + 0.2) +
+          0.032 * Math.cos(2.8 * y - 0.7 * x + 0.4);
+
+        const localCrinkles =
+          gaussianBasin(x, y, -0.34, 0.64, 0.12, 0.08, 0.10) +
+          gaussianBasin(x, y, 1.08, 0.28, 0.10, 0.12, -0.08) +
+          gaussianBasin(x, y, -0.92, -0.12, 0.16, 0.08, 0.08) +
+          gaussianBasin(x, y, 0.92, -0.44, 0.10, 0.10, 0.06);
+
+        return broadBowl + mlBasin + mlShelf + csBasin + mathBasin + systemsBasin + projectsBasin + ridgeNorth + ridgeDiagonal + ridgeSouth + warpedCoupling + lowFrequencyRoughness + localCrinkles;
+      }
+
+      function finiteGradient(x, y) {
+        const h = 0.016;
+        return {
+          dx: (lossSurface(x + h, y) - lossSurface(x - h, y)) / (2 * h),
+          dy: (lossSurface(x, y + h) - lossSurface(x, y - h)) / (2 * h)
+        };
+      }
+
+      function clampToDomain(x, y) {
+        const [minX, maxX] = landscapeConfig.domainX;
+        const [minY, maxY] = landscapeConfig.domainY;
+        return {
+          x: clamp(x, minX, maxX),
+          y: clamp(y, minY, maxY)
+        };
+      }
+
+      function findLocalMinimum(seedX, seedY) {
+        let x = seedX;
+        let y = seedY;
+        let step = 0.12;
+        let best = lossSurface(x, y);
+
+        for (let i = 0; i < 60; i += 1) {
+          const grad = finiteGradient(x, y);
+          const mag = Math.hypot(grad.dx, grad.dy) || 1;
+          const candidate = clampToDomain(
+            x - (grad.dx / mag) * step,
+            y - (grad.dy / mag) * step
+          );
+          const value = lossSurface(candidate.x, candidate.y);
+
+          if (value < best) {
+            x = candidate.x;
+            y = candidate.y;
+            best = value;
+            step = Math.min(step * 1.08, 0.18);
+          } else {
+            step *= 0.58;
+          }
+
+          if (step < 0.0025) break;
+        }
+
+        return { x, y, z: best };
+      }
+
+      const regionMinimumSeeds = new Map([
+        ["computer-science", { x: -1.58, y: -1.02 }],
+        ["mathematics", { x: -1.56, y: 1.02 }],
+        ["machine-learning", { x: 0.28, y: 0.24 }],
+        ["systems", { x: 1.56, y: -1.02 }],
+        ["projects", { x: 1.48, y: 1.06 }]
+      ]);
+
+      const regionMinima = new Map(
+        Array.from(regionMinimumSeeds.entries()).map(([key, seed]) => [key, findLocalMinimum(seed.x, seed.y)])
+      );
+
       function getRegionWeights(x, y) {
-        const rawWeights = {};
+        const raw = {};
         let total = 0;
 
-        regionFieldDefinitions.forEach((definition) => {
-          const dx = (x - definition.center.x) / definition.sigmaX;
-          const dy = (y - definition.center.y) / definition.sigmaY;
+        regionFields.forEach((field) => {
+          const dx = (x - field.center.x) / field.sigmaX;
+          const dy = (y - field.center.y) / field.sigmaY;
           const radial = Math.exp(-(dx * dx + dy * dy));
-          const directional = 1 + 0.08 * Math.sin(1.35 * x + definition.center.x) * Math.cos(1.18 * y - definition.center.y);
-          const value = Math.max(0.0001, radial * definition.boost * directional);
-          rawWeights[definition.key] = value;
+          const directional = 1 + 0.08 * Math.sin(1.35 * x + field.center.x) * Math.cos(1.18 * y - field.center.y);
+          const value = Math.max(0.0001, radial * field.boost * directional);
+          raw[field.key] = value;
           total += value;
         });
 
         const normalized = {};
-        regionFieldDefinitions.forEach((definition) => {
-          normalized[definition.key] = rawWeights[definition.key] / total;
+        regionFields.forEach((field) => {
+          normalized[field.key] = raw[field.key] / total;
         });
         return normalized;
       }
@@ -1580,127 +1337,16 @@
         let b = 0;
         let dominant = 0;
 
-        regionFieldDefinitions.forEach((definition) => {
-          const weight = weights[definition.key];
-          r += definition.color[0] * weight;
-          g += definition.color[1] * weight;
-          b += definition.color[2] * weight;
+        regionFields.forEach((field) => {
+          const weight = weights[field.key];
+          r += field.color[0] * weight;
+          g += field.color[1] * weight;
+          b += field.color[2] * weight;
           dominant = Math.max(dominant, weight);
         });
 
         const alpha = (0.04 + dominant * 0.08) * alphaScale;
-        return rgbaString([Math.round(r), Math.round(g), Math.round(b)], alpha);
-      }
-
-      function createSvgElement(tagName, attributes = {}) {
-        const element = document.createElementNS(svgNamespace, tagName);
-        Object.entries(attributes).forEach(([key, value]) => {
-          element.setAttribute(key, String(value));
-        });
-        return element;
-      }
-
-      function gaussianBasin(x, y, centerX, centerY, scaleX, scaleY, amplitude) {
-        return amplitude * Math.exp(-(((x - centerX) ** 2) / scaleX + ((y - centerY) ** 2) / scaleY));
-      }
-
-      function clampToDomain(x, y) {
-        const [minX, maxX] = landscapeConfig.domainX;
-        const [minY, maxY] = landscapeConfig.domainY;
-        return {
-          x: clamp(x, minX, maxX),
-          y: clamp(y, minY, maxY),
-        };
-      }
-
-      function finiteGradient(x, y) {
-        const h = 0.016;
-        const fx1 = lossSurface(x + h, y);
-        const fx0 = lossSurface(x - h, y);
-        const fy1 = lossSurface(x, y + h);
-        const fy0 = lossSurface(x, y - h);
-        return {
-          dx: (fx1 - fx0) / (2 * h),
-          dy: (fy1 - fy0) / (2 * h),
-        };
-      }
-
-      function findLocalMinimum(seedX, seedY) {
-        let x = seedX;
-        let y = seedY;
-        let step = 0.12;
-        let best = lossSurface(x, y);
-
-        for (let iteration = 0; iteration < 60; iteration += 1) {
-          const gradient = finiteGradient(x, y);
-          const magnitude = Math.hypot(gradient.dx, gradient.dy) || 1;
-          const candidate = clampToDomain(
-            x - (gradient.dx / magnitude) * step,
-            y - (gradient.dy / magnitude) * step,
-          );
-          const candidateValue = lossSurface(candidate.x, candidate.y);
-
-          if (candidateValue < best) {
-            x = candidate.x;
-            y = candidate.y;
-            best = candidateValue;
-            step = Math.min(step * 1.08, 0.18);
-          } else {
-            step *= 0.58;
-          }
-
-          if (step < 0.0025) {
-            break;
-          }
-        }
-
-        const offsets = [
-          [0, 0],
-          [-0.03, 0],
-          [0.03, 0],
-          [0, -0.03],
-          [0, 0.03],
-          [-0.02, -0.02],
-          [0.02, -0.02],
-          [-0.02, 0.02],
-          [0.02, 0.02],
-        ];
-
-        let refined = { x, y, z: best };
-        offsets.forEach(([dx, dy]) => {
-          const candidate = clampToDomain(x + dx, y + dy);
-          const z = lossSurface(candidate.x, candidate.y);
-          if (z < refined.z) {
-            refined = { x: candidate.x, y: candidate.y, z };
-          }
-        });
-
-        return refined;
-      }
-
-      function lossSurface(x, y) {
-        const broadBowl = 0.038 * ((x - 0.14) ** 2 + 0.9 * (y - 0.12) ** 2);
-        const mlBasin = gaussianBasin(x, y, 0.28, 0.24, 0.28, 0.2, -1.18);
-        const mlShelf = gaussianBasin(x, y, 0.18, 0.12, 0.96, 0.72, -0.18);
-        const mathBasin = gaussianBasin(x, y, -1.58, -1.02, 0.36, 0.3, -0.68);
-        const csBasin = gaussianBasin(x, y, 1.66, -1.02, 0.34, 0.28, -0.62);
-        const systemsBasin = gaussianBasin(x, y, 1.52, 1.06, 0.4, 0.32, -0.56);
-        const projectsBasin = gaussianBasin(x, y, -1.46, 1.08, 0.38, 0.32, -0.58);
-        const ridgeNorth = 0.7 * Math.exp(-(((x + 0.08) ** 2) / 1.36 + ((y + 0.78 + 0.12 * Math.sin(1.4 * x)) ** 2) / 0.15));
-        const ridgeDiagonal = 0.5 * Math.exp(-(((x - 0.86 + 0.1 * Math.sin(1.8 * y)) ** 2) / 0.2 + ((y - 0.06) ** 2) / 0.84));
-        const ridgeSouth = 0.2 * Math.exp(-(((x + 0.12) ** 2) / 1.8 + ((y - 0.98 - 0.08 * Math.cos(1.7 * x)) ** 2) / 0.22));
-        const warpedCoupling = 0.08 * x * y - 0.034 * x + 0.02 * y;
-        const lowFrequencyRoughness =
-          0.08 * Math.sin(1.32 * x - 0.16) * Math.cos(1.08 * y + 0.18) +
-          0.04 * Math.sin(2.3 * x + 1.5 * y + 0.2) +
-          0.032 * Math.cos(2.8 * y - 0.7 * x + 0.4);
-        const localCrinkles =
-          gaussianBasin(x, y, -0.34, 0.64, 0.12, 0.08, 0.1) +
-          gaussianBasin(x, y, 1.08, 0.28, 0.1, 0.12, -0.08) +
-          gaussianBasin(x, y, -0.92, -0.12, 0.16, 0.08, 0.08) +
-          gaussianBasin(x, y, 0.92, -0.44, 0.1, 0.1, 0.06);
-
-        return broadBowl + mlBasin + mlShelf + mathBasin + csBasin + systemsBasin + projectsBasin + ridgeNorth + ridgeDiagonal + ridgeSouth + warpedCoupling + lowFrequencyRoughness + localCrinkles;
+        return rgba([Math.round(r), Math.round(g), Math.round(b)], alpha);
       }
 
       function rawProjectPointWithCamera(x, y, z, camera) {
@@ -1710,20 +1356,16 @@
         const worldZ = (y - centerY) * 150;
         const worldY = -(z + 0.55) * 170;
 
-        const cosAzimuth = Math.cos(camera.azimuth);
-        const sinAzimuth = Math.sin(camera.azimuth);
-        const cosElevation = Math.cos(camera.elevation);
-        const sinElevation = Math.sin(camera.elevation);
+        const cosA = Math.cos(camera.azimuth);
+        const sinA = Math.sin(camera.azimuth);
+        const cosE = Math.cos(camera.elevation);
+        const sinE = Math.sin(camera.elevation);
 
-        const rotatedX = worldX * cosAzimuth - worldZ * sinAzimuth;
-        const rotatedZ = worldX * sinAzimuth + worldZ * cosAzimuth;
-        const tiltedY = worldY * cosElevation - rotatedZ * sinElevation;
+        const rotatedX = worldX * cosA - worldZ * sinA;
+        const rotatedZ = worldX * sinA + worldZ * cosA;
+        const tiltedY = worldY * cosE - rotatedZ * sinE;
 
-        return {
-          x: rotatedX,
-          y: tiltedY,
-          z,
-        };
+        return { x: rotatedX, y: tiltedY, z };
       }
 
       function rawProjectPoint(x, y, z) {
@@ -1735,7 +1377,7 @@
         return {
           x: point.x * projectionFit.scale + projectionFit.offsetX,
           y: point.y * projectionFit.scale + projectionFit.offsetY,
-          z: point.z,
+          z: point.z
         };
       }
 
@@ -1761,14 +1403,14 @@
             const p10 = rows[yi][xi + 1];
             const p11 = rows[yi + 1][xi + 1];
             const p01 = rows[yi + 1][xi];
-            const centerX = (p00.x + p10.x + p11.x + p01.x) / 4;
-            const centerY = (p00.y + p10.y + p11.y + p01.y) / 4;
+            const cx = (p00.x + p10.x + p11.x + p01.x) / 4;
+            const cy = (p00.y + p10.y + p11.y + p01.y) / 4;
             cells.push({
               yi,
               xi,
-              centerX,
-              centerY,
-              weights: getRegionWeights(centerX, centerY),
+              centerX: cx,
+              centerY: cy,
+              weights: getRegionWeights(cx, cy)
             });
           }
         }
@@ -1791,7 +1433,7 @@
           { azimuth: baselineAzimuth, elevation: baselineElevation - pitchRange },
           { azimuth: baselineAzimuth, elevation: baselineElevation + pitchRange },
           { azimuth: baselineAzimuth - yawRange, elevation: baselineElevation },
-          { azimuth: baselineAzimuth + yawRange, elevation: baselineElevation },
+          { azimuth: baselineAzimuth + yawRange, elevation: baselineElevation }
         ];
       }
 
@@ -1803,17 +1445,12 @@
         const points = [];
 
         cameras.forEach((camera) => {
-          sample.rows.forEach((row) => {
-            row.forEach((point) => {
-              points.push(rawProjectPointWithCamera(point.x, point.y, point.z, camera));
-            });
-          });
-
+          sample.rows.forEach((row) => row.forEach((point) => points.push(rawProjectPointWithCamera(point.x, point.y, point.z, camera))));
           [
             rawProjectPointWithCamera(minX, minY, planeZ, camera),
             rawProjectPointWithCamera(maxX, minY, planeZ, camera),
             rawProjectPointWithCamera(maxX, maxY, planeZ, camera),
-            rawProjectPointWithCamera(minX, maxY, planeZ, camera),
+            rawProjectPointWithCamera(minX, maxY, planeZ, camera)
           ].forEach((point) => points.push(point));
         });
 
@@ -1822,13 +1459,7 @@
         const minProjectedY = Math.min(...points.map((point) => point.y));
         const maxProjectedY = Math.max(...points.map((point) => point.y));
 
-        const target = {
-          minX: -430,
-          maxX: 1506,
-          minY: -4,
-          maxY: 1060,
-        };
-
+        const target = { minX: -430, maxX: 1506, minY: -4, maxY: 1060 };
         const width = Math.max(1, maxProjectedX - minProjectedX);
         const height = Math.max(1, maxProjectedY - minProjectedY);
         const targetWidth = target.maxX - target.minX;
@@ -1840,57 +1471,48 @@
         projectionFit.offsetY = target.minY + (targetHeight - height * scale) / 2 - minProjectedY * scale;
       }
 
-      function buildPointsString(points) {
-        return points.map((point) => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(' ');
+      function pointsString(points) {
+        return points.map((point) => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(" ");
       }
 
-      function buildAxes() {
-        figureScaffold.innerHTML = '';
-      }
-
-      function buildParameterPlane() {
+      function buildPlane() {
         const { domainX, domainY, planeZ, gridX, gridY } = landscapeConfig;
         const [minX, maxX] = domainX;
         const [minY, maxY] = domainY;
+
         const corners = [
           projectPoint(minX, minY, planeZ),
           projectPoint(maxX, minY, planeZ),
           projectPoint(maxX, maxY, planeZ),
-          projectPoint(minX, maxY, planeZ),
+          projectPoint(minX, maxY, planeZ)
         ];
 
-        let markup = `<polyline class="plane-shell" points="${buildPointsString([corners[0], corners[1], corners[2], corners[3], corners[0]])}"></polyline>`;
+        let markup = `<polyline class="shell" points="${pointsString([corners[0], corners[1], corners[2], corners[3], corners[0]])}"></polyline>`;
 
         for (let yi = 0; yi < gridY; yi += 1) {
           const y = minY + (yi / (gridY - 1)) * (maxY - minY);
-          markup += `<polyline class="plane-grid" points="${buildPointsString([
-            projectPoint(minX, y, planeZ),
-            projectPoint(maxX, y, planeZ),
-          ])}"></polyline>`;
+          markup += `<polyline class="grid" points="${pointsString([projectPoint(minX, y, planeZ), projectPoint(maxX, y, planeZ)])}"></polyline>`;
         }
 
         for (let xi = 0; xi < gridX; xi += 1) {
           const x = minX + (xi / (gridX - 1)) * (maxX - minX);
-          markup += `<polyline class="plane-grid" points="${buildPointsString([
-            projectPoint(x, minY, planeZ),
-            projectPoint(x, maxY, planeZ),
-          ])}"></polyline>`;
+          markup += `<polyline class="grid" points="${pointsString([projectPoint(x, minY, planeZ), projectPoint(x, maxY, planeZ)])}"></polyline>`;
         }
 
-        parameterPlane.innerHTML = markup;
+        planeLayer.innerHTML = markup;
       }
 
       function buildRegionLayers(sample) {
-        const theme = getAreaTheme(activeKey);
+        const theme = getTheme(activeKey);
         const selectedColor = theme.rgb;
-        const selectedMinimum = regionMinima.get(activeKey) || { x: 0.28, y: 0.24, z: lossSurface(0.28, 0.24) };
-        const selectedField = regionFieldMap.get(activeKey) || { sigmaX: 1, sigmaY: 1 };
+        const selectedMinimum = regionMinima.get(activeKey);
+        const selectedField = regionFieldMap.get(activeKey);
         const falloffX = selectedField.sigmaX * 0.92;
         const falloffY = selectedField.sigmaY * 0.92;
 
-        let baseMarkup = '';
-        let activePlaneMarkup = '';
-        let activeSurfaceMarkup = '';
+        let baseMarkup = "";
+        let activePlaneMarkup = "";
+        let activeSurfaceMarkup = "";
 
         sample.cells.forEach((cell) => {
           const { yi, xi, centerX, centerY, weights } = cell;
@@ -1898,68 +1520,71 @@
           const p10 = sample.rows[yi][xi + 1];
           const p11 = sample.rows[yi + 1][xi + 1];
           const p01 = sample.rows[yi + 1][xi];
-          const activeWeight = weights[activeKey] || 0;
 
           const dx = (centerX - selectedMinimum.x) / falloffX;
           const dy = (centerY - selectedMinimum.y) / falloffY;
           const basinField = Math.exp(-(dx * dx + dy * dy));
-          const influence = basinField * (0.42 + activeWeight * 0.88);
+          const influence = basinField * (0.42 + (weights[activeKey] || 0) * 0.88);
 
           const planePolygon = [
             projectPoint(p00.x, p00.y, landscapeConfig.planeZ),
             projectPoint(p10.x, p10.y, landscapeConfig.planeZ),
             projectPoint(p11.x, p11.y, landscapeConfig.planeZ),
-            projectPoint(p01.x, p01.y, landscapeConfig.planeZ),
+            projectPoint(p01.x, p01.y, landscapeConfig.planeZ)
           ];
-          baseMarkup += `<polygon points="${buildPointsString(planePolygon)}" fill="${blendRegionColor(weights, 0.84)}"></polygon>`;
+
+          baseMarkup += `<polygon points="${pointsString(planePolygon)}" fill="${blendRegionColor(weights, 0.84)}"></polygon>`;
 
           if (influence > 0.035) {
-            activePlaneMarkup += `<polygon points="${buildPointsString(planePolygon)}" fill="${rgbaString(selectedColor, 0.038 + influence * 0.26)}"></polygon>`;
+            activePlaneMarkup += `<polygon points="${pointsString(planePolygon)}" fill="${rgba(selectedColor, 0.038 + influence * 0.26)}"></polygon>`;
+
             const surfacePolygon = [
               projectPoint(p00.x, p00.y, p00.z),
               projectPoint(p10.x, p10.y, p10.z),
               projectPoint(p11.x, p11.y, p11.z),
-              projectPoint(p01.x, p01.y, p01.z),
+              projectPoint(p01.x, p01.y, p01.z)
             ];
+
             const averageZ = (p00.z + p10.z + p11.z + p01.z) / 4;
             const depthBoost = clamp((-averageZ - 0.02) / 0.92, 0, 1);
             const alpha = 0.02 + influence * (0.08 + depthBoost * 0.24);
-            activeSurfaceMarkup += `<polygon points="${buildPointsString(surfacePolygon)}" fill="${rgbaString(selectedColor, alpha)}"></polygon>`;
+
+            activeSurfaceMarkup += `<polygon points="${pointsString(surfacePolygon)}" fill="${rgba(selectedColor, alpha)}"></polygon>`;
           }
         });
 
-        planeRegionBase.innerHTML = baseMarkup;
-        planeRegionActive.innerHTML = activePlaneMarkup;
-        surfaceRegionActive.innerHTML = activeSurfaceMarkup;
+        planeBase.innerHTML = baseMarkup;
+        planeActive.innerHTML = activePlaneMarkup;
+        surfaceActive.innerHTML = activeSurfaceMarkup;
       }
 
       function buildWireframe(sample) {
-        let baseMarkup = '';
-        let accentMarkup = '';
+        let baseMarkup = "";
+        let accentMarkup = "";
 
         sample.rows.forEach((row, rowIndex) => {
           const projected = row.map((point) => projectPoint(point.x, point.y, point.z));
-          baseMarkup += `<polyline points="${buildPointsString(projected)}" class="${rowIndex < sample.rows.length * 0.35 ? 'rear-line' : 'front-line'}"></polyline>`;
+          baseMarkup += `<polyline points="${pointsString(projected)}" class="${rowIndex < sample.rows.length * 0.35 ? "rear" : "front"}"></polyline>`;
         });
 
         for (let xi = 0; xi < landscapeConfig.gridX; xi += 1) {
           const projected = sample.rows.map((row) => projectPoint(row[xi].x, row[xi].y, row[xi].z));
-          baseMarkup += `<polyline points="${buildPointsString(projected)}" class="${xi < landscapeConfig.gridX * 0.35 ? 'rear-line' : 'front-line'}"></polyline>`;
+          baseMarkup += `<polyline points="${pointsString(projected)}" class="${xi < landscapeConfig.gridX * 0.35 ? "rear" : "front"}"></polyline>`;
         }
 
         [9, 10, 11, 12].forEach((columnIndex) => {
           const projected = sample.rows.map((row) => projectPoint(row[columnIndex].x, row[columnIndex].y, row[columnIndex].z));
-          accentMarkup += `<polyline points="${buildPointsString(projected)}"></polyline>`;
+          accentMarkup += `<polyline points="${pointsString(projected)}"></polyline>`;
         });
 
-        wireframeBase.innerHTML = baseMarkup;
-        wireframeAccent.innerHTML = accentMarkup;
+        wireBase.innerHTML = baseMarkup;
+        wireAccent.innerHTML = accentMarkup;
       }
 
       function buildFloorContours() {
         const center = projectPoint(0.28, 0.24, landscapeConfig.planeZ);
         const radii = [42, 72, 100, 128, 158, 188, 218, 246];
-        let markup = '';
+        let markup = "";
 
         radii.forEach((radius, index) => {
           const points = [];
@@ -1968,224 +1593,153 @@
             const theta = (Math.PI * 2 * step) / 56;
             points.push({
               x: center.x + Math.cos(theta) * radius,
-              y: center.y + Math.sin(theta) * radius * squish,
+              y: center.y + Math.sin(theta) * radius * squish
             });
           }
-          markup += `<polyline points="${buildPointsString(points)}"></polyline>`;
+          markup += `<polyline points="${pointsString(points)}"></polyline>`;
         });
 
-        contourFloor.innerHTML = markup;
+        floorContours.innerHTML = markup;
       }
 
-      const regionMinimumSeeds = new Map([
-        ['mathematics', { x: -1.58, y: -1.02 }],
-        ['computer-science', { x: 1.66, y: -1.02 }],
-        ['machine-learning', { x: 0.28, y: 0.24 }],
-        ['systems', { x: 1.52, y: 1.06 }],
-        ['projects', { x: -1.46, y: 1.08 }],
-      ]);
-
-      const regionMinima = new Map(
-        Array.from(regionMinimumSeeds.entries()).map(([key, seed]) => [key, findLocalMinimum(seed.x, seed.y)])
-      );
-
-      function buildTrainingPath() {
-        trainingLayer.setAttribute('class', 'minimum-layer');
-        trainingLayer.innerHTML = '';
+      function buildMinimums() {
+        minimums.innerHTML = "";
 
         regionMinima.forEach((minimum, key) => {
-          const theme = getAreaTheme(key);
+          const theme = getTheme(key);
           const surfacePoint = projectPoint(minimum.x, minimum.y, minimum.z);
           const planePoint = projectPoint(minimum.x, minimum.y, landscapeConfig.planeZ);
-          const isActive = key === activeKey;
+          const active = key === activeKey;
 
-          if (isActive) {
-            trainingLayer.appendChild(createSvgElement('line', {
-              class: 'minimum-projection',
+          if (active) {
+            minimums.appendChild(svgEl("line", {
+              class: "projection",
               x1: surfacePoint.x.toFixed(1),
               y1: surfacePoint.y.toFixed(1),
               x2: planePoint.x.toFixed(1),
               y2: planePoint.y.toFixed(1),
-              stroke: theme.halo,
+              stroke: theme.halo
             }));
           }
 
-          const group = createSvgElement('g', {
-            class: `minimum-anchor${isActive ? ' active' : ''}`,
-            tabindex: '0',
-            role: 'button',
-            'aria-label': `Select ${regions.find((region) => region.key === key)?.label || key}`,
-            style: `--point-core:${theme.accent};--point-ring:${theme.ring};--point-halo:${theme.halo};`,
-            transform: `translate(${surfacePoint.x.toFixed(1)} ${surfacePoint.y.toFixed(1)})`,
+          const group = svgEl("g", {
+            class: `minimum-anchor${active ? " active" : ""}`,
+            tabindex: "0",
+            role: "button",
+            "aria-label": `Select ${regions.find((region) => region.key === key)?.label || key}`,
+            transform: `translate(${surfacePoint.x.toFixed(1)} ${surfacePoint.y.toFixed(1)})`
           });
 
-          group.appendChild(createSvgElement('circle', { class: 'minimum-halo', r: isActive ? '14.4' : '11.6' }));
-          group.appendChild(createSvgElement('circle', { class: 'minimum-ring', r: isActive ? '6.4' : '5.4' }));
-          group.appendChild(createSvgElement('circle', { class: 'minimum-core', r: isActive ? '3.45' : '2.95' }));
+          const halo = svgEl("circle", {
+            class: "halo",
+            r: active ? "14.4" : "11.6",
+            fill: theme.halo
+          });
 
-          group.addEventListener('click', () => setActive(key));
-          group.addEventListener('mouseenter', () => {
+          const ring = svgEl("circle", {
+            class: "ring",
+            r: active ? "6.4" : "5.4",
+            stroke: theme.ring
+          });
+
+          const core = svgEl("circle", {
+            class: "core",
+            r: active ? "3.45" : "2.95",
+            fill: theme.accent
+          });
+
+          group.appendChild(halo);
+          group.appendChild(ring);
+          group.appendChild(core);
+
+          group.addEventListener("click", () => setActive(key));
+          group.addEventListener("mouseenter", () => {
             if (!isDraggingLandscape) setActive(key);
           });
-          group.addEventListener('focus', () => {
+          group.addEventListener("focus", () => {
             if (!isDraggingLandscape) setActive(key);
           });
-          group.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter' || event.key === ' ') {
+          group.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
               event.preventDefault();
               setActive(key);
             }
           });
 
-          trainingLayer.appendChild(group);
+          minimums.appendChild(group);
         });
       }
 
-      function renderGeneratedLandscape() {
-        const sample = cachedLandscapeSample;
-        buildAxes();
-        buildParameterPlane();
-        buildRegionLayers(sample);
-        buildFloorContours();
-        buildWireframe(sample);
-        buildTrainingPath();
-      }
-
-      function buildSelectors() {
-        regions.forEach((region) => {
-          const theme = getAreaTheme(region.key);
-          const button = document.createElement('button');
-          button.type = 'button';
-          button.className = 'selector-pill';
-          button.setAttribute('aria-pressed', 'false');
-          button.style.setProperty('--button-accent', theme.accent);
-          button.style.setProperty('--button-soft', theme.soft);
-          button.style.setProperty('--button-border', theme.border);
-          button.innerHTML = `<span class="selector-label">${region.label}</span>`;
-          button.addEventListener('click', () => setActive(region.key));
-          button.addEventListener('mouseenter', () => {
-            if (!isDraggingLandscape) {
-              setActive(region.key);
-            }
-          });
-          selectorRow.appendChild(button);
-          selectorMap.set(region.key, button);
-        });
-      }
-
-      function clamp(value, min, max) {
-        return Math.max(min, Math.min(max, value));
-      }
-
-      function getResolvedCameraConfig() {
-        return {
-          ...baseLandscapeConfig,
-          azimuth: clamp(baseLandscapeConfig.baselineAzimuth + dragCameraOffset.yaw, 0.34, 1.18),
-          elevation: clamp(baseLandscapeConfig.baselineElevation - dragCameraOffset.pitch, 0.46, 1.18),
-        };
-      }
-
-      function rerenderLandscape() {
-        Object.assign(landscapeConfig, getResolvedCameraConfig());
-        renderGeneratedLandscape();
-        updateFigureStates();
-        updateCameraInputs();
-      }
-
-      function renderOverlayFigure(key) {
-        const figures = {
-          mathematics: `
-            <svg viewBox="0 0 260 120" class="region-thumbnail" aria-label="Mathematics basin inset" role="presentation" focusable="false" aria-hidden="true">
-              <rect class="overlay-figure-card" x="0.5" y="0.5" width="259" height="119" rx="14"></rect>
-              <path class="thumb-landscape-tint math" d="M 44 78 C 50 62, 64 52, 84 48 C 102 44, 120 48, 132 58 C 140 64, 142 72, 138 80 C 132 90, 118 96, 100 98 C 80 99, 62 94, 50 86 C 44 82, 42 80, 44 78 Z"></path>
-              <path class="thumb-landscape-contour soft" d="M 42 78 C 48 64, 62 54, 82 50 C 100 46, 116 48, 128 56 C 136 62, 138 70, 134 78 C 128 86, 116 92, 100 94 C 82 96, 64 92, 52 86 C 44 82, 40 80, 42 78 Z"></path>
-              <path class="thumb-landscape-contour" d="M 56 78 C 62 68, 74 62, 88 60 C 100 58, 110 60, 120 66 C 126 70, 128 75, 126 80 C 122 85, 112 88, 100 89 C 86 90, 74 88, 62 84 C 58 82, 54 80.5, 56 78 Z"></path>
-              <path class="thumb-landscape-contour" d="M 70 78 C 74 71, 82 67, 92 66 C 100 65, 108 66, 114 70 C 118 73, 120 76.5, 118 80 C 114 83, 108 85.2, 100 85.5 C 90 86, 80 85, 72 82 C 70 81, 68.5 79.5, 70 78 Z"></path>
-              <path class="thumb-landscape-contour soft" d="M 84 78 C 86 73.8, 90 71.5, 96 71 C 102 70.6, 106 71.2, 110 73.2 C 112.5 75, 113.5 77, 112.5 79.2 C 110 81.2, 106 82.2, 100 82.5 C 94 82.8, 88.5 82.2, 85.5 80.6 C 83.8 79.8, 83.4 78.8, 84 78 Z"></path>
-              <circle class="thumb-landscape-minimum" cx="100" cy="78.5" r="3.8"></circle>
-            </svg>`,
-          'computer-science': `
-            <svg viewBox="0 0 260 120" class="region-thumbnail" aria-label="Computer Science basin inset" role="presentation" focusable="false" aria-hidden="true">
-              <rect class="overlay-figure-card" x="0.5" y="0.5" width="259" height="119" rx="14"></rect>
-              <path class="thumb-landscape-tint cs" d="M 146 78 C 152 64, 164 54, 182 50 C 198 46, 214 48, 226 56 C 234 62, 236 70, 232 78 C 226 88, 214 94, 198 96 C 180 98, 164 94, 152 86 C 146 82, 144 80, 146 78 Z"></path>
-              <path class="thumb-landscape-contour soft" d="M 144 78 C 150 66, 162 56, 180 52 C 196 48, 210 50, 220 56 C 228 62, 230 70, 226 76 C 220 84, 210 89, 198 91 C 182 92, 166 90, 154 84 C 146 82, 143 80, 144 78 Z"></path>
-              <path class="thumb-landscape-contour" d="M 156 78 C 160 69, 170 62, 182 60 C 192 58, 202 59, 210 64 C 216 68, 218 72, 216 77 C 212 81, 204 84, 194 85 C 182 86, 172 84.5, 162 81 C 158 79.8, 154.5 79, 156 78 Z"></path>
-              <path class="thumb-landscape-contour soft" d="M 170 78 C 172 72.2, 178 68.5, 186 67.5 C 194 66.8, 200 67.5, 206 70.5 C 209 73, 210 75.5, 208.5 78 C 205 80.5, 199 82, 192 82.5 C 184 82.8, 177.5 81.8, 172 80 C 169.8 79.2, 169 78.6, 170 78 Z"></path>
-              <circle class="thumb-landscape-minimum" cx="190" cy="78" r="3.8"></circle>
-            </svg>`,
-          'machine-learning': `
-            <svg viewBox="0 0 260 120" class="region-thumbnail" aria-label="Machine Learning basin inset" role="presentation" focusable="false" aria-hidden="true">
-              <rect class="overlay-figure-card" x="0.5" y="0.5" width="259" height="119" rx="14"></rect>
-              <path class="thumb-landscape-tint ml" d="M 74 72 C 80 54, 96 42, 120 38 C 144 34, 166 38, 182 48 C 192 54, 196 62, 194 72 C 190 82, 178 90, 160 94 C 138 98, 114 96, 96 88 C 82 82, 72 78, 74 72 Z"></path>
-              <path class="thumb-landscape-contour soft" d="M 70 72 C 76 58, 92 46, 118 42 C 140 38, 160 40, 176 50 C 186 56, 190 62, 188 70 C 184 80, 172 88, 156 90 C 136 94, 114 92, 98 86 C 84 82, 68 78, 70 72 Z"></path>
-              <path class="thumb-landscape-contour" d="M 84 72 C 90 62, 102 54, 120 52 C 136 50, 150 52, 160 58 C 168 62, 172 67, 170 72 C 166 78, 158 83, 146 85 C 132 88, 116 86, 104 82 C 92 78, 82 75.5, 84 72 Z"></path>
-              <path class="thumb-landscape-contour" d="M 98 72 C 102 65, 110 60, 122 58.5 C 132 57, 142 58, 150 62 C 156 65, 158 69, 156 72 C 154 76, 148 79.5, 140 81 C 128 83, 116 82, 106 79 C 100 76.8, 96.5 74, 98 72 Z"></path>
-              <path class="thumb-landscape-contour soft" d="M 112 72 C 114 67.8, 118 64.8, 126 64 C 132 63.5, 138 64.2, 144 66.8 C 147 68.8, 148 70.8, 147 72.8 C 145 75.8, 140 77.5, 134 78.2 C 126 79, 118.5 78.2, 114 76 C 111.5 74.8, 111 73.2, 112 72 Z"></path>
-              <circle class="thumb-landscape-minimum" cx="134" cy="72" r="4"></circle>
-            </svg>`,
-          systems: `
-            <svg viewBox="0 0 260 120" class="region-thumbnail" aria-label="Systems basin inset" role="presentation" focusable="false" aria-hidden="true">
-              <rect class="overlay-figure-card" x="0.5" y="0.5" width="259" height="119" rx="14"></rect>
-              <path class="thumb-landscape-tint systems" d="M 146 62 C 152 48, 164 38, 182 34 C 198 32, 214 34, 226 42 C 234 48, 238 56, 234 66 C 228 78, 216 86, 200 90 C 182 92, 166 90, 154 82 C 146 76, 144 68, 146 62 Z"></path>
-              <path class="thumb-landscape-contour soft" d="M 146 62 C 152 50, 164 42, 180 38 C 196 36, 210 38, 220 44 C 228 50, 232 56, 228 64 C 222 74, 212 82, 198 84 C 184 86, 170 84, 158 78 C 148 72, 144 66, 146 62 Z"></path>
-              <path class="thumb-landscape-contour" d="M 156 62 C 160 54, 170 48, 182 46.5 C 194 45, 202 46, 210 51 C 214 55, 216 60, 214 66 C 210 72, 202 76, 192 77.5 C 180 78, 170 76.5, 162 72 C 156 68, 154 64.5, 156 62 Z"></path>
-              <path class="thumb-landscape-contour soft" d="M 168 62 C 170 56.5, 176 52.8, 184 52 C 192 51.5, 198 52.5, 204 56 C 207 58.5, 208 62, 206 66 C 202 69.5, 196 72, 190 72.5 C 182 73, 175.5 71.8, 170.5 68.5 C 167.8 66.5, 167 64, 168 62 Z"></path>
-              <circle class="thumb-landscape-minimum" cx="190" cy="62" r="3.8"></circle>
-            </svg>`,
-          projects: `
-            <svg viewBox="0 0 260 120" class="region-thumbnail" aria-label="Projects basin inset" role="presentation" focusable="false" aria-hidden="true">
-              <rect class="overlay-figure-card" x="0.5" y="0.5" width="259" height="119" rx="14"></rect>
-              <path class="thumb-landscape-tint projects" d="M 40 82 C 46 66, 60 54, 82 50 C 100 46, 118 48, 130 58 C 138 64, 142 72, 138 82 C 132 92, 118 98, 100 100 C 80 101, 62 96, 50 88 C 42 84, 38 82, 40 82 Z"></path>
-              <path class="thumb-landscape-contour soft" d="M 40 82 C 46 68, 60 58, 80 54 C 98 50, 114 52, 126 60 C 134 66, 138 72, 134 80 C 128 88, 116 94, 100 96 C 82 97, 64 94, 52 88 C 44 85, 38 83, 40 82 Z"></path>
-              <path class="thumb-landscape-contour" d="M 54 82 C 58 72, 70 64, 84 62 C 96 60, 108 61, 118 68 C 124 72, 126 76, 124 82 C 120 86, 112 89, 102 90 C 90 91, 76 89, 64 86 C 56 84, 52 83, 54 82 Z"></path>
-              <path class="thumb-landscape-contour soft" d="M 68 82 C 70 75.5, 78 70.5, 88 69 C 98 68, 106 69, 112 73 C 116 75, 118 78, 116 82 C 112 84.8, 106 86.5, 98 87 C 88 87.5, 80 86.5, 72 84 C 68.5 83, 67 82.6, 68 82 Z"></path>
-              <circle class="thumb-landscape-minimum" cx="100" cy="82" r="3.8"></circle>
-            </svg>`,
-        };
-
-        return figures[key] || figures['machine-learning'];
+      function renderThumb(region) {
+        const theme = getTheme(region.key);
+        const fill = rgba(theme.rgb, 0.14);
+        return `
+          <svg viewBox="0 0 260 120" aria-hidden="true" focusable="false">
+            <rect class="thumb-card" x="0.5" y="0.5" width="259" height="119" rx="14"></rect>
+            <path d="M 74 72 C 80 54, 96 42, 120 38 C 144 34, 166 38, 182 48 C 192 54, 196 62, 194 72 C 190 82, 178 90, 160 94 C 138 98, 114 96, 96 88 C 82 82, 72 78, 74 72 Z" fill="${fill}"></path>
+            <path class="thumb-contour soft" d="M 70 72 C 76 58, 92 46, 118 42 C 140 38, 160 40, 176 50 C 186 56, 190 62, 188 70 C 184 80, 172 88, 156 90 C 136 94, 114 92, 98 86 C 84 82, 68 78, 70 72 Z"></path>
+            <path class="thumb-contour" d="M 84 72 C 90 62, 102 54, 120 52 C 136 50, 150 52, 160 58 C 168 62, 172 67, 170 72 C 166 78, 158 83, 146 85 C 132 88, 116 86, 104 82 C 92 78, 82 75.5, 84 72 Z"></path>
+            <path class="thumb-contour" d="M 98 72 C 102 65, 110 60, 122 58.5 C 132 57, 142 58, 150 62 C 156 65, 158 69, 156 72 C 154 76, 148 79.5, 140 81 C 128 83, 116 82, 106 79 C 100 76.8, 96.5 74, 98 72 Z"></path>
+            <path class="thumb-contour soft" d="M 112 72 C 114 67.8, 118 64.8, 126 64 C 132 63.5, 138 64.2, 144 66.8 C 147 68.8, 148 70.8, 147 72.8 C 145 75.8, 140 77.5, 134 78.2 C 126 79, 118.5 78.2, 114 76 C 111.5 74.8, 111 73.2, 112 72 Z"></path>
+            <circle class="thumb-minimum" cx="134" cy="72" r="4" fill="${theme.accent}"></circle>
+          </svg>
+        `;
       }
 
       function updateOverlay(region) {
-        applyAreaThemeVars(document.getElementById('selected-overlay'), region.key);
-        applyAreaThemeVars(document.getElementById('selected-mobile'), region.key);
-        overlaySymbol.innerHTML = icons[region.key];
-        overlayFigure.innerHTML = renderOverlayFigure(region.key);
-        overlayTitle.textContent = region.cardLabel || region.label;
-        overlayBlurb.textContent = region.blurb;
-        overlayButton.href = region.href;
-        overlayButton.textContent = region.cta;
+        const theme = getTheme(region.key);
 
-        mobileOverlaySymbol.innerHTML = icons[region.key];
-        mobileTitle.textContent = region.cardLabel || region.label;
+        heroEmphasis.style.color = theme.accent;
+        heroEmphasis.style.fontWeight = "600";
+
+        applyCardTheme(region.key);
+
+        selectedIcon.innerHTML = icons[region.key];
+        selectedTitle.textContent = region.cardLabel;
+        selectedThumb.innerHTML = renderThumb(region);
+        selectedBlurb.textContent = region.blurb;
+        selectedCta.href = region.href;
+        selectedCta.textContent = region.cta;
+
+        mobileIcon.innerHTML = icons[region.key];
+        mobileTitle.textContent = region.cardLabel;
         mobileBlurb.textContent = region.blurb;
-        mobileLink.href = region.href;
-        mobileLink.textContent = region.cta;
+        mobileCta.href = region.href;
+        mobileCta.textContent = region.cta;
       }
 
       function updateSelectorStates() {
         selectorMap.forEach((button, key) => {
           const active = key === activeKey;
-          button.classList.toggle('active', active);
-          button.setAttribute('aria-pressed', active ? 'true' : 'false');
+          button.classList.toggle("active", active);
+          button.style.color = active ? getTheme(key).accent : "";
+          button.style.borderColor = active ? getTheme(key).border : "";
+          button.style.background = active ? getTheme(key).soft : "";
+          button.setAttribute("aria-current", active ? "true" : "false");
         });
       }
 
-      function updateFigureStates() {
-        const wireBase = document.getElementById('wireframe-base');
-        const wireAccent = document.getElementById('wireframe-accent');
-        const contourFloorLayer = document.getElementById('contour-floor');
+      function renderLandscape() {
+        const sample = cachedLandscape;
+        buildPlane();
+        buildRegionLayers(sample);
+        buildFloorContours();
+        buildWireframe(sample);
+        buildMinimums();
+      }
 
-        wireBase.classList.remove('wire-dim', 'wire-emphasis');
-        wireAccent.classList.remove('wire-dim');
-        contourFloorLayer.classList.remove('contour-dim', 'contour-accent');
+      function rerenderLandscape() {
+        Object.assign(landscapeConfig, getResolvedCameraConfig());
+        renderLandscape();
+        updateCameraInputs();
+      }
 
-        if (activeKey === 'mathematics') {
-          wireBase.classList.add('wire-emphasis');
-          contourFloorLayer.classList.add('contour-accent');
-        } else if (activeKey === 'systems') {
-          contourFloorLayer.classList.add('contour-dim');
-        }
+      function scheduleLandscapeRerender() {
+        if (rerenderToken !== null) return;
+        rerenderToken = requestAnimationFrame(() => {
+          rerenderToken = null;
+          rerenderLandscape();
+        });
       }
 
       function setActive(key) {
@@ -2196,13 +1750,74 @@
         rerenderLandscape();
       }
 
-      cachedLandscapeSample = sampleLandscape();
-      computeProjectionFit(cachedLandscapeSample);
+      function buildSelectors() {
+        selectorRow.innerHTML = "";
+        selectorMap.clear();
+
+        regions.forEach((region) => {
+          const link = document.createElement("a");
+          link.className = "selector-pill";
+          link.href = region.href;
+          link.setAttribute("data-region-key", region.key);
+          link.innerHTML = `<span>${region.label}</span>`;
+          link.addEventListener("mouseenter", () => {
+            if (!isDraggingLandscape) setActive(region.key);
+          });
+          link.addEventListener("focus", () => {
+            if (!isDraggingLandscape) setActive(region.key);
+          });
+          selectorRow.appendChild(link);
+          selectorMap.set(region.key, link);
+        });
+      }
+
+      function getProjectedTargets() {
+        return regions.map((region) => {
+          const minimum = regionMinima.get(region.key);
+          return {
+            key: region.key,
+            surfacePoint: projectPoint(minimum.x, minimum.y, minimum.z),
+            planePoint: projectPoint(minimum.x, minimum.y, landscapeConfig.planeZ)
+          };
+        });
+      }
+
+      function bindHoverTracking() {
+        mapFrame.addEventListener("pointermove", (event) => {
+          if (isDraggingLandscape) return;
+          if (event.target.closest(".selected-card, .mobile-card, .selector-row")) return;
+
+          const rect = mapSvg.getBoundingClientRect();
+          const localX = ((event.clientX - rect.left) / rect.width) * 1520;
+          const localY = ((event.clientY - rect.top) / rect.height) * 920;
+
+          let nearest = null;
+          let nearestDistance = Infinity;
+
+          getProjectedTargets().forEach((target) => {
+            const ds = Math.hypot(target.surfacePoint.x - localX, target.surfacePoint.y - localY);
+            const dp = Math.hypot(target.planePoint.x - localX, target.planePoint.y - localY);
+            const distance = Math.min(ds, dp);
+            if (distance < nearestDistance) {
+              nearestDistance = distance;
+              nearest = target.key;
+            }
+          });
+
+          if (nearest && nearest !== activeKey) {
+            setActive(nearest);
+          }
+        });
+      }
+
+      cachedLandscape = sampleLandscape();
+      computeProjectionFit(cachedLandscape);
       Object.assign(landscapeConfig, getResolvedCameraConfig());
-      renderGeneratedLandscape();
+
       buildSelectors();
       bindCameraInputs();
       bindCameraDrag();
+      bindHoverTracking();
       setActive(activeKey);
       updateCameraInputs();
     </script>
