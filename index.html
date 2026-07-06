@@ -200,19 +200,24 @@
       }
 
       .selector-row {
-        position: absolute;
-        left: 1rem;
-        right: calc(1rem + var(--selected-card-width) + 1rem);
-        top: 5.8rem;
-        z-index: 7;
-        display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: 0.62rem;
+        display: none;
       }
 
+      .map-button-anchor {
+        cursor: pointer;
+      }
+
+      .map-button-connector {
+        fill: none;
+        stroke-width: 2.4;
+        stroke-linecap: round;
+        vector-effect: non-scaling-stroke;
+        transition: stroke 160ms ease, opacity 160ms ease;
+      }
+
+      .area-button,
       .selector-pill {
         min-height: 52px;
-        width: 100%;
         padding: 0.62rem 0.72rem;
         display: inline-flex;
         align-items: center;
@@ -225,22 +230,25 @@
         line-height: 1.1;
         letter-spacing: -0.01em;
         color: var(--text-main);
-        background: rgba(255, 252, 245, 0.78);
-        border: 1px solid rgba(222, 214, 200, 0.92);
+        background: rgb(255, 252, 245);
+        border: 1px solid rgba(214, 205, 192, 1);
         border-radius: var(--radius-pill);
         transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease, color 160ms ease;
         pointer-events: auto;
       }
 
+      .area-button:hover,
+      .area-button:focus-visible,
       .selector-pill:hover,
       .selector-pill:focus-visible {
         outline: none;
-        background: rgba(255, 252, 245, 0.98);
-        box-shadow: 0 6px 14px rgba(31, 27, 22, 0.04);
+        background: rgb(255, 252, 245);
+        box-shadow: 0 0 0 1px rgba(255, 252, 245, 0.98), 0 8px 16px rgba(31, 27, 22, 0.08);
       }
 
+      .area-button.active,
       .selector-pill.active {
-        box-shadow: inset 0 -2px 0 currentColor;
+        box-shadow: 0 0 0 1px rgba(255, 252, 245, 0.98), inset 0 -2px 0 currentColor, 0 10px 18px rgba(31, 27, 22, 0.08);
       }
 
       .map-frame {
@@ -739,8 +747,8 @@
           <nav class="site-nav" aria-label="External links">
             <a href="/assets/resume/Muhammad_Ali_Resume.pdf" target="_blank" rel="noreferrer">Resume</a>
             <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
-            <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a>
-            <a href="mailto:hello@example.com">Email</a>
+            <a href="https://www.linkedin.com/in/muhammad-ali-544477187/" target="_blank" rel="noreferrer">LinkedIn</a>
+            <a href="mailto:maali@wm.edu">Email</a>
           </nav>
           <div class="site-note">Website under construction — the homepage is the only working page right now.</div>
         </div>
@@ -828,6 +836,7 @@
                 <g id="surface-active" class="surface-active"></g>
                 <g id="wire-base" class="wire"></g>
                 <g id="wire-accent" class="wire"></g>
+                <g id="map-button-anchors"></g>
                 <g id="minimums" class="minimums"></g>
               </g>
             </svg>
@@ -853,7 +862,7 @@
           label: "Computer Science",
           cardLabel: "Computer Science",
           href: "#",
-          blurb: "The computational foundation for turning learning ideas into algorithms, programs, and executable procedures.",
+          blurb: "Computational foundations for algorithms, data structures, abstraction, programming languages, and efficient learning systems.",
           cta: "Explore Computer Science"
         },
         {
@@ -861,32 +870,32 @@
           label: "Mathematics",
           cardLabel: "Mathematics",
           href: "#",
-          blurb: "The formal language for reasoning about structure, uncertainty, optimization, and generalization in learning systems.",
+          blurb: "Formal tools for reasoning about structure, uncertainty, optimization, convergence, and generalization in learning systems.",
           cta: "Explore Mathematics"
         },
         {
           key: "machine-learning",
-          label: "Machine Learning",
-          cardLabel: "Machine Learning",
+          label: "Learning Systems",
+          cardLabel: "Learning Systems",
           href: "#",
-          blurb: "The central area where models learn from data through representation, training, evaluation, and generalization.",
-          cta: "Explore Machine Learning"
+          blurb: "The central basin where data, models, training, evaluation, deployment, and feedback come together.",
+          cta: "Explore Learning Systems"
         },
         {
           key: "systems",
-          label: "Systems",
-          cardLabel: "Systems",
+          label: "Software Engineering",
+          cardLabel: "Software Engineering",
           href: "#",
-          blurb: "The practical architecture around learned models: deployment, monitoring, feedback, reliability, and scale.",
-          cta: "Explore Systems"
+          blurb: "Projects and engineering practices for turning learning ideas into reliable, maintainable software.",
+          cta: "Explore Software Engineering"
         },
         {
           key: "projects",
-          label: "Projects",
-          cardLabel: "Projects",
+          label: "Research",
+          cardLabel: "Research",
           href: "#",
-          blurb: "Concrete experiments, implementations, and reviews that make the landscape visible.",
-          cta: "Explore Projects"
+          blurb: "Paper-driven study and literature synthesis on learning systems, their behavior, and their limitations.",
+          cta: "Explore Research"
         }
       ];
 
@@ -993,6 +1002,7 @@
       const wireBase = document.getElementById("wire-base");
       const wireAccent = document.getElementById("wire-accent");
       const minimums = document.getElementById("minimums");
+      const mapButtonAnchors = document.getElementById("map-button-anchors");
       const cameraSvgCap = document.getElementById("camera-cap");
       const cameraHorizontal = document.getElementById("camera-horizontal");
       const cameraVertical = document.getElementById("camera-vertical");
@@ -1471,7 +1481,7 @@
 
         projectionFit.scale = scale;
         projectionFit.offsetX = target.minX + (targetWidth - width * scale) / 2 - minProjectedX * scale - 28;
-        projectionFit.offsetY = target.minY + (targetHeight - height * scale) / 2 - minProjectedY * scale - 34;
+        projectionFit.offsetY = target.minY + (targetHeight - height * scale) / 2 - minProjectedY * scale - 74;
       }
 
       function pointsString(points) {
@@ -1605,6 +1615,98 @@
         floorContours.innerHTML = markup;
       }
 
+      function buildMapButtonAnchors() {
+        mapButtonAnchors.innerHTML = "";
+
+        const baseOffsets = {
+          "computer-science": { dx: 0, dy: -92 },
+          mathematics: { dx: 0, dy: -106 },
+          "machine-learning": { dx: 0, dy: -138 },
+          systems: { dx: 0, dy: -92 },
+          projects: { dx: 0, dy: -106 }
+        };
+
+        const depths = regions.map((region) => -regionMinima.get(region.key).z);
+        const minDepth = Math.min(...depths);
+        const maxDepth = Math.max(...depths);
+        const depthRange = Math.max(0.001, maxDepth - minDepth);
+
+        regions.forEach((region) => {
+          const minimum = regionMinima.get(region.key);
+          const theme = getTheme(region.key);
+          const point = projectPoint(minimum.x, minimum.y, minimum.z);
+          const baseOffset = baseOffsets[region.key];
+          const active = region.key === activeKey;
+          const depth = -minimum.z;
+          const depthNorm = (depth - minDepth) / depthRange;
+          const depthLift = 10 + depthNorm * 34;
+          const offset = {
+            dx: baseOffset.dx,
+            dy: baseOffset.dy - depthLift
+          };
+          const lineX = point.x + offset.dx;
+          const lineEndY = point.y + offset.dy;
+          const buttonWidth = 262;
+          const buttonHeight = 52;
+          const buttonX = lineX - buttonWidth / 2;
+          const buttonY = lineEndY - buttonHeight;
+
+          const group = svgEl("g", {
+            class: `map-button-anchor${active ? " active" : ""}`
+          });
+
+          const connector = svgEl("path", {
+            class: "map-button-connector",
+            d: `M ${point.x.toFixed(1)} ${point.y.toFixed(1)} L ${lineX.toFixed(1)} ${lineEndY.toFixed(1)}`,
+            stroke: active ? rgba(theme.rgb, 0.95) : rgba(theme.rgb, 0.72)
+          });
+
+          const foreignObject = svgEl("foreignObject", {
+            x: buttonX.toFixed(1),
+            y: buttonY.toFixed(1),
+            width: buttonWidth.toFixed(1),
+            height: buttonHeight.toFixed(1)
+          });
+
+          const wrapper = document.createElement("div");
+          wrapper.setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+          wrapper.style.width = `${buttonWidth}px`;
+          wrapper.style.height = `${buttonHeight}px`;
+          wrapper.style.display = "flex";
+          wrapper.style.alignItems = "center";
+          wrapper.style.justifyContent = "center";
+          wrapper.style.pointerEvents = "none";
+
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = `area-button${active ? " active" : ""}`;
+          button.dataset.area = region.key;
+          button.textContent = region.label;
+          button.style.width = `${buttonWidth}px`;
+          button.style.height = `${buttonHeight}px`;
+          button.style.minHeight = `${buttonHeight}px`;
+          button.style.pointerEvents = "auto";
+          button.style.color = active ? theme.accent : "";
+          button.style.borderColor = active ? rgba(theme.rgb, 0.82) : "";
+          button.style.background = active ? `rgb(${Math.round(theme.rgb[0] * 0.28 + 255 * 0.72)}, ${Math.round(theme.rgb[1] * 0.28 + 252 * 0.72)}, ${Math.round(theme.rgb[2] * 0.28 + 245 * 0.72)})` : "";
+          button.setAttribute("aria-pressed", active ? "true" : "false");
+
+          button.addEventListener("click", () => setActive(region.key));
+          button.addEventListener("mouseenter", () => {
+            if (!isDraggingLandscape) setActive(region.key);
+          });
+          button.addEventListener("focus", () => {
+            if (!isDraggingLandscape) setActive(region.key);
+          });
+
+          wrapper.appendChild(button);
+          foreignObject.appendChild(wrapper);
+          group.appendChild(connector);
+          group.appendChild(foreignObject);
+          mapButtonAnchors.appendChild(group);
+        });
+      }
+
       function buildMinimums() {
         minimums.innerHTML = "";
 
@@ -1728,6 +1830,7 @@
         buildRegionLayers(sample);
         buildFloorContours();
         buildWireframe(sample);
+        buildMapButtonAnchors();
         buildMinimums();
       }
 
