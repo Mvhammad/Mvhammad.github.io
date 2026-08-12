@@ -1045,13 +1045,7 @@
         };
       }
 
-      function syncCameraFromInputs() {
-        homeCamera.syncFromInputs();
-      }
 
-      function bindCameraInputs() {
-        homeCamera.bindInputs();
-      }
 
       function bindCameraDrag() {
         let dragging = false;
@@ -1808,7 +1802,7 @@
       Object.assign(landscapeConfig, getResolvedCameraConfig());
 
       buildSelectors();
-      bindCameraInputs();
+      homeCamera.bindInputs();
       bindCameraDrag();
       bindHoverTracking();
       setActive(activeKey);
