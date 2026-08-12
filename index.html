@@ -1046,27 +1046,11 @@
       }
 
       function syncCameraFromInputs() {
-        dragCameraOffset.yaw = clamp(
-          (Number(cameraHorizontal.value) / 100) * baseLandscapeConfig.yawRange,
-          -baseLandscapeConfig.yawRange,
-          baseLandscapeConfig.yawRange
-        );
-        dragCameraOffset.pitch = clamp(
-          (Number(cameraVertical.value) / 100) * baseLandscapeConfig.pitchRange,
-          -baseLandscapeConfig.pitchRange,
-          baseLandscapeConfig.pitchRange
-        );
-        scheduleLandscapeRerender();
+        homeCamera.syncFromInputs();
       }
 
       function bindCameraInputs() {
-        cameraHorizontal.addEventListener("input", syncCameraFromInputs);
-        cameraVertical.addEventListener("input", syncCameraFromInputs);
-        cameraReset.addEventListener("click", () => {
-          dragCameraOffset.yaw = 0;
-          dragCameraOffset.pitch = 0;
-          scheduleLandscapeRerender();
-        });
+        homeCamera.bindInputs();
       }
 
       function bindCameraDrag() {
