@@ -876,6 +876,12 @@
         elevation: 0.82
       };
       
+      if (typeof window.getHomeDom !== "function") {
+        throw new Error(
+          "[homepage] DOM helper failed to load from js/home/dom.js."
+        );
+      }
+      
       const {
         selectorRow,
         selectedCard,
