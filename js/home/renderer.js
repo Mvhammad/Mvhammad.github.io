@@ -5,6 +5,8 @@
 window.createHomeRenderer = function createHomeRenderer({
   landscapeConfig,
   planeLayer,
+  wireBase,
+  wireAccent,
   projectPoint,
   pointsString
 }) {
@@ -49,7 +51,48 @@ window.createHomeRenderer = function createHomeRenderer({
     planeLayer.innerHTML = markup;
   }
 
+  function buildWireframe(sample) {
+  let baseMarkup = "";
+  let accentMarkup = "";
+
+  sample.rows.forEach((row, rowIndex) => {
+    const projected = row.map((point) =>
+      projectPoint(point.x, point.y, point.z)
+    );
+
+    baseMarkup += `<polyline points="${pointsString(projected)}" class="${
+      rowIndex < sample.rows.length * 0.35 ? "rear" : "front"
+    }"></polyline>`;
+  });
+
+  for (let xi = 0; xi < landscapeConfig.gridX; xi += 1) {
+    const projected = sample.rows.map((row) =>
+      projectPoint(row[xi].x, row[xi].y, row[xi].z)
+    );
+
+    baseMarkup += `<polyline points="${pointsString(projected)}" class="${
+      xi < landscapeConfig.gridX * 0.35 ? "rear" : "front"
+    }"></polyline>`;
+  }
+
+  [9, 10, 11, 12].forEach((columnIndex) => {
+    const projected = sample.rows.map((row) =>
+      projectPoint(
+        row[columnIndex].x,
+        row[columnIndex].y,
+        row[columnIndex].z
+      )
+    );
+
+    accentMarkup += `<polyline points="${pointsString(projected)}"></polyline>`;
+  });
+
+  wireBase.innerHTML = baseMarkup;
+  wireAccent.innerHTML = accentMarkup;
+}
+
   return {
     buildPlane
+    buildWireframe
   };
 };
