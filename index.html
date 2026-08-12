@@ -875,37 +875,39 @@
         azimuth: 0.72,
         elevation: 0.82
       };
-
-      const selectorRow = document.getElementById("selector-row");
-      const selectedCard = document.getElementById("selected-card");
-      const selectedIcon = document.getElementById("selected-icon");
-      const selectedTitle = document.getElementById("selected-title");
-      const selectedThumb = document.getElementById("selected-thumb");
-      const selectedAccent = document.getElementById("selected-accent");
-      const selectedBlurb = document.getElementById("selected-blurb");
-      const selectedCta = document.getElementById("selected-cta");
-      const mobileIcon = document.getElementById("mobile-icon");
-      const mobileTitle = document.getElementById("mobile-title");
-      const mobileBlurb = document.getElementById("mobile-blurb");
-      const mobileCta = document.getElementById("mobile-cta");
-      const heroEmphasis = document.getElementById("hero-emphasis");
-      const mapFrame = document.getElementById("map-frame");
-      const mapSvg = document.getElementById("map-svg");
-      const planeBase = document.getElementById("plane-base");
-      const planeLayer = document.getElementById("plane");
-      const planeActive = document.getElementById("plane-active");
-      const floorContours = document.getElementById("floor-contours");
-      const surfaceActive = document.getElementById("surface-active");
-      const wireBase = document.getElementById("wire-base");
-      const wireAccent = document.getElementById("wire-accent");
-      const minimums = document.getElementById("minimums");
-      const mapButtonAnchors = document.getElementById("map-button-anchors");
-      const cameraSvgCap = document.getElementById("camera-cap");
-      const cameraHorizontal = document.getElementById("camera-horizontal");
-      const cameraVertical = document.getElementById("camera-vertical");
-      const cameraHorizontalValue = document.getElementById("camera-horizontal-value");
-      const cameraVerticalValue = document.getElementById("camera-vertical-value");
-      const cameraReset = document.getElementById("camera-reset");
+      
+      const {
+        selectorRow,
+        selectedCard,
+        selectedIcon,
+        selectedTitle,
+        selectedThumb,
+        selectedAccent,
+        selectedBlurb,
+        selectedCta,
+        mobileIcon,
+        mobileTitle,
+        mobileBlurb,
+        mobileCta,
+        heroEmphasis,
+        mapFrame,
+        mapSvg,
+        planeBase,
+        planeLayer,
+        planeActive,
+        floorContours,
+        surfaceActive,
+        wireBase,
+        wireAccent,
+        minimums,
+        mapButtonAnchors,
+        cameraSvgCap,
+        cameraHorizontal,
+        cameraVertical,
+        cameraHorizontalValue,
+        cameraVerticalValue,
+        cameraReset
+     } = window.getHomeDom();
 
       let activeKey = "machine-learning";
       let cachedLandscape = null;
