@@ -1108,21 +1108,7 @@
           scheduleLandscapeRerender();
         };
 
-        if (typeof window.createHomeCamera !== "function") {
-          throw new Error(
-            "[homepage] Camera helper failed to load from js/home/camera.js."
-            );
-        }
-
-        const homeCamera = window.createHomeCamera({
-          cameraHorizontal,
-          cameraVertical,
-          cameraReset,
-          baseLandscapeConfig,
-          dragCameraOffset,
-          clamp,
-          requestRender: scheduleLandscapeRerender
-        });
+        
 
         const end = (event) => {
           if (!dragging || event.pointerId !== pointerId) return;
@@ -1731,6 +1717,23 @@
           rerenderLandscape();
         });
       }
+
+      if (typeof window.createHomeCamera !== "function") {
+        throw new Error(
+          "[homepage] Camera helper failed to load from js/home/camera.js."
+        );
+      }
+
+      const homeCamera = window.createHomeCamera({
+        cameraHorizontal,
+        cameraVertical,
+        cameraReset,
+        baseLandscapeConfig,
+        dragCameraOffset,
+        clamp,
+        requestRender: scheduleLandscapeRerender
+      });
+          
 
       function setActive(key) {
         activeKey = key;
