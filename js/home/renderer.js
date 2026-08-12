@@ -92,7 +92,7 @@ window.createHomeRenderer = function createHomeRenderer({
 }
 
   return {
-    buildPlane
+    buildPlane,
     buildWireframe
   };
 };
