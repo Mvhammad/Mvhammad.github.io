@@ -1720,25 +1720,7 @@
       }
 
       function updateOverlay(region) {
-        const theme = getTheme(region.key);
-
-        heroEmphasis.style.color = theme.accent;
-        heroEmphasis.style.fontWeight = "600";
-
-        applyCardTheme(region.key);
-
-        selectedIcon.innerHTML = icons[region.key];
-        selectedTitle.textContent = region.cardLabel;
-        selectedThumb.innerHTML = renderThumb(region);
-        selectedBlurb.textContent = region.blurb;
-        selectedCta.href = region.href;
-        selectedCta.textContent = region.cta;
-
-        mobileIcon.innerHTML = icons[region.key];
-        mobileTitle.textContent = region.cardLabel;
-        mobileBlurb.textContent = region.blurb;
-        mobileCta.href = region.href;
-        mobileCta.textContent = region.cta;
+        homeOverlay.updateOverlay(region);
       }
 
       function updateSelectorStates() {
