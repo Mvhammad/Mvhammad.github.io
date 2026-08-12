@@ -91,8 +91,7 @@ window.createHomeRenderer = function createHomeRenderer({
   wireAccent.innerHTML = accentMarkup;
 }
 
-  return {
-    buildPlane,
-    buildWireframe
-  };
+return {
+  buildPlane,
+  buildWireframe
 };
