@@ -7,6 +7,7 @@ window.createHomeRenderer = function createHomeRenderer({
   planeLayer,
   wireBase,
   wireAccent,
+  floorContours,
   projectPoint,
   pointsString
 }) {
@@ -86,6 +87,30 @@ window.createHomeRenderer = function createHomeRenderer({
       `;
     });
 
+    function buildFloorContours() {
+      const center = projectPoint(0.28, 0.24, landscapeConfig.planeZ);
+      const radii = [42, 72, 100, 128, 158, 188, 218, 246];
+      let markup = "";
+
+      radii.forEach((radius, index) => {
+        const points = [];
+        const squish = 0.54 + index * 0.016;
+
+        for (let step = 0; step <= 56; step += 1) {
+          const theta = (Math.PI * 2 * step) / 56;
+
+          points.push({
+            x: center.x + Math.cos(theta) * radius,
+            y: center.y + Math.sin(theta) * radius * squish
+          });
+        }
+
+        markup += `<polyline points="${pointsString(points)}"></polyline>`;
+      });
+
+      floorContours.innerHTML = markup;
+  }
+
     for (let xi = 0; xi < landscapeConfig.gridX; xi += 1) {
       const projected = sample.rows.map((row) =>
         projectPoint(row[xi].x, row[xi].y, row[xi].z)
@@ -124,6 +149,7 @@ window.createHomeRenderer = function createHomeRenderer({
 
   return {
     buildPlane,
-    buildWireframe
+    buildWireframe,
+    builFloorContours
   };
 };
