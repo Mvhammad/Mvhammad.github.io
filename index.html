@@ -916,6 +916,28 @@
         cameraReset
      } = window.getHomeDom();
 
+      if (typeof window.createHomeOverlay !== "function") {
+        throw new Error(
+          "[homepage] Overlay helper failed to load from js/home/overlay.js."
+        );
+      }
+
+      const homeOverlay = window.createHomeOverlay({
+        areaThemes,
+        icons,
+        heroEmphasis,
+        selectedIcon,
+        selectedTitle,
+        selectedThumb,
+        selectedAccent,
+        selectedBlurb,
+        selectedCta,
+        mobileIcon,
+        mobileTitle,
+        mobileBlurb,
+        mobileCta
+      });
+
       let activeKey = "machine-learning";
       let cachedLandscape = null;
       const selectorMap = new Map();
