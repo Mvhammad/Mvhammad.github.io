@@ -1379,6 +1379,19 @@
         return window.HomeGeometry.pointsString(points);
       }
 
+      if (typeof window.createHomeRenderer !== "function") {
+        throw new Error(
+          "[homepage] Renderer helper failed to load from js/home/renderer.js."
+        );
+      }
+
+const homeRenderer = window.createHomeRenderer({
+  landscapeConfig,
+  planeLayer,
+  projectPoint,
+  pointsString
+});
+
       function buildPlane() {
         const { domainX, domainY, planeZ, gridX, gridY } = landscapeConfig;
         const [minX, maxX] = domainX;
