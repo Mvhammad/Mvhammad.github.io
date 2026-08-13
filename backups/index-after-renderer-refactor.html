@@ -1,0 +1,1762 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Muhammad Ali</title>
+    <style>
+      :root {
+        --page-bg: #F7F3EA;
+        --panel-bg: #FFFCF5;
+        --overlay-bg: rgba(255, 252, 245, 0.94);
+        --text-main: #1F1B16;
+        --text-muted: #6E665C;
+        --text-meta: #8A8379;
+        --graphite: #8E887E;
+        --border-soft: #DED6C8;Done
+        --header-right-width: clamp(18rem, 20vw, 21rem);
+        --selected-card-width: clamp(17.2rem, 18.8vw, 20.4rem);
+        --map-height: clamp(760px, 52vw, 940px);
+        --radius-panel: 34px;
+        --radius-card: 26px;
+        --radius-pill: 18px;
+        --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, "Times New Roman", serif;
+        --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+      }
+
+      body {
+        background: var(--page-bg);
+        color: var(--text-main);
+        font-family: var(--sans);
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .page-shell {
+        max-width: 1920px;
+        min-height: 100vh;
+        margin: 0 auto;
+        padding: 1rem 1.25rem 1.25rem;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .site-header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) var(--header-right-width);
+        column-gap: 1.5rem;
+        row-gap: 0.35rem;
+        align-items: start;
+        padding-bottom: 0.42rem;
+      }
+
+      .site-name {
+        grid-column: 1;
+        grid-row: 1;
+        font-family: var(--serif);
+        font-size: 1.15rem;
+        letter-spacing: -0.02em;
+        color: var(--text-main);
+      }
+
+      .hero-copy {
+        grid-column: 1;
+        grid-row: 2;
+        max-width: min(66rem, 100%);
+      }
+
+      .hero-copy h1 {
+        margin: 0;
+        font-family: var(--serif);
+        font-size: clamp(1.64rem, 1.2rem + 0.92vw, 2rem);
+        line-height: 1.08;
+        letter-spacing: -0.03em;
+        color: var(--text-main);
+      }
+
+      .hero-emphasis {
+        color: inherit;
+        font-weight: inherit;
+        transition: color 180ms ease, font-weight 180ms ease;
+      }
+
+      .header-right {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.45rem;
+        min-width: 0;
+      }
+
+      .site-nav {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: flex-end;
+        gap: 0.9rem;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+      }
+
+      .site-nav a:hover {
+        color: var(--text-main);
+      }
+
+      .site-note {
+        align-self: flex-end;
+        width: min(100%, 17.2rem);
+        min-height: 2.3rem;
+        padding: 0.45rem 0.72rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 0.82rem;
+        line-height: 1.2;
+        font-weight: 700;
+        color: rgba(74, 63, 48, 0.98);
+        background: rgba(199, 146, 46, 0.10);
+        border: 1px solid rgba(199, 146, 46, 0.42);
+        border-radius: 12px;
+        box-shadow: 0 8px 18px rgba(199, 146, 46, 0.06);
+      }
+
+      .site-main {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .knowledge-map {
+        position: relative;
+        min-height: var(--map-height);
+        background: var(--panel-bg);
+        border: 1px solid var(--border-soft);
+        border-radius: var(--radius-panel);
+        box-shadow: 0 18px 60px rgba(28, 25, 23, 0.05);
+        overflow: hidden;
+      }
+
+      .map-topband {
+        position: absolute;
+        left: 1rem;
+        right: calc(1rem + var(--selected-card-width) + 1rem);
+        top: 0.85rem;
+        z-index: 7;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.44rem;
+        pointer-events: none;
+      }
+
+      .map-title {
+        margin: 0;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: rgba(42, 38, 34, 0.94);
+      }
+
+      .map-description {
+        margin: 0;
+        max-width: 64rem;
+        font-size: 0.78rem;
+        line-height: 1.2;
+        font-weight: 500;
+        text-align: center;
+        color: rgba(58, 52, 46, 0.94);
+        white-space: nowrap;
+      }
+
+      .map-hint {
+        margin: 0.04rem 0 0;
+        max-width: 42rem;
+        font-size: 0.71rem;
+        line-height: 1.18;
+        font-weight: 500;
+        letter-spacing: 0.008em;
+        text-align: center;
+        color: rgba(104, 95, 86, 0.96);
+      }
+
+      .selector-row {
+        display: none;
+      }
+
+      .map-button-anchor {
+        cursor: pointer;
+      }
+
+      .map-button-connector {
+        fill: none;
+        stroke-width: 2.4;
+        stroke-linecap: round;
+        vector-effect: non-scaling-stroke;
+        transition: stroke 160ms ease, opacity 160ms ease;
+      }
+
+      .area-button,
+      .selector-pill {
+        min-height: 52px;
+        padding: 0.62rem 0.72rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        white-space: nowrap;
+        font-family: var(--serif);
+        font-size: 0.9rem;
+        font-weight: 600;
+        line-height: 1.1;
+        letter-spacing: -0.01em;
+        color: var(--text-main);
+        background: rgb(255, 252, 245);
+        border: 1px solid rgba(214, 205, 192, 1);
+        border-radius: var(--radius-pill);
+        transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease, color 160ms ease;
+        pointer-events: auto;
+      }
+
+      .area-button:hover,
+      .area-button:focus-visible,
+      .selector-pill:hover,
+      .selector-pill:focus-visible {
+        outline: none;
+        background: rgb(255, 252, 245);
+        box-shadow: 0 0 0 1px rgba(255, 252, 245, 0.98), 0 8px 16px rgba(31, 27, 22, 0.08);
+      }
+
+      .area-button.active,
+      .selector-pill.active {
+        box-shadow: 0 0 0 1px rgba(255, 252, 245, 0.98), inset 0 -2px 0 currentColor, 0 10px 18px rgba(31, 27, 22, 0.08);
+      }
+
+      .map-frame {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+      }
+
+      #map-svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .map-frame.dragging {
+        cursor: grabbing;
+        user-select: none;
+      }
+
+      .selected-card {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        bottom: 1rem;
+        width: var(--selected-card-width);
+        z-index: 8;
+        background: var(--overlay-bg);
+        border: 1px solid var(--border-soft);
+        border-radius: var(--radius-card);
+        backdrop-filter: blur(8px);
+        box-shadow: 0 14px 36px rgba(28, 25, 23, 0.025);
+        padding: 1.12rem 1.24rem 1.2rem;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .selected-label {
+        font-size: 0.7rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--text-meta);
+        text-align: center;
+      }
+
+      .selected-head {
+        margin-top: 0.78rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.56rem;
+        min-height: 5.45rem;
+      }
+
+      .selected-icon {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #fffdf8;
+      }
+
+      .selected-title {
+        margin: 0;
+        width: 100%;
+        min-height: 2.5rem;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        text-align: center;
+        font-family: var(--serif);
+        font-size: clamp(1.02rem, 0.88rem + 0.38vw, 1.26rem);
+        line-height: 1.08;
+        letter-spacing: -0.02em;
+        color: var(--text-main);
+      }
+
+      .selected-thumb {
+        margin-top: 0.72rem;
+        border-radius: 18px;
+        border: 1px solid var(--border-soft);
+        background: rgba(255, 252, 245, 0.72);
+        padding: 0.46rem;
+        min-height: 7.6rem;
+        display: flex;
+        align-items: center;
+      }
+
+      .selected-thumb svg {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .selected-accent {
+        width: 1.65rem;
+        height: 2px;
+        margin: 0.86rem 0 0.68rem;
+        border-radius: 999px;
+      }
+
+      .selected-blurb {
+        margin: 0;
+        font-size: 0.8rem;
+        line-height: 1.46;
+        color: var(--text-muted);
+        min-height: 5.9em;
+      }
+
+      .selected-cta-wrap {
+        padding-top: 0.56rem;
+      }
+
+      .selected-cta {
+        width: 100%;
+        min-height: 3rem;
+        padding: 0.72rem 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        border-radius: 14px;
+        border: 1px solid rgba(199, 146, 46, 0.42);
+        background: rgba(199, 146, 46, 0.08);
+        color: rgba(52, 43, 32, 0.98);
+        font-size: 0.82rem;
+        font-weight: 600;
+        line-height: 1.2;
+        transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+      }
+
+      .selected-cta:hover,
+      .selected-cta:focus-visible {
+        outline: none;
+        background: rgba(199, 146, 46, 0.14);
+      }
+
+      .camera-panel {
+        margin-top: auto;
+        padding-top: 0.72rem;
+        border-top: 1px solid rgba(222, 214, 200, 0.92);
+        display: flex;
+        flex-direction: column;
+        gap: 0.58rem;
+      }
+
+      .camera-label {
+        font-size: 0.68rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--text-meta);
+        text-align: center;
+      }
+
+      .camera-widget {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 6.2rem;
+      }
+
+      .camera-widget svg {
+        width: 100%;
+        max-width: 12.8rem;
+        height: auto;
+        display: block;
+      }
+
+      .camera-base {
+        fill: rgba(255, 252, 245, 0.82);
+        stroke: rgba(222, 214, 200, 0.95);
+        stroke-width: 1;
+      }
+
+      .camera-axis {
+        fill: none;
+        stroke: rgba(112, 103, 93, 0.64);
+        stroke-width: 1.38;
+        stroke-linecap: round;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .camera-axis.soft {
+        stroke: rgba(112, 103, 93, 0.24);
+        stroke-dasharray: 3 4;
+      }
+
+      .camera-node {
+        fill: rgba(255, 252, 245, 0.98);
+        stroke: rgba(112, 103, 93, 0.32);
+        stroke-width: 1;
+      }
+
+      .camera-node.accent {
+        fill: rgba(112, 103, 93, 0.92);
+        stroke: rgba(112, 103, 93, 0.92);
+      }
+
+      .camera-text {
+        font-family: var(--serif);
+        font-size: 0.92rem;
+        fill: rgba(92, 84, 76, 0.95);
+      }
+
+      .camera-text.loss {
+        font-size: 0.82rem;
+      }
+
+      .camera-control {
+        display: flex;
+        flex-direction: column;
+        gap: 0.22rem;
+      }
+
+      .camera-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.7rem;
+      }
+
+      .camera-name {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+      }
+
+      .camera-value {
+        font-size: 0.72rem;
+        color: var(--text-meta);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .camera-slider {
+        width: 100%;
+        margin: 0;
+        accent-color: rgba(112, 103, 93, 0.86);
+      }
+
+      .camera-reset {
+        align-self: center;
+        min-height: 1.9rem;
+        padding: 0.38rem 0.68rem;
+        border-radius: 999px;
+        border: 1px solid rgba(202, 194, 184, 0.9);
+        background: rgba(255, 252, 245, 0.82);
+        color: var(--text-muted);
+        font-size: 0.72rem;
+        cursor: pointer;
+      }
+
+      .camera-reset:hover,
+      .camera-reset:focus-visible {
+        outline: none;
+        background: rgba(255, 252, 245, 0.94);
+        color: var(--text-main);
+      }
+
+      .thumb-card {
+        fill: rgba(255, 252, 245, 0.96);
+        stroke: rgba(222, 214, 200, 0.92);
+        stroke-width: 1;
+      }
+
+      .thumb-contour {
+        fill: none;
+        stroke: rgba(98, 90, 82, 0.18);
+        stroke-width: 0.95;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .thumb-contour.soft {
+        stroke: rgba(124, 115, 105, 0.11);
+        stroke-width: 0.82;
+      }
+
+      .thumb-minimum {
+        stroke: rgba(255, 252, 245, 0.98);
+        stroke-width: 1.15;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .wire path,
+      .wire polyline {
+        fill: none;
+        stroke: rgba(98, 89, 80, 0.34);
+        stroke-width: 1.14;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .wire .rear {
+        stroke: rgba(110, 101, 92, 0.22);
+        stroke-width: 0.98;
+      }
+
+      .wire .front {
+        stroke: rgba(84, 76, 68, 0.46);
+        stroke-width: 1.26;
+      }
+
+      .plane path,
+      .plane polyline,
+      .plane polygon {
+        fill: none;
+        stroke: rgba(154, 143, 131, 0.11);
+        stroke-width: 0.74;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .plane .shell {
+        stroke: rgba(154, 143, 131, 0.14);
+      }
+
+      .plane .grid {
+        stroke: rgba(154, 143, 131, 0.085);
+      }
+
+      .contours path,
+      .contours polyline {
+        fill: none;
+        stroke: rgba(154, 143, 131, 0.07);
+        stroke-width: 0.68;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .plane-base polygon,
+      .plane-active polygon,
+      .surface-active polygon {
+        stroke: none;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .minimums .projection {
+        stroke-width: 0.9;
+        stroke-dasharray: 4 5;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .minimum-anchor {
+        cursor: pointer;
+        outline: none;
+      }
+
+      .minimum-anchor .halo {
+        opacity: 0;
+        transition: opacity 160ms ease;
+      }
+
+      .minimum-anchor .ring {
+        fill: rgba(255, 252, 245, 0.98);
+        stroke-width: 1.25;
+        vector-effect: non-scaling-stroke;
+        transition: stroke-width 160ms ease;
+      }
+
+      .minimum-anchor .core {
+        stroke: rgba(255, 252, 245, 0.98);
+        stroke-width: 1.05;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .minimum-anchor:hover .halo,
+      .minimum-anchor:focus-visible .halo,
+      .minimum-anchor.active .halo {
+        opacity: 1;
+      }
+
+      .minimum-anchor:hover .ring,
+      .minimum-anchor:focus-visible .ring,
+      .minimum-anchor.active .ring {
+        stroke-width: 1.5;
+      }
+
+      .mobile-card {
+        display: none;
+      }
+
+      @media (max-width: 860px) {
+        .page-shell {
+          padding-inline: 1rem;
+        }
+
+        .site-header {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .header-right {
+          width: 100%;
+          align-items: flex-start;
+        }
+
+        .site-nav {
+          flex-wrap: wrap;
+          justify-content: flex-start;
+          gap: 0.4rem 1rem;
+        }
+
+        .site-note {
+          align-self: flex-start;
+          text-align: left;
+        }
+
+        .knowledge-map {
+          min-height: 980px;
+        }
+
+        .map-topband {
+          position: static;
+          padding: 1rem 1rem 0;
+          right: auto;
+          left: auto;
+          pointer-events: none;
+        }
+
+        .selector-row {
+          position: static;
+          right: auto;
+          left: auto;
+          top: auto;
+          display: flex;
+          gap: 0.6rem;
+          padding: 0.95rem 1rem 0;
+          overflow-x: auto;
+        }
+
+        .selector-pill {
+          min-width: max-content;
+          flex: 0 0 auto;
+        }
+
+        .selected-card {
+          display: none;
+        }
+
+        .mobile-card {
+          position: absolute;
+          inset-inline: 0;
+          bottom: 0;
+          z-index: 8;
+          display: block;
+          padding: 1rem;
+        }
+
+        .mobile-shell {
+          background: var(--overlay-bg);
+          border: 1px solid var(--border-soft);
+          border-radius: var(--radius-card);
+          padding: 1rem;
+        }
+
+        .mobile-head {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.56rem;
+        }
+
+        .mobile-title {
+          margin: 0;
+          text-align: center;
+          font-family: var(--serif);
+          font-size: 1.18rem;
+          line-height: 1.08;
+        }
+
+        .mobile-blurb {
+          margin: 0.6rem 0 0;
+          color: var(--text-muted);
+          font-size: 0.92rem;
+          line-height: 1.55;
+        }
+
+        .mobile-link {
+          margin-top: 0.8rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header">
+        <a class="site-name" href="/">Muhammad Ali</a>
+
+        <div class="hero-copy">
+          <h1>
+            I’m an aspiring machine learning researcher focused on understanding and building
+            <span class="hero-emphasis" id="hero-emphasis">learning systems</span>
+            at both the theoretical and practical levels.
+          </h1>
+        </div>
+
+        <div class="header-right">
+          <nav class="site-nav" aria-label="External links">
+            <a href="/assets/resume/Muhammad_Ali_Resume.pdf" target="_blank" rel="noreferrer">Resume</a>
+            <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="https://www.linkedin.com/in/muhammad-ali-544477187/" target="_blank" rel="noreferrer">LinkedIn</a>
+            <a href="mailto:maali@wm.edu">Email</a>
+          </nav>
+          <div class="site-note">Website under construction — the homepage is the only working page right now.</div>
+        </div>
+      </header>
+
+      <main class="site-main">
+        <section class="knowledge-map" aria-labelledby="knowledge-map-title">
+          <div class="map-topband">
+            <h2 class="map-title" id="knowledge-map-title">Knowledge Map</h2>
+            <p class="map-description">
+              This map uses a loss landscape as a metaphor for learning systems: each region marks an area of focus, and each minimum represents a local center of study.
+            </p>
+            <p class="map-hint">Hover a region or minimum, or drag to rotate.</p>
+          </div>
+
+          <div class="selector-row" id="selector-row" aria-label="Select a knowledge area"></div>
+
+          <aside class="selected-card" id="selected-card" aria-live="polite">
+            <div class="selected-label">Selected region</div>
+
+            <div class="selected-head">
+              <div class="selected-icon" id="selected-icon"></div>
+              <h3 class="selected-title" id="selected-title"></h3>
+            </div>
+
+            <div class="selected-thumb" id="selected-thumb" aria-hidden="true"></div>
+
+            <div class="selected-accent" id="selected-accent"></div>
+
+            <p class="selected-blurb" id="selected-blurb"></p>
+
+            <div class="selected-cta-wrap">
+              <a class="selected-cta" id="selected-cta" href="#">Explore</a>
+            </div>
+
+            <div class="camera-panel">
+              <div class="camera-label">Camera</div>
+
+              <div class="camera-widget" aria-hidden="true">
+                <svg id="camera-svg" viewBox="0 0 164 118" preserveAspectRatio="xMidYMid meet">
+                  <rect class="camera-base" x="15" y="11" width="134" height="96" rx="16"></rect>
+                  <g id="camera-cap"></g>
+                </svg>
+              </div>
+
+              <div class="camera-control">
+                <div class="camera-head">
+                  <div class="camera-name">Horizontal</div>
+                  <div class="camera-value" id="camera-horizontal-value">0°</div>
+                </div>
+                <input class="camera-slider" id="camera-horizontal" type="range" min="-100" max="100" value="0" step="1" />
+              </div>
+
+              <div class="camera-control">
+                <div class="camera-head">
+                  <div class="camera-name">Vertical</div>
+                  <div class="camera-value" id="camera-vertical-value">0°</div>
+                </div>
+                <input class="camera-slider" id="camera-vertical" type="range" min="-100" max="100" value="0" step="1" />
+              </div>
+
+              <button class="camera-reset" id="camera-reset" type="button">Reset view</button>
+            </div>
+          </aside>
+
+          <aside class="mobile-card" id="mobile-card" aria-live="polite">
+            <div class="mobile-shell">
+              <div class="selected-label">Selected region</div>
+              <div class="mobile-head">
+                <div class="selected-icon" id="mobile-icon"></div>
+                <h3 class="mobile-title" id="mobile-title"></h3>
+              </div>
+              <p class="mobile-blurb" id="mobile-blurb"></p>
+              <a class="selected-cta mobile-link" id="mobile-cta" href="#">Explore</a>
+            </div>
+          </aside>
+
+          <div class="map-frame" id="map-frame">
+            <svg id="map-svg" viewBox="0 0 1520 920" preserveAspectRatio="none" role="img" aria-label="Interactive loss landscape knowledge map">
+              <g transform="translate(28 176)">
+                <g id="plane-base" class="plane-base"></g>
+                <g id="plane" class="plane"></g>
+                <g id="plane-active" class="plane-active"></g>
+                <g id="floor-contours" class="contours"></g>
+                <g id="surface-active" class="surface-active"></g>
+                <g id="wire-base" class="wire"></g>
+                <g id="wire-accent" class="wire"></g>
+                <g id="map-button-anchors"></g>
+                <g id="minimums" class="minimums"></g>
+              </g>
+            </svg>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="js/home/config.js"></script>
+    <script src="js/home/dom.js"></script>
+    <script src="js/home/overlay.js"></script>
+    <script src="js/home/camera.js"></script>
+    <script src="js/home/geometry.js"></script>
+    <script src="js/home/renderer.js"></script>
+    
+    <script>
+      const SVG_NS = "http://www.w3.org/2000/svg";
+
+      if (!window.HomeConfig) {
+        throw new Error(
+          "[homepage] Configuration failed to load from js/home/config.js."
+        );
+      }
+
+      const {
+        icons,
+        regions,
+        areaThemes,
+        regionFields,
+        regionFieldMap,
+        baseLandscapeConfig
+      } = window.HomeConfig;
+
+      const landscapeConfig = {
+        domainX: [-2.05, 2.15],
+        domainY: [-1.55, 1.65],
+        gridX: 27,
+        gridY: 21,
+        planeZ: -1.36,
+        azimuth: 0.72,
+        elevation: 0.82
+      };
+      
+      if (typeof window.getHomeDom !== "function") {
+        throw new Error(
+          "[homepage] DOM helper failed to load from js/home/dom.js."
+        );
+      }
+      
+      const {
+        selectorRow,
+        selectedCard,
+        selectedIcon,
+        selectedTitle,
+        selectedThumb,
+        selectedAccent,
+        selectedBlurb,
+        selectedCta,
+        mobileIcon,
+        mobileTitle,
+        mobileBlurb,
+        mobileCta,
+        heroEmphasis,
+        mapFrame,
+        mapSvg,
+        planeBase,
+        planeLayer,
+        planeActive,
+        floorContours,
+        surfaceActive,
+        wireBase,
+        wireAccent,
+        minimums,
+        mapButtonAnchors,
+        cameraSvgCap,
+        cameraHorizontal,
+        cameraVertical,
+        cameraHorizontalValue,
+        cameraVerticalValue,
+        cameraReset
+     } = window.getHomeDom();
+
+      if (typeof window.createHomeOverlay !== "function") {
+        throw new Error(
+          "[homepage] Overlay helper failed to load from js/home/overlay.js."
+        );
+      }
+
+      const homeOverlay = window.createHomeOverlay({
+        areaThemes,
+        icons,
+        heroEmphasis,
+        selectedIcon,
+        selectedTitle,
+        selectedThumb,
+        selectedAccent,
+        selectedBlurb,
+        selectedCta,
+        mobileIcon,
+        mobileTitle,
+        mobileBlurb,
+        mobileCta
+      });
+
+      let activeKey = "machine-learning";
+      let cachedLandscape = null;
+      const selectorMap = new Map();
+      const projectionFit = { scale: 1, offsetX: 0, offsetY: 0 };
+      const dragCameraOffset = { yaw: 0, pitch: 0 };
+      let isDraggingLandscape = false;
+      let rerenderToken = null;
+
+      function svgEl(tag, attrs = {}) {
+        const el = document.createElementNS(SVG_NS, tag);
+        Object.entries(attrs).forEach(([key, value]) => {
+          el.setAttribute(key, String(value));
+        });
+        return el;
+      }
+
+      function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+      }
+
+      function getTheme(key) {
+        return areaThemes[key] || areaThemes["machine-learning"];
+      }
+      
+      function rgba(rgb, alpha) {
+        return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`;
+      }
+
+      function renderCameraCap() {
+        cameraSvgCap.innerHTML = "";
+
+        const yawNorm = clamp(dragCameraOffset.yaw / baseLandscapeConfig.yawRange, -1, 1);
+        const pitchNorm = clamp(dragCameraOffset.pitch / baseLandscapeConfig.pitchRange, -1, 1);
+        const origin = { x: 82, y: 80 };
+
+        const theta1Tip = { x: origin.x + 34 + yawNorm * 12, y: origin.y - 18 - pitchNorm * 7 };
+        const theta2Tip = { x: origin.x - 30 + yawNorm * 8, y: origin.y - 10 + pitchNorm * 12 };
+        const lossTip = { x: origin.x + yawNorm * 8, y: origin.y - 40 - pitchNorm * 16 };
+        const theta1Shadow = { x: theta1Tip.x, y: origin.y + 9 };
+        const theta2Shadow = { x: theta2Tip.x, y: origin.y + 9 };
+
+        const accentKey = Math.abs(pitchNorm) > Math.abs(yawNorm) ? "loss" : yawNorm >= 0 ? "theta1" : "theta2";
+
+        function line(to, cls) {
+          return svgEl("line", {
+            x1: origin.x.toFixed(1),
+            y1: origin.y.toFixed(1),
+            x2: to.x.toFixed(1),
+            y2: to.y.toFixed(1),
+            class: cls
+          });
+        }
+
+        cameraSvgCap.appendChild(line(theta1Shadow, "camera-axis soft"));
+        cameraSvgCap.appendChild(line(theta2Shadow, "camera-axis soft"));
+        cameraSvgCap.appendChild(line(lossTip, "camera-axis"));
+        cameraSvgCap.appendChild(line(theta1Tip, "camera-axis"));
+        cameraSvgCap.appendChild(line(theta2Tip, "camera-axis"));
+
+        cameraSvgCap.appendChild(svgEl("circle", {
+          cx: origin.x,
+          cy: origin.y,
+          r: 2.8,
+          class: "camera-node"
+        }));
+
+        [
+          { key: "theta1", tip: theta1Tip, text: "θ₁", dx: 8, dy: 4, cls: "camera-text" },
+          { key: "theta2", tip: theta2Tip, text: "θ₂", dx: -15, dy: 8, cls: "camera-text" },
+          { key: "loss", tip: lossTip, text: "L(θ)", dx: -11, dy: -8, cls: "camera-text loss" }
+        ].forEach(({ key, tip, text, dx, dy, cls }) => {
+          const circle = svgEl("circle", {
+            cx: tip.x.toFixed(1),
+            cy: tip.y.toFixed(1),
+            r: key === accentKey ? 3.25 : 2.55,
+            class: `camera-node${key === accentKey ? " accent" : ""}`
+          });
+          cameraSvgCap.appendChild(circle);
+          const label = svgEl("text", {
+            x: (tip.x + dx).toFixed(1),
+            y: (tip.y + dy).toFixed(1),
+            class: cls
+          });
+          label.textContent = text;
+          cameraSvgCap.appendChild(label);
+        });
+      }
+
+      function updateCameraInputs() {
+        const horizontalValue = Math.round((dragCameraOffset.yaw / baseLandscapeConfig.yawRange) * 100);
+        const verticalValue = Math.round((dragCameraOffset.pitch / baseLandscapeConfig.pitchRange) * 100);
+        cameraHorizontal.value = String(horizontalValue);
+        cameraVertical.value = String(verticalValue);
+        cameraHorizontalValue.textContent = `${Math.round(horizontalValue * 0.22)}°`;
+        cameraVerticalValue.textContent = `${Math.round(verticalValue * 0.18)}°`;
+        renderCameraCap();
+      }
+
+      function getResolvedCameraConfig() {
+        return {
+          ...baseLandscapeConfig,
+          azimuth: clamp(baseLandscapeConfig.baselineAzimuth + dragCameraOffset.yaw, 0.34, 1.18),
+          elevation: clamp(baseLandscapeConfig.baselineElevation - dragCameraOffset.pitch, 0.46, 1.18)
+        };
+      }
+
+
+
+      function bindCameraDrag() {
+        let dragging = false;
+        let pointerId = null;
+        let lastX = 0;
+        let lastY = 0;
+
+        const start = (event) => {
+          if (event.pointerType === "mouse" && event.button !== 0) return;
+          if (event.target.closest(".selector-row, .selected-card, .mobile-card, a, button, input, label")) return;
+
+          const svgRect = mapSvg.getBoundingClientRect();
+          const localX = ((event.clientX - svgRect.left) / svgRect.width) * 1520;
+          const localY = ((event.clientY - svgRect.top) / svgRect.height) * 920;
+
+          if (localY < 150) {
+            return;
+          }
+
+          dragging = true;
+          isDraggingLandscape = true;
+          pointerId = event.pointerId;
+          lastX = event.clientX;
+          lastY = event.clientY;
+          mapFrame.classList.add("dragging");
+          if (mapFrame.setPointerCapture) {
+            mapFrame.setPointerCapture(pointerId);
+          }
+        };
+
+        const move = (event) => {
+          if (!dragging || event.pointerId !== pointerId) return;
+          event.preventDefault();
+
+          const deltaX = event.clientX - lastX;
+          const deltaY = event.clientY - lastY;
+          lastX = event.clientX;
+          lastY = event.clientY;
+
+          const yawStep = baseLandscapeConfig.yawRange / 320;
+          const pitchStep = baseLandscapeConfig.pitchRange / 280;
+
+          dragCameraOffset.yaw = clamp(
+            dragCameraOffset.yaw + deltaX * yawStep,
+            -baseLandscapeConfig.yawRange,
+            baseLandscapeConfig.yawRange
+          );
+          dragCameraOffset.pitch = clamp(
+            dragCameraOffset.pitch - deltaY * pitchStep,
+            -baseLandscapeConfig.pitchRange,
+            baseLandscapeConfig.pitchRange
+          );
+
+          scheduleLandscapeRerender();
+        };
+
+        
+
+        const end = (event) => {
+          if (!dragging || event.pointerId !== pointerId) return;
+          dragging = false;
+          mapFrame.classList.remove("dragging");
+          if (mapFrame.hasPointerCapture && mapFrame.hasPointerCapture(pointerId)) {
+            mapFrame.releasePointerCapture(pointerId);
+          }
+          pointerId = null;
+          requestAnimationFrame(() => {
+            isDraggingLandscape = false;
+          });
+        };
+
+        mapFrame.addEventListener("pointerdown", start);
+        mapFrame.addEventListener("pointermove", move, { passive: false });
+        mapFrame.addEventListener("pointerup", end);
+        mapFrame.addEventListener("pointercancel", end);
+        mapFrame.addEventListener("lostpointercapture", () => {
+          dragging = false;
+          pointerId = null;
+          isDraggingLandscape = false;
+          mapFrame.classList.remove("dragging");
+        });
+      }
+
+      function gaussianBasin(x, y, cx, cy, sx, sy, amplitude) {
+        return amplitude * Math.exp(-(((x - cx) ** 2) / sx + ((y - cy) ** 2) / sy));
+      }
+
+      function lossSurface(x, y) {
+        const broadBowl = 0.038 * ((x - 0.14) ** 2 + 0.9 * (y - 0.12) ** 2);
+        const mlBasin = gaussianBasin(x, y, 0.28, 0.24, 0.28, 0.20, -1.18);
+        const mlShelf = gaussianBasin(x, y, 0.18, 0.12, 0.96, 0.72, -0.18);
+
+        const csBasin = gaussianBasin(x, y, -1.58, -1.02, 0.34, 0.28, -0.62);
+        const mathBasin = gaussianBasin(x, y, -1.56, 1.04, 0.36, 0.30, -0.68);
+        const systemsBasin = gaussianBasin(x, y, 1.56, -1.02, 0.40, 0.32, -0.56);
+        const projectsBasin = gaussianBasin(x, y, 1.48, 1.08, 0.38, 0.32, -0.58);
+
+        const ridgeNorth = 0.7 * Math.exp(-(((x + 0.08) ** 2) / 1.36 + ((y + 0.78 + 0.12 * Math.sin(1.4 * x)) ** 2) / 0.15));
+        const ridgeDiagonal = 0.5 * Math.exp(-(((x - 0.86 + 0.1 * Math.sin(1.8 * y)) ** 2) / 0.2 + ((y - 0.06) ** 2) / 0.84));
+        const ridgeSouth = 0.2 * Math.exp(-(((x + 0.12) ** 2) / 1.8 + ((y - 0.98 - 0.08 * Math.cos(1.7 * x)) ** 2) / 0.22));
+
+        const warpedCoupling = 0.08 * x * y - 0.034 * x + 0.02 * y;
+        const lowFrequencyRoughness =
+          0.08 * Math.sin(1.32 * x - 0.16) * Math.cos(1.08 * y + 0.18) +
+          0.04 * Math.sin(2.3 * x + 1.5 * y + 0.2) +
+          0.032 * Math.cos(2.8 * y - 0.7 * x + 0.4);
+
+        const localCrinkles =
+          gaussianBasin(x, y, -0.34, 0.64, 0.12, 0.08, 0.10) +
+          gaussianBasin(x, y, 1.08, 0.28, 0.10, 0.12, -0.08) +
+          gaussianBasin(x, y, -0.92, -0.12, 0.16, 0.08, 0.08) +
+          gaussianBasin(x, y, 0.92, -0.44, 0.10, 0.10, 0.06);
+
+        return broadBowl + mlBasin + mlShelf + csBasin + mathBasin + systemsBasin + projectsBasin + ridgeNorth + ridgeDiagonal + ridgeSouth + warpedCoupling + lowFrequencyRoughness + localCrinkles;
+      }
+
+      function finiteGradient(x, y) {
+        const h = 0.016;
+        return {
+          dx: (lossSurface(x + h, y) - lossSurface(x - h, y)) / (2 * h),
+          dy: (lossSurface(x, y + h) - lossSurface(x, y - h)) / (2 * h)
+        };
+      }
+
+      function clampToDomain(x, y) {
+        const [minX, maxX] = landscapeConfig.domainX;
+        const [minY, maxY] = landscapeConfig.domainY;
+        return {
+          x: clamp(x, minX, maxX),
+          y: clamp(y, minY, maxY)
+        };
+      }
+
+      function findLocalMinimum(seedX, seedY) {
+        let x = seedX;
+        let y = seedY;
+        let step = 0.12;
+        let best = lossSurface(x, y);
+
+        for (let i = 0; i < 60; i += 1) {
+          const grad = finiteGradient(x, y);
+          const mag = Math.hypot(grad.dx, grad.dy) || 1;
+          const candidate = clampToDomain(
+            x - (grad.dx / mag) * step,
+            y - (grad.dy / mag) * step
+          );
+          const value = lossSurface(candidate.x, candidate.y);
+
+          if (value < best) {
+            x = candidate.x;
+            y = candidate.y;
+            best = value;
+            step = Math.min(step * 1.08, 0.18);
+          } else {
+            step *= 0.58;
+          }
+
+          if (step < 0.0025) break;
+        }
+
+        return { x, y, z: best };
+      }
+
+      const regionMinimumSeeds = new Map([
+        ["computer-science", { x: -1.58, y: -1.02 }],
+        ["mathematics", { x: -1.56, y: 1.02 }],
+        ["machine-learning", { x: 0.28, y: 0.24 }],
+        ["systems", { x: 1.56, y: -1.02 }],
+        ["projects", { x: 1.48, y: 1.06 }]
+      ]);
+
+      const regionMinima = new Map(
+        Array.from(regionMinimumSeeds.entries()).map(([key, seed]) => [key, findLocalMinimum(seed.x, seed.y)])
+      );
+
+      function getRegionWeights(x, y) {
+        const raw = {};
+        let total = 0;
+
+        regionFields.forEach((field) => {
+          const dx = (x - field.center.x) / field.sigmaX;
+          const dy = (y - field.center.y) / field.sigmaY;
+          const radial = Math.exp(-(dx * dx + dy * dy));
+          const directional = 1 + 0.08 * Math.sin(1.35 * x + field.center.x) * Math.cos(1.18 * y - field.center.y);
+          const value = Math.max(0.0001, radial * field.boost * directional);
+          raw[field.key] = value;
+          total += value;
+        });
+
+        const normalized = {};
+        regionFields.forEach((field) => {
+          normalized[field.key] = raw[field.key] / total;
+        });
+        return normalized;
+      }
+
+      function blendRegionColor(weights, alphaScale = 1) {
+        let r = 0;
+        let g = 0;
+        let b = 0;
+        let dominant = 0;
+
+        regionFields.forEach((field) => {
+          const weight = weights[field.key];
+          r += field.color[0] * weight;
+          g += field.color[1] * weight;
+          b += field.color[2] * weight;
+          dominant = Math.max(dominant, weight);
+        });
+
+        const alpha = (0.04 + dominant * 0.08) * alphaScale;
+        return rgba([Math.round(r), Math.round(g), Math.round(b)], alpha);
+      }
+
+      if (!window.HomeGeometry) {
+        throw new Error(
+          "[homepage] Geometry helper failed to load from js/home/geometry.js."
+        );
+      }
+      
+      function rawProjectPointWithCamera(x, y, z, camera) {
+        return window.HomeGeometry.rawProjectPointWithCamera(x, y, z, camera);
+      }
+
+      function rawProjectPoint(x, y, z) {
+        return rawProjectPointWithCamera(x, y, z, landscapeConfig);
+      }
+
+      function projectPoint(x, y, z) {
+        const point = rawProjectPoint(x, y, z);
+        return {
+          x: point.x * projectionFit.scale + projectionFit.offsetX,
+          y: point.y * projectionFit.scale + projectionFit.offsetY,
+          z: point.z
+        };
+      }
+
+      function sampleLandscape() {
+        const [minX, maxX] = landscapeConfig.domainX;
+        const [minY, maxY] = landscapeConfig.domainY;
+        const rows = [];
+        const cells = [];
+
+        for (let yi = 0; yi < landscapeConfig.gridY; yi += 1) {
+          const y = minY + (yi / (landscapeConfig.gridY - 1)) * (maxY - minY);
+          const row = [];
+          for (let xi = 0; xi < landscapeConfig.gridX; xi += 1) {
+            const x = minX + (xi / (landscapeConfig.gridX - 1)) * (maxX - minX);
+            row.push({ x, y, z: lossSurface(x, y) });
+          }
+          rows.push(row);
+        }
+
+        for (let yi = 0; yi < rows.length - 1; yi += 1) {
+          for (let xi = 0; xi < rows[yi].length - 1; xi += 1) {
+            const p00 = rows[yi][xi];
+            const p10 = rows[yi][xi + 1];
+            const p11 = rows[yi + 1][xi + 1];
+            const p01 = rows[yi + 1][xi];
+            const cx = (p00.x + p10.x + p11.x + p01.x) / 4;
+            const cy = (p00.y + p10.y + p11.y + p01.y) / 4;
+            cells.push({
+              yi,
+              xi,
+              centerX: cx,
+              centerY: cy,
+              weights: getRegionWeights(cx, cy)
+            });
+          }
+        }
+
+        return { rows, cells };
+      }
+
+      function getCameraEnvelope() {
+        const yawRange = baseLandscapeConfig.yawRange;
+        const pitchRange = baseLandscapeConfig.pitchRange;
+        const baselineAzimuth = baseLandscapeConfig.baselineAzimuth;
+        const baselineElevation = baseLandscapeConfig.baselineElevation;
+
+        return [
+          { azimuth: baselineAzimuth, elevation: baselineElevation },
+          { azimuth: baselineAzimuth - yawRange, elevation: baselineElevation - pitchRange },
+          { azimuth: baselineAzimuth - yawRange, elevation: baselineElevation + pitchRange },
+          { azimuth: baselineAzimuth + yawRange, elevation: baselineElevation - pitchRange },
+          { azimuth: baselineAzimuth + yawRange, elevation: baselineElevation + pitchRange },
+          { azimuth: baselineAzimuth, elevation: baselineElevation - pitchRange },
+          { azimuth: baselineAzimuth, elevation: baselineElevation + pitchRange },
+          { azimuth: baselineAzimuth - yawRange, elevation: baselineElevation },
+          { azimuth: baselineAzimuth + yawRange, elevation: baselineElevation }
+        ];
+      }
+
+      function computeProjectionFit(sample) {
+        const { domainX, domainY, planeZ } = landscapeConfig;
+        const [minX, maxX] = domainX;
+        const [minY, maxY] = domainY;
+        const cameras = getCameraEnvelope();
+        const points = [];
+
+        cameras.forEach((camera) => {
+          sample.rows.forEach((row) => row.forEach((point) => points.push(rawProjectPointWithCamera(point.x, point.y, point.z, camera))));
+          [
+            rawProjectPointWithCamera(minX, minY, planeZ, camera),
+            rawProjectPointWithCamera(maxX, minY, planeZ, camera),
+            rawProjectPointWithCamera(maxX, maxY, planeZ, camera),
+            rawProjectPointWithCamera(minX, maxY, planeZ, camera)
+          ].forEach((point) => points.push(point));
+        });
+
+        const minProjectedX = Math.min(...points.map((point) => point.x));
+        const maxProjectedX = Math.max(...points.map((point) => point.x));
+        const minProjectedY = Math.min(...points.map((point) => point.y));
+        const maxProjectedY = Math.max(...points.map((point) => point.y));
+
+        const target = { minX: -360, maxX: 1534, minY: -72, maxY: 980 };
+        const width = Math.max(1, maxProjectedX - minProjectedX);
+        const height = Math.max(1, maxProjectedY - minProjectedY);
+        const targetWidth = target.maxX - target.minX;
+        const targetHeight = target.maxY - target.minY;
+        const scale = Math.min(targetWidth / width, targetHeight / height);
+
+        projectionFit.scale = scale;
+        projectionFit.offsetX = target.minX + (targetWidth - width * scale) / 2 - minProjectedX * scale - 28;
+        projectionFit.offsetY = target.minY + (targetHeight - height * scale) / 2 - minProjectedY * scale - 74;
+      }
+
+      function pointsString(points) {
+        return window.HomeGeometry.pointsString(points);
+      }
+
+      if (typeof window.createHomeRenderer !== "function") {
+        throw new Error(
+          "[homepage] Renderer helper failed to load from js/home/renderer.js."
+        );
+      }
+
+      const homeRenderer = window.createHomeRenderer({
+        landscapeConfig,
+        planeLayer,
+        wireBase,
+        wireAccent,
+        floorContours,
+        projectPoint,
+        pointsString
+      });
+
+      function buildPlane() {
+        homeRenderer.buildPlane();
+      }
+
+      function buildRegionLayers(sample) {
+        const theme = getTheme(activeKey);
+        const selectedColor = theme.rgb;
+        const selectedMinimum = regionMinima.get(activeKey);
+        const selectedField = regionFieldMap.get(activeKey);
+        const falloffX = selectedField.sigmaX * 0.92;
+        const falloffY = selectedField.sigmaY * 0.92;
+
+        let baseMarkup = "";
+        let activePlaneMarkup = "";
+        let activeSurfaceMarkup = "";
+
+        sample.cells.forEach((cell) => {
+          const { yi, xi, centerX, centerY, weights } = cell;
+          const p00 = sample.rows[yi][xi];
+          const p10 = sample.rows[yi][xi + 1];
+          const p11 = sample.rows[yi + 1][xi + 1];
+          const p01 = sample.rows[yi + 1][xi];
+
+          const dx = (centerX - selectedMinimum.x) / falloffX;
+          const dy = (centerY - selectedMinimum.y) / falloffY;
+          const basinField = Math.exp(-(dx * dx + dy * dy));
+          const influence = basinField * (0.42 + (weights[activeKey] || 0) * 0.88);
+
+          const planePolygon = [
+            projectPoint(p00.x, p00.y, landscapeConfig.planeZ),
+            projectPoint(p10.x, p10.y, landscapeConfig.planeZ),
+            projectPoint(p11.x, p11.y, landscapeConfig.planeZ),
+            projectPoint(p01.x, p01.y, landscapeConfig.planeZ)
+          ];
+
+          baseMarkup += `<polygon points="${pointsString(planePolygon)}" fill="${blendRegionColor(weights, 0.84)}"></polygon>`;
+
+          if (influence > 0.035) {
+            activePlaneMarkup += `<polygon points="${pointsString(planePolygon)}" fill="${rgba(selectedColor, 0.038 + influence * 0.26)}"></polygon>`;
+
+            const surfacePolygon = [
+              projectPoint(p00.x, p00.y, p00.z),
+              projectPoint(p10.x, p10.y, p10.z),
+              projectPoint(p11.x, p11.y, p11.z),
+              projectPoint(p01.x, p01.y, p01.z)
+            ];
+
+            const averageZ = (p00.z + p10.z + p11.z + p01.z) / 4;
+            const depthBoost = clamp((-averageZ - 0.02) / 0.92, 0, 1);
+            const alpha = 0.02 + influence * (0.08 + depthBoost * 0.24);
+
+            activeSurfaceMarkup += `<polygon points="${pointsString(surfacePolygon)}" fill="${rgba(selectedColor, alpha)}"></polygon>`;
+          }
+        });
+
+        planeBase.innerHTML = baseMarkup;
+        planeActive.innerHTML = activePlaneMarkup;
+        surfaceActive.innerHTML = activeSurfaceMarkup;
+      }
+
+      function buildWireframe(sample) {
+        homeRenderer.buildWireframe(sample);
+      }
+
+      function buildFloorContours() {
+        homeRenderer.buildFloorContours();
+      }
+
+      function buildMapButtonAnchors() {
+        mapButtonAnchors.innerHTML = "";
+
+        const baseOffsets = {
+          "computer-science": { dx: 0, dy: -92 },
+          mathematics: { dx: 0, dy: -106 },
+          "machine-learning": { dx: 0, dy: -138 },
+          systems: { dx: 0, dy: -92 },
+          projects: { dx: 0, dy: -106 }
+        };
+
+        const depths = regions.map((region) => -regionMinima.get(region.key).z);
+        const minDepth = Math.min(...depths);
+        const maxDepth = Math.max(...depths);
+        const depthRange = Math.max(0.001, maxDepth - minDepth);
+
+        regions.forEach((region) => {
+          const minimum = regionMinima.get(region.key);
+          const theme = getTheme(region.key);
+          const point = projectPoint(minimum.x, minimum.y, minimum.z);
+          const baseOffset = baseOffsets[region.key];
+          const active = region.key === activeKey;
+          const depth = -minimum.z;
+          const depthNorm = (depth - minDepth) / depthRange;
+          const depthLift = 10 + depthNorm * 34;
+          const offset = {
+            dx: baseOffset.dx,
+            dy: baseOffset.dy - depthLift
+          };
+          const lineX = point.x + offset.dx;
+          const lineEndY = point.y + offset.dy;
+          const buttonWidth = 262;
+          const buttonHeight = 52;
+          const buttonX = lineX - buttonWidth / 2;
+          const buttonY = lineEndY - buttonHeight;
+
+          const group = svgEl("g", {
+            class: `map-button-anchor${active ? " active" : ""}`
+          });
+
+          const connector = svgEl("path", {
+            class: "map-button-connector",
+            d: `M ${point.x.toFixed(1)} ${point.y.toFixed(1)} L ${lineX.toFixed(1)} ${lineEndY.toFixed(1)}`,
+            stroke: active ? rgba(theme.rgb, 0.95) : rgba(theme.rgb, 0.72)
+          });
+
+          const foreignObject = svgEl("foreignObject", {
+            x: buttonX.toFixed(1),
+            y: buttonY.toFixed(1),
+            width: buttonWidth.toFixed(1),
+            height: buttonHeight.toFixed(1)
+          });
+
+          const wrapper = document.createElement("div");
+          wrapper.setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+          wrapper.style.width = `${buttonWidth}px`;
+          wrapper.style.height = `${buttonHeight}px`;
+          wrapper.style.display = "flex";
+          wrapper.style.alignItems = "center";
+          wrapper.style.justifyContent = "center";
+          wrapper.style.pointerEvents = "none";
+
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = `area-button${active ? " active" : ""}`;
+          button.dataset.area = region.key;
+          button.textContent = region.label;
+          button.style.width = `${buttonWidth}px`;
+          button.style.height = `${buttonHeight}px`;
+          button.style.minHeight = `${buttonHeight}px`;
+          button.style.pointerEvents = "auto";
+          button.style.color = active ? theme.accent : "";
+          button.style.borderColor = active ? rgba(theme.rgb, 0.82) : "";
+          button.style.background = active ? `rgb(${Math.round(theme.rgb[0] * 0.28 + 255 * 0.72)}, ${Math.round(theme.rgb[1] * 0.28 + 252 * 0.72)}, ${Math.round(theme.rgb[2] * 0.28 + 245 * 0.72)})` : "";
+          button.setAttribute("aria-pressed", active ? "true" : "false");
+
+          button.addEventListener("click", () => setActive(region.key));
+          button.addEventListener("mouseenter", () => {
+            if (!isDraggingLandscape) setActive(region.key);
+          });
+          button.addEventListener("focus", () => {
+            if (!isDraggingLandscape) setActive(region.key);
+          });
+
+          wrapper.appendChild(button);
+          foreignObject.appendChild(wrapper);
+          group.appendChild(connector);
+          group.appendChild(foreignObject);
+          mapButtonAnchors.appendChild(group);
+        });
+      }
+
+      function buildMinimums() {
+        minimums.innerHTML = "";
+
+        regionMinima.forEach((minimum, key) => {
+          const theme = getTheme(key);
+          const surfacePoint = projectPoint(minimum.x, minimum.y, minimum.z);
+          const planePoint = projectPoint(minimum.x, minimum.y, landscapeConfig.planeZ);
+          const active = key === activeKey;
+
+          if (active) {
+            minimums.appendChild(svgEl("line", {
+              class: "projection",
+              x1: surfacePoint.x.toFixed(1),
+              y1: surfacePoint.y.toFixed(1),
+              x2: planePoint.x.toFixed(1),
+              y2: planePoint.y.toFixed(1),
+              stroke: theme.halo
+            }));
+          }
+
+          const group = svgEl("g", {
+            class: `minimum-anchor${active ? " active" : ""}`,
+            tabindex: "0",
+            role: "button",
+            "aria-label": `Select ${regions.find((region) => region.key === key)?.label || key}`,
+            transform: `translate(${surfacePoint.x.toFixed(1)} ${surfacePoint.y.toFixed(1)})`
+          });
+
+          const halo = svgEl("circle", {
+            class: "halo",
+            r: active ? "14.4" : "11.6",
+            fill: theme.halo
+          });
+
+          const ring = svgEl("circle", {
+            class: "ring",
+            r: active ? "6.4" : "5.4",
+            stroke: theme.ring
+          });
+
+          const core = svgEl("circle", {
+            class: "core",
+            r: active ? "3.45" : "2.95",
+            fill: theme.accent
+          });
+
+          group.appendChild(halo);
+          group.appendChild(ring);
+          group.appendChild(core);
+
+          group.addEventListener("click", () => setActive(key));
+          group.addEventListener("mouseenter", () => {
+            if (!isDraggingLandscape) setActive(key);
+          });
+          group.addEventListener("focus", () => {
+            if (!isDraggingLandscape) setActive(key);
+          });
+          group.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              setActive(key);
+            }
+          });
+
+          minimums.appendChild(group);
+        });
+      }
+
+      function updateOverlay(region) {
+        homeOverlay.updateOverlay(region);
+      }
+
+      function updateSelectorStates() {
+        selectorMap.forEach((button, key) => {
+          const active = key === activeKey;
+          button.classList.toggle("active", active);
+          button.style.color = active ? getTheme(key).accent : "";
+          button.style.borderColor = active ? getTheme(key).border : "";
+          button.style.background = active ? getTheme(key).soft : "";
+          button.setAttribute("aria-current", active ? "true" : "false");
+        });
+      }
+
+      function renderLandscape() {
+        const sample = cachedLandscape;
+        buildPlane();
+        buildRegionLayers(sample);
+        buildFloorContours();
+        buildWireframe(sample);
+        buildMapButtonAnchors();
+        buildMinimums();
+      }
+
+      function rerenderLandscape() {
+        Object.assign(landscapeConfig, getResolvedCameraConfig());
+        renderLandscape();
+        updateCameraInputs();
+      }
+
+      function scheduleLandscapeRerender() {
+        if (rerenderToken !== null) return;
+        rerenderToken = requestAnimationFrame(() => {
+          rerenderToken = null;
+          rerenderLandscape();
+        });
+      }
+
+      if (typeof window.createHomeCamera !== "function") {
+        throw new Error(
+          "[homepage] Camera helper failed to load from js/home/camera.js."
+        );
+      }
+
+      const homeCamera = window.createHomeCamera({
+        cameraHorizontal,
+        cameraVertical,
+        cameraReset,
+        baseLandscapeConfig,
+        dragCameraOffset,
+        clamp,
+        requestRender: scheduleLandscapeRerender
+      });
+          
+
+      function setActive(key) {
+        activeKey = key;
+        const region = regions.find((item) => item.key === key) || regions[0];
+        updateOverlay(region);
+        updateSelectorStates();
+        rerenderLandscape();
+      }
+
+      function buildSelectors() {
+        selectorRow.innerHTML = "";
+        selectorMap.clear();
+
+        regions.forEach((region) => {
+          const link = document.createElement("a");
+          link.className = "selector-pill";
+          link.href = region.href;
+          link.setAttribute("data-region-key", region.key);
+          link.innerHTML = `<span>${region.label}</span>`;
+          link.addEventListener("mouseenter", () => {
+            if (!isDraggingLandscape) setActive(region.key);
+          });
+          link.addEventListener("focus", () => {
+            if (!isDraggingLandscape) setActive(region.key);
+          });
+          selectorRow.appendChild(link);
+          selectorMap.set(region.key, link);
+        });
+      }
+
+      function getProjectedTargets() {
+        return regions.map((region) => {
+          const minimum = regionMinima.get(region.key);
+          return {
+            key: region.key,
+            surfacePoint: projectPoint(minimum.x, minimum.y, minimum.z),
+            planePoint: projectPoint(minimum.x, minimum.y, landscapeConfig.planeZ)
+          };
+        });
+      }
+
+      function bindHoverTracking() {
+        mapFrame.addEventListener("pointermove", (event) => {
+          if (isDraggingLandscape) return;
+          if (event.target.closest(".selected-card, .mobile-card, .selector-row")) return;
+
+          const rect = mapSvg.getBoundingClientRect();
+          const localX = ((event.clientX - rect.left) / rect.width) * 1520;
+          const localY = ((event.clientY - rect.top) / rect.height) * 920;
+
+          let nearest = null;
+          let nearestDistance = Infinity;
+
+          getProjectedTargets().forEach((target) => {
+            const ds = Math.hypot(target.surfacePoint.x - localX, target.surfacePoint.y - localY);
+            const dp = Math.hypot(target.planePoint.x - localX, target.planePoint.y - localY);
+            const distance = Math.min(ds, dp);
+            if (distance < nearestDistance) {
+              nearestDistance = distance;
+              nearest = target.key;
+            }
+          });
+
+          if (nearest && nearest !== activeKey) {
+            setActive(nearest);
+          }
+        });
+      }
+
+      cachedLandscape = sampleLandscape();
+      computeProjectionFit(cachedLandscape);
+      Object.assign(landscapeConfig, getResolvedCameraConfig());
+
+      buildSelectors();
+      homeCamera.bindInputs();
+      bindCameraDrag();
+      bindHoverTracking();
+      setActive(activeKey);
+      updateCameraInputs();
+    </script>
+  </body>
+</html>
