@@ -25,11 +25,23 @@ The five homepage regions are configured in `js/home/config.js`:
 
 To change a region's label, description, color, position, or route, start in `js/home/config.js`.
 
-### Local testing
+### Deployment
 
-Because the site uses plain static files, it can be tested locally with a simple HTTP server.
+The site is deployed with GitHub Pages from the repository's `main` branch.
 
-For example:
+Changes committed to `main` are published automatically after GitHub Pages finishes rebuilding the site.
 
-```bash
-python -m http.server 8000
+### Refactoring rule
+
+Preserve a known-good backup before major structural changes.
+
+After each refactor, verify:
+
+- desktop layout
+- mobile layout
+- region selection
+- keyboard focus
+- touch/hover behavior
+- camera drag
+- horizontal and vertical camera controls
+- reset behavior
