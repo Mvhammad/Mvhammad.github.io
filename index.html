@@ -69,6 +69,7 @@ body.empty .note{order:3;margin-top:14px}
 .dock{padding:0 0 14px}
 .chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
+.suggest{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .chip{flex:none;font:400 13px var(--sans);color:var(--muted);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer}
 .chip:hover{color:var(--ink);border-color:var(--ink)}
 form{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:6px 6px 6px 18px;box-shadow:0 8px 30px -18px rgba(0,0,0,.25)}
@@ -189,7 +190,7 @@ const TOPICS = [
     answer:["I'm Muhammad Ali, a Computational & Applied Mathematics & Statistics student at William & Mary and an undergraduate researcher working on large language models.",
             "Ask about my research, projects, coursework or skills."] },
 ];
-const FALLBACK = ["I only know about my own research, projects, coursework and skills. Try one of the suggestions below."];
+const FALLBACK = ["I only know about my own research, projects, coursework and skills. Try one of these:"];
 // The small colored label above each answer.
 const TAGS = { resampling:"Research", bear:"Projects", homology:"Projects", site:"Projects", projects:"Projects", research:"Research",
   math:"Mathematics", cs:"Computer Science", current:"Coursework", planned:"Coursework", education:"Education",
@@ -274,6 +275,14 @@ async function ask(q){
   }
   await sleep(250);
   await stream(bot, t ? (typeof t.answer === "function" ? t.answer() : t.answer) : FALLBACK);
+  if (!t){   // the suggestion row is hidden once a chat starts, so offer the suggestions inside the reply
+    const row = document.createElement("div"); row.className = "suggest";
+    for (const c of CHIPS){
+      const b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = c;
+      b.onclick = ()=>ask(c); row.appendChild(b);
+    }
+    bot.appendChild(row); log.scrollTop = log.scrollHeight;
+  }
   busy = false; send.disabled = false; input.focus({ preventScroll:true });
 }
 
