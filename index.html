@@ -1,1038 +1,303 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Muhammad Ali</title>
-    <link rel="stylesheet" href="css/pages/home.css">
-  </head>
-  <body>
-    <div class="page-shell">
-      <header class="site-header">
-        <a class="site-name" href="/">Muhammad Ali</a>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Muhammad Ali</title>
+<meta name="description" content="Muhammad Ali — machine learning research at William & Mary. Ask about my research, projects and coursework.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --card:#ffffff; --ink:#111111; --muted:#6b6b6b; --faint:#a3a3a3;
+  --line:rgba(0,0,0,.1); --bubble:#f2f2f2; --side:#fafafa;
+  --accent:199,146,46;
+  --serif:"Newsreader",Georgia,serif; --sans:"Inter",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#0b0b0b; --card:#161616; --ink:#f2f2f2; --muted:#9a9a9a; --faint:#5f5f5f; --line:rgba(255,255,255,.12); --bubble:#1e1e1e; --side:#101010; }
+}
+:root[data-theme="dark"]{ --bg:#0b0b0b; --card:#161616; --ink:#f2f2f2; --muted:#9a9a9a; --faint:#5f5f5f; --line:rgba(255,255,255,.12); --bubble:#1e1e1e; --side:#101010; }
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;overflow:hidden}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 var(--sans);-webkit-font-smoothing:antialiased;
+  display:grid;grid-template-columns:264px minmax(0,1fr);height:100vh;height:100dvh}
+a{color:inherit}
+.icon-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;width:30px;height:30px;cursor:pointer;font-size:13px;flex:none}
 
-        <div class="hero-copy">
-          <h1>
-            I’m an aspiring machine learning researcher focused on understanding and building
-            <span class="hero-emphasis" id="hero-emphasis">learning systems</span>
-            at both the theoretical and practical levels.
-          </h1>
-        </div>
+/* sidebar: a table of contents styled like saved conversations */
+.side{display:flex;flex-direction:column;min-height:0;background:var(--side);border-right:1px solid var(--line);padding:18px 12px 14px}
+.brand{font:400 20px var(--serif);text-decoration:none;padding:0 8px}
+.new{margin:16px 0 18px;display:flex;align-items:center;gap:8px;width:100%;font:500 13.5px var(--sans);color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer}
+.new:hover{border-color:var(--ink)}
+.links{display:flex;flex-direction:column;gap:2px}
+/* styled like a list of previous chats: one plain line each, highlight on hover */
+.link-item{display:block;font:400 14px var(--sans);color:var(--ink);text-decoration:none;border-radius:8px;padding:8px 10px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.link-item:hover{background:var(--bubble)}
+.menu-btn{display:none}
+.theme-btn{position:absolute;top:14px;right:16px;z-index:2}
 
-        <div class="header-right">
-          <nav class="site-nav" aria-label="External links">
-            <a href="/assets/resume/Muhammad_Ali_Resume.pdf" target="_blank" rel="noreferrer">Resume</a>
-            <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
-            <a href="https://www.linkedin.com/in/muhammad-ali-544477187/" target="_blank" rel="noreferrer">LinkedIn</a>
-            <a href="mailto:maali@wm.edu">Email</a>
-          </nav>
-          <div class="site-note">Website under construction — the homepage is the only working page right now.</div>
-        </div>
-      </header>
+.main{position:relative;display:grid;grid-template-rows:auto minmax(0,1fr) auto;min-height:0;min-width:0}
+.col{width:min(720px,100% - 32px);margin:0 auto}
+.main h1{font:400 clamp(18px,2vw,26px)/1.3 var(--serif);letter-spacing:-.01em;margin:24px auto 0;padding:0 36px;text-wrap:balance;text-align:center}
+h1 em{color:rgb(var(--accent));transition:color .6s}
 
-      <main class="site-main">
-        <section class="knowledge-map" aria-labelledby="knowledge-map-title">
-          <div class="map-topband">
-            <h2 class="map-title" id="knowledge-map-title">Knowledge Map</h2>
-            <p class="map-description">
-              This map uses a loss landscape as a metaphor for learning systems: each region marks an area of focus, and each minimum represents a local center of study.
-            </p>
-            <p class="map-hint">Hover a region or minimum, or drag to rotate.</p>
-          </div>
+/* before the first question: headline, box and suggestions sit together, centered on the page */
+body.empty .main{grid-template-rows:1fr auto 1.3fr}
+body.empty .log{display:none}
+body:not(.empty) .chips{display:none}   /* the sidebar covers navigation once the chat has started */
+body.empty h1{align-self:end;font-size:clamp(24px,3vw,36px);margin-bottom:28px}
+body.empty .chips{order:2;flex-wrap:wrap;justify-content:center;padding:14px 0 0}
+body.empty .note{order:3;margin-top:14px}
+.dock{display:flex;flex-direction:column}
+.log{animation:fade .4s both}
+@keyframes fade{from{opacity:0}}
+.tag{font:500 11px var(--sans);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
 
-          <div class="selector-row" id="selector-row" aria-label="Select a knowledge area"></div>
+.log{overflow-y:auto;padding:24px 0 12px;display:flex;flex-direction:column;gap:18px;scrollbar-width:thin}
+.msg{font-size:15px;line-height:1.65}
+.msg.user{align-self:flex-end;background:var(--bubble);padding:8px 14px;border-radius:18px;max-width:80%}
+.msg p{margin:0 0 8px}
+.msg p:last-child{margin-bottom:0}
+.msg .k{color:var(--muted)}
+.caret::after{content:"▍";color:var(--faint);animation:blink .8s infinite;margin-left:1px}
+@keyframes blink{50%{opacity:.2}}
+.msg a.link{color:rgb(var(--accent));text-underline-offset:3px}
 
-          <aside class="selected-card" id="selected-card" aria-live="polite">
-            <div class="selected-label">Selected region</div>
+.dock{padding:0 0 14px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;font:400 13px var(--sans);color:var(--muted);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer}
+.chip:hover{color:var(--ink);border-color:var(--ink)}
+form{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:6px 6px 6px 18px;box-shadow:0 8px 30px -18px rgba(0,0,0,.25)}
+form:focus-within{border-color:var(--ink)}
+input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--ink);font:400 15px var(--sans);padding:8px 0}
+input::placeholder{color:var(--faint)}
+form button{width:36px;height:36px;border-radius:50%;border:0;background:var(--ink);color:var(--bg);font-size:16px;cursor:pointer}
+form button:disabled{opacity:.3;cursor:default}
+.note{text-align:center;font-size:11.5px;color:var(--faint);margin-top:8px}
 
-            <div class="selected-head">
-              <div class="selected-icon" id="selected-icon"></div>
-              <h3 class="selected-title" id="selected-title"></h3>
-            </div>
+.cand{color:rgba(var(--accent),.6)}   /* a briefly sampled alternative word */
 
-            <div class="selected-thumb" id="selected-thumb" aria-hidden="true"></div>
+@media (max-width:760px){
+  body{grid-template-columns:minmax(0,1fr)}
+  .side{position:fixed;inset:0 auto 0 0;width:min(290px,86vw);z-index:5;transform:translateX(-100%);transition:transform .25s}
+  body.nav-open .side{transform:none;box-shadow:0 0 40px rgba(0,0,0,.2)}
+  .menu-btn{display:grid;place-items:center;position:absolute;top:12px;left:12px;z-index:2}
+  .main h1{margin-top:54px;font-size:17px}
+  body.empty h1{font-size:22px}
+}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body class="empty">
 
-            <div class="selected-accent" id="selected-accent"></div>
+<aside class="side" id="side">
+  <a class="brand" href="./">Muhammad Ali</a>
+  <button class="new" id="new" type="button">＋ New chat</button>
+  <nav class="links" aria-label="Links">
+    <a class="link-item" href="https://mvhammad.github.io/assets/resume/Muhammad_Ali_Resume.pdf" target="_blank" rel="noopener">Résumé</a>
+    <a class="link-item" href="https://github.com/mvhammad" target="_blank" rel="noopener">GitHub</a>
+    <a class="link-item" href="https://www.linkedin.com/in/muhammad-ali-544477187/" target="_blank" rel="noopener">LinkedIn</a>
+    <a class="link-item" href="mailto:maali@wm.edu">Email</a>
+  </nav>
+</aside>
 
-            <p class="selected-blurb" id="selected-blurb"></p>
+<div class="main">
+<button class="icon-btn menu-btn" id="menu" type="button" aria-label="Open menu">☰</button>
+<button class="icon-btn theme-btn" id="theme" type="button" aria-label="Toggle dark mode" title="Toggle theme">◐</button>
 
-            <div class="selected-cta-wrap">
-              <a class="selected-cta" id="selected-cta" href="#">Explore</a>
-            </div>
+<h1 class="col">I'm an aspiring machine learning researcher focused on understanding and building <em>learning systems</em>.</h1>
 
-            <div class="camera-panel">
-              <div class="camera-label">Camera</div>
+<main class="log col" id="log" aria-live="polite"></main>
 
-              <div class="camera-widget" aria-hidden="true">
-                <svg id="camera-svg" viewBox="0 0 164 118" preserveAspectRatio="xMidYMid meet">
-                  <rect class="camera-base" x="15" y="11" width="134" height="96" rx="16"></rect>
-                  <g id="camera-cap"></g>
-                </svg>
-              </div>
+<div class="dock col">
+  <div class="chips" id="chips"></div>
+  <form id="ask">
+    <input id="q" autocomplete="off" placeholder="Ask about my research, projects or courses…" aria-label="Ask a question">
+    <button id="send" aria-label="Send">↑</button>
+  </form>
+  <div class="note">Answers are written by me and matched to your question. No AI model is called.</div>
+</div>
+</div>
 
-              <div class="camera-control">
-                <div class="camera-head">
-                  <div class="camera-name">Horizontal</div>
-                  <div class="camera-value" id="camera-horizontal-value">0°</div>
-                </div>
-                <input class="camera-slider" id="camera-horizontal" type="range" min="-100" max="100" value="0" step="1" />
-              </div>
+<script>
+/* ============ CONTENT — edit everything here ============ */
+const COLORS = { research:[199,146,46], projects:[185,121,102], math:[138,122,154], cs:[111,135,150] };
 
-              <div class="camera-control">
-                <div class="camera-head">
-                  <div class="camera-name">Vertical</div>
-                  <div class="camera-value" id="camera-vertical-value">0°</div>
-                </div>
-                <input class="camera-slider" id="camera-vertical" type="range" min="-100" max="100" value="0" step="1" />
-              </div>
+const RESUME = "https://mvhammad.github.io/assets/resume/Muhammad_Ali_Resume.pdf";
 
-              <button class="camera-reset" id="camera-reset" type="button">Reset view</button>
-            </div>
-          </aside>
+// Each topic: keywords that trigger it, its color, and the answer (one string per paragraph).
+// Details live on the résumé; answers summarize and point there.
+const TOPICS = [
+  { id:"resampling", color:"research",
+    keys:["resampling","resample","token","tokens","sampling","ppot","probabilistic","inference","autoregressive"],
+    answer:["An in-progress Statistical Learning project connected to my SEMERU research: probabilistic token-level sampling and resampling for programs generated by large language models.",
+            "I'm studying the Probabilistic Programs of Thought (PPoT) method and its implementation, and examining how resampling earlier tokens may change the distributions of later ones, to find questions worth testing empirically."] },
+  { id:"bear", color:"projects",
+    keys:["bear","bears","wildlife","kenai","classifier","resnet","image","vision","camera","cv"],
+    answer:["Brown Bear ID is an image classifier that tells individual brown bears apart in camera-trap footage from Kenai National Wildlife Refuge.",
+            "I fine-tuned an ImageNet-pretrained ResNet-50 with data augmentation, and grouped five-fold cross-validation by source video so near-identical frames couldn't leak between training and validation. Built with Python and TensorFlow/Keras."] },
+  { id:"homology", color:"projects",
+    keys:["homology","topology","topological","tda","persistent","manifold","vietoris","rips"],
+    answer:["I studied how well persistent homology recovers the topology of a sinusoidal manifold from a finite, noisy sample.",
+            "I generated point clouds with varying sample sizes, noise levels and sampling distributions, built Vietoris–Rips filtrations, and separated real topological structure from artifacts of sampling and noise, while tracking runtime and memory for reproducibility."] },
+  { id:"site", color:"projects",
+    keys:["website","site","page","chat","chatbot","portfolio"],
+    answer:["This site is hand-built HTML, CSS and JavaScript on GitHub Pages. The chat matches your question against answers I wrote, so it can't make anything up about me."] },
+  { id:"research", color:"research",
+    keys:["research","researching","lab","semeru","llm","llms","language","generation","reasoning","poshyvanyk","working","paper","experience","ml","ai","machine"],
+    answer:["I'm an undergraduate research assistant in the SEMERU Research Group at William & Mary, working with Prof. Denys Poshyvanyk on large language models and AI for software engineering.",
+            "I'm studying probabilistic approaches to LLM reasoning and generation, including token-level sampling and autoregressive dependencies."] },
+  { id:"projects", color:"projects",
+    keys:["project","projects","built","build","made","work"],
+    answer:["A few things I've worked on:",
+            "Brown Bear ID: telling individual brown bears apart in camera-trap footage with a fine-tuned ResNet-50.",
+            "Persistent Homology of Sampled Manifolds: how well topology survives finite, noisy sampling.",
+            "Token Resampling (in progress): probabilistic sampling and resampling for LLM-generated programs.",
+            `Ask about any of them, or find links to each on my [résumé](${RESUME}).`] },
+  { id:"math", color:"math",
+    keys:["math","mathematics","analysis","probability","statistics","statistical","algebra","graph","measure","proof","proofs","theory"],
+    answer:["My math centers on probability, statistics, analysis and linear algebra: Real Analysis, Abstract Linear Algebra, Probability, Mathematical Statistics, Statistical Learning and Graph Theory & Applications, with Measure Theory planned.",
+            `The full list is on my [résumé](${RESUME}).`] },
+  { id:"cs", color:"cs",
+    keys:["cs","computer","algorithm","algorithms","programming","software","neural","network","networks","geometry","engineering","mining"],
+    answer:["On the computer science side: Fundamentals of AI/ML, Neural Networks, High-Dimensional Geometry of Data and Software Engineering, with Data Mining, Large Language Models and Generative AI for Software Development planned.",
+            `The full list is on my [résumé](${RESUME}).`] },
+  { id:"current", color:"research",
+    keys:["semester","now","currently","taking","fall","this"],
+    answer:[`Right now my focus is research in the SEMERU lab and a Statistical Learning project on token resampling. My coursework is on my [résumé](${RESUME}).`] },
+  { id:"planned", color:"research",
+    keys:["next","spring","plan","planned","planning","future"],
+    answer:["Next I plan to take Measure Theory, Data Mining, Large Language Models and Generative AI for Software Development."] },
+  { id:"education", color:"research",
+    keys:["school","college","university","major","degree","study","studying","william","mary","education","courses","classes","coursework"],
+    answer:["I'm studying for a B.S. in Computational & Applied Mathematics & Statistics at William & Mary.",
+            `Ask about my math or computer science coursework, or see the full list on my [résumé](${RESUME}).`] },
+  { id:"skills", color:"cs",
+    keys:["skill","skills","languages","python","tools","stack","tech","library","libraries","tensorflow","keras","numpy","pandas","know"],
+    answer:["Languages: Python, R and LaTeX.",
+            "Tools: Git, GitHub, VS Code, Jupyter and Linux/WSL.",
+            "ML and data: NumPy, pandas, Matplotlib, scikit-learn and TensorFlow/Keras."] },
+  { id:"contact", color:"research",
+    keys:["contact","email","reach","hire","hiring","linkedin","connect","talk","touch","resume","cv","résumé"],
+    answer:[`Email is best: [maali@wm.edu](mailto:maali@wm.edu). I'm also on [LinkedIn](https://www.linkedin.com/in/muhammad-ali-544477187/) and [GitHub](https://github.com/mvhammad), and my [résumé](${RESUME}) has everything in one page, with links to my projects.`] },
+  { id:"intro", color:"research",
+    keys:["who","yourself","hi","hello","hey","background","introduce","muhammad"],
+    answer:["I'm Muhammad Ali, a Computational & Applied Mathematics & Statistics student at William & Mary and an undergraduate researcher working on large language models.",
+            "Ask about my research, projects, coursework or skills."] },
+];
+const FALLBACK = ["I only know about my own research, projects, coursework and skills. Try one of the suggestions below."];
+// The small colored label above each answer.
+const TAGS = { resampling:"Research", bear:"Projects", homology:"Projects", site:"Projects", projects:"Projects", research:"Research",
+  math:"Mathematics", cs:"Computer Science", current:"Coursework", planned:"Coursework", education:"Education",
+  skills:"Skills", contact:"Contact", intro:"About" };
+const CHIPS = ["What are you researching?","What is token resampling?","Show me your projects","What math have you taken?","How can I reach you?"];
 
-          <aside class="mobile-card" id="mobile-card" aria-live="polite">
-            <div class="mobile-shell">
-              <div class="selected-label">Selected region</div>
-              <div class="mobile-head">
-                <div class="selected-icon" id="mobile-icon"></div>
-                <h3 class="mobile-title" id="mobile-title"></h3>
-              </div>
-              <p class="mobile-blurb" id="mobile-blurb"></p>
-              <a class="selected-cta mobile-link" id="mobile-cta" href="#">Explore</a>
-            </div>
-          </aside>
+/* ============ MATCHING ============ */
+// shortcut: keyword overlap, not real understanding; swap in an embedding or LLM backend if visitors ask things it misses
+const norm = w => w.length > 3 ? w.replace(/s$/,"") : w;
+// true when a and b differ by at most one inserted, deleted or changed letter ("reserch" ~ "research")
+function near(a, b){
+  if (Math.abs(a.length - b.length) > 1) return false;
+  let i = 0, j = 0, edits = 0;
+  while (i < a.length && j < b.length){
+    if (a[i] === b[j]){ i++; j++; continue; }
+    if (++edits > 1) return false;
+    if (a.length > b.length) i++; else if (a.length < b.length) j++; else { i++; j++; }
+  }
+  return edits + (a.length - i) + (b.length - j) <= 1;
+}
+function pick(q){
+  const words = [...new Set((q.toLowerCase().match(/[a-zé0-9+#]+/g) || []).map(norm))];
+  // typos only on words of 6+ letters: shorter ones collide too easily ("taken" ~ "token")
+  const hit = k => words.includes(k) || (k.length >= 6 && words.some(w => w.length >= 6 && near(w, k)));
+  let best = null, top = 0;
+  for (const t of TOPICS){
+    const s = [...new Set(t.keys.map(norm))].filter(hit).length;
+    if (s > top){ best = t; top = s; }   // ties go to the earlier, more specific topic
+  }
+  return best;
+}
+console.assert(pick("What are you researching?").id==="research", "research");
+console.assert(pick("Tell me about the bear project").id==="bear", "bear");
+console.assert(pick("What math have you taken?").id==="math", "math");
+console.assert(pick("What are you taking this semester?").id==="current", "current");
+console.assert(pick("Who are you?").id==="intro", "intro");
+console.assert(pick("asdf qwerty")===null, "fallback");
+console.assert(pick("Do you like cats?")===null, "no stray intro match");
+console.assert(pick("Tell me about your ML experience").id==="research", "ml");
+console.assert(pick("reserch experience").id==="research", "typo");
+console.assert(pick("What mathematics courses?").id==="math", "math over education");
+console.assert(pick("What is token resampling?").id==="resampling", "resampling");
+console.assert(pick("Tell me about PPoT").id==="resampling", "ppot");
+/* ============ CHAT ============ */
+const log = document.getElementById("log"), input = document.getElementById("q"), send = document.getElementById("send");
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const sleep = ms => new Promise(r=>setTimeout(r, reduceMotion ? 0 : ms));
+const esc = s => s.replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt = s => esc(s).replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_,t,h)=>`<a class="link" href="${h}"${/^https?:/.test(h)?' target="_blank" rel="noopener"':""}>${t}</a>`);
+const setAccent = rgb => document.documentElement.style.setProperty("--accent", rgb.join(","));
+let busy = false;
 
-          <div class="map-frame" id="map-frame">
-            <svg id="map-svg" viewBox="0 0 1520 920" preserveAspectRatio="none" role="img" aria-label="Interactive loss landscape knowledge map">
-              <g transform="translate(28 176)">
-                <g id="plane-base" class="plane-base"></g>
-                <g id="plane" class="plane"></g>
-                <g id="plane-active" class="plane-active"></g>
-                <g id="floor-contours" class="contours"></g>
-                <g id="surface-active" class="surface-active"></g>
-                <g id="wire-base" class="wire"></g>
-                <g id="wire-accent" class="wire"></g>
-                <g id="map-button-anchors"></g>
-                <g id="minimums" class="minimums"></g>
-              </g>
-            </svg>
-          </div>
-        </section>
-      </main>
-    </div>
-
-    <script src="js/home/config.js"></script>
-    <script src="js/home/dom.js"></script>
-    <script src="js/home/overlay.js"></script>
-    <script src="js/home/camera.js"></script>
-    <script src="js/home/geometry.js"></script>
-    <script src="js/home/renderer.js"></script>
-    
-    <script>
-      const SVG_NS = "http://www.w3.org/2000/svg";
-
-      if (!window.HomeConfig) {
-        throw new Error(
-          "[homepage] Configuration failed to load from js/home/config.js."
-        );
+function add(cls){ const d = document.createElement("div"); d.className = "msg " + cls; log.appendChild(d); return d; }
+async function stream(el, paras){
+  for (const para of paras){
+    const p = document.createElement("p"); p.className = "caret"; el.appendChild(p);
+    const plain = para.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");   // type the link text, then swap in the real links
+    const pool = plain.match(/[A-Za-z]{4,}/g) || [];
+    let acc = "";
+    for (const tok of plain.match(/\S+\s*/g)){
+      // like token sampling: some words briefly show a candidate from the same answer before the chosen one lands
+      if (!reduceMotion && pool.length && Math.random() < 0.3){
+        p.innerHTML = esc(acc) + `<span class="cand">${esc(pool[Math.random()*pool.length|0])}</span>`;
+        await sleep(45);
       }
-
-      const {
-        icons,
-        regions,
-        areaThemes,
-        regionFields,
-        regionFieldMap,
-        baseLandscapeConfig
-      } = window.HomeConfig;
-
-      const landscapeConfig = {
-        domainX: [-2.05, 2.15],
-        domainY: [-1.55, 1.65],
-        gridX: 27,
-        gridY: 21,
-        planeZ: -1.36,
-        azimuth: 0.72,
-        elevation: 0.82
-      };
-      
-      if (typeof window.getHomeDom !== "function") {
-        throw new Error(
-          "[homepage] DOM helper failed to load from js/home/dom.js."
-        );
-      }
-      
-      const {
-        selectorRow,
-        selectedCard,
-        selectedIcon,
-        selectedTitle,
-        selectedThumb,
-        selectedAccent,
-        selectedBlurb,
-        selectedCta,
-        mobileIcon,
-        mobileTitle,
-        mobileBlurb,
-        mobileCta,
-        heroEmphasis,
-        mapFrame,
-        mapSvg,
-        planeBase,
-        planeLayer,
-        planeActive,
-        floorContours,
-        surfaceActive,
-        wireBase,
-        wireAccent,
-        minimums,
-        mapButtonAnchors,
-        cameraSvgCap,
-        cameraHorizontal,
-        cameraVertical,
-        cameraHorizontalValue,
-        cameraVerticalValue,
-        cameraReset
-     } = window.getHomeDom();
-
-      if (typeof window.createHomeOverlay !== "function") {
-        throw new Error(
-          "[homepage] Overlay helper failed to load from js/home/overlay.js."
-        );
-      }
-
-      const homeOverlay = window.createHomeOverlay({
-        areaThemes,
-        icons,
-        heroEmphasis,
-        selectedIcon,
-        selectedTitle,
-        selectedThumb,
-        selectedAccent,
-        selectedBlurb,
-        selectedCta,
-        mobileIcon,
-        mobileTitle,
-        mobileBlurb,
-        mobileCta
-      });
-
-      let activeKey = "machine-learning";
-      let cachedLandscape = null;
-      const selectorMap = new Map();
-      const projectionFit = { scale: 1, offsetX: 0, offsetY: 0 };
-      const dragCameraOffset = { yaw: 0, pitch: 0 };
-      let isDraggingLandscape = false;
-      let rerenderToken = null;
-
-      function svgEl(tag, attrs = {}) {
-        const el = document.createElementNS(SVG_NS, tag);
-        Object.entries(attrs).forEach(([key, value]) => {
-          el.setAttribute(key, String(value));
-        });
-        return el;
-      }
-
-      function clamp(value, min, max) {
-        return Math.max(min, Math.min(max, value));
-      }
-
-      function getTheme(key) {
-        return areaThemes[key] || areaThemes["machine-learning"];
-      }
-      
-      function rgba(rgb, alpha) {
-        return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`;
-      }
-
-      function renderCameraCap() {
-        cameraSvgCap.innerHTML = "";
-
-        const yawNorm = clamp(dragCameraOffset.yaw / baseLandscapeConfig.yawRange, -1, 1);
-        const pitchNorm = clamp(dragCameraOffset.pitch / baseLandscapeConfig.pitchRange, -1, 1);
-        const origin = { x: 82, y: 80 };
-
-        const theta1Tip = { x: origin.x + 34 + yawNorm * 12, y: origin.y - 18 - pitchNorm * 7 };
-        const theta2Tip = { x: origin.x - 30 + yawNorm * 8, y: origin.y - 10 + pitchNorm * 12 };
-        const lossTip = { x: origin.x + yawNorm * 8, y: origin.y - 40 - pitchNorm * 16 };
-        const theta1Shadow = { x: theta1Tip.x, y: origin.y + 9 };
-        const theta2Shadow = { x: theta2Tip.x, y: origin.y + 9 };
-
-        const accentKey = Math.abs(pitchNorm) > Math.abs(yawNorm) ? "loss" : yawNorm >= 0 ? "theta1" : "theta2";
-
-        function line(to, cls) {
-          return svgEl("line", {
-            x1: origin.x.toFixed(1),
-            y1: origin.y.toFixed(1),
-            x2: to.x.toFixed(1),
-            y2: to.y.toFixed(1),
-            class: cls
-          });
-        }
-
-        cameraSvgCap.appendChild(line(theta1Shadow, "camera-axis soft"));
-        cameraSvgCap.appendChild(line(theta2Shadow, "camera-axis soft"));
-        cameraSvgCap.appendChild(line(lossTip, "camera-axis"));
-        cameraSvgCap.appendChild(line(theta1Tip, "camera-axis"));
-        cameraSvgCap.appendChild(line(theta2Tip, "camera-axis"));
-
-        cameraSvgCap.appendChild(svgEl("circle", {
-          cx: origin.x,
-          cy: origin.y,
-          r: 2.8,
-          class: "camera-node"
-        }));
-
-        [
-          { key: "theta1", tip: theta1Tip, text: "θ₁", dx: 8, dy: 4, cls: "camera-text" },
-          { key: "theta2", tip: theta2Tip, text: "θ₂", dx: -15, dy: 8, cls: "camera-text" },
-          { key: "loss", tip: lossTip, text: "L(θ)", dx: -11, dy: -8, cls: "camera-text loss" }
-        ].forEach(({ key, tip, text, dx, dy, cls }) => {
-          const circle = svgEl("circle", {
-            cx: tip.x.toFixed(1),
-            cy: tip.y.toFixed(1),
-            r: key === accentKey ? 3.25 : 2.55,
-            class: `camera-node${key === accentKey ? " accent" : ""}`
-          });
-          cameraSvgCap.appendChild(circle);
-          const label = svgEl("text", {
-            x: (tip.x + dx).toFixed(1),
-            y: (tip.y + dy).toFixed(1),
-            class: cls
-          });
-          label.textContent = text;
-          cameraSvgCap.appendChild(label);
-        });
-      }
-
-      function updateCameraInputs() {
-        const horizontalValue = Math.round((dragCameraOffset.yaw / baseLandscapeConfig.yawRange) * 100);
-        const verticalValue = Math.round((dragCameraOffset.pitch / baseLandscapeConfig.pitchRange) * 100);
-        cameraHorizontal.value = String(horizontalValue);
-        cameraVertical.value = String(verticalValue);
-        cameraHorizontalValue.textContent = `${Math.round(horizontalValue * 0.22)}°`;
-        cameraVerticalValue.textContent = `${Math.round(verticalValue * 0.18)}°`;
-        renderCameraCap();
-      }
-
-      function getResolvedCameraConfig() {
-        return {
-          ...baseLandscapeConfig,
-          azimuth: clamp(baseLandscapeConfig.baselineAzimuth + dragCameraOffset.yaw, 0.34, 1.18),
-          elevation: clamp(baseLandscapeConfig.baselineElevation - dragCameraOffset.pitch, 0.46, 1.18)
-        };
-      }
-
-
-
-      function bindCameraDrag() {
-        let dragging = false;
-        let pointerId = null;
-        let lastX = 0;
-        let lastY = 0;
-
-        const start = (event) => {
-          if (event.pointerType === "mouse" && event.button !== 0) return;
-          if (event.target.closest(".selector-row, .selected-card, .mobile-card, a, button, input, label")) return;
-
-          const svgRect = mapSvg.getBoundingClientRect();
-          const localX = ((event.clientX - svgRect.left) / svgRect.width) * 1520;
-          const localY = ((event.clientY - svgRect.top) / svgRect.height) * 920;
-
-          if (localY < 150) {
-            return;
-          }
-
-          dragging = true;
-          isDraggingLandscape = true;
-          pointerId = event.pointerId;
-          lastX = event.clientX;
-          lastY = event.clientY;
-          mapFrame.classList.add("dragging");
-          if (mapFrame.setPointerCapture) {
-            mapFrame.setPointerCapture(pointerId);
-          }
-        };
-
-        const move = (event) => {
-          if (!dragging || event.pointerId !== pointerId) return;
-          event.preventDefault();
-
-          const deltaX = event.clientX - lastX;
-          const deltaY = event.clientY - lastY;
-          lastX = event.clientX;
-          lastY = event.clientY;
-
-          const yawStep = baseLandscapeConfig.yawRange / 320;
-          const pitchStep = baseLandscapeConfig.pitchRange / 280;
-
-          dragCameraOffset.yaw = clamp(
-            dragCameraOffset.yaw + deltaX * yawStep,
-            -baseLandscapeConfig.yawRange,
-            baseLandscapeConfig.yawRange
-          );
-          dragCameraOffset.pitch = clamp(
-            dragCameraOffset.pitch - deltaY * pitchStep,
-            -baseLandscapeConfig.pitchRange,
-            baseLandscapeConfig.pitchRange
-          );
-
-          scheduleLandscapeRerender();
-        };
-
-        
-
-        const end = (event) => {
-          if (!dragging || event.pointerId !== pointerId) return;
-          dragging = false;
-          mapFrame.classList.remove("dragging");
-          if (mapFrame.hasPointerCapture && mapFrame.hasPointerCapture(pointerId)) {
-            mapFrame.releasePointerCapture(pointerId);
-          }
-          pointerId = null;
-          requestAnimationFrame(() => {
-            isDraggingLandscape = false;
-          });
-        };
-
-        mapFrame.addEventListener("pointerdown", start);
-        mapFrame.addEventListener("pointermove", move, { passive: false });
-        mapFrame.addEventListener("pointerup", end);
-        mapFrame.addEventListener("pointercancel", end);
-        mapFrame.addEventListener("lostpointercapture", () => {
-          dragging = false;
-          pointerId = null;
-          isDraggingLandscape = false;
-          mapFrame.classList.remove("dragging");
-        });
-      }
-
-      function gaussianBasin(x, y, cx, cy, sx, sy, amplitude) {
-        return amplitude * Math.exp(-(((x - cx) ** 2) / sx + ((y - cy) ** 2) / sy));
-      }
-
-      function lossSurface(x, y) {
-        const broadBowl = 0.038 * ((x - 0.14) ** 2 + 0.9 * (y - 0.12) ** 2);
-        const mlBasin = gaussianBasin(x, y, 0.28, 0.24, 0.28, 0.20, -1.18);
-        const mlShelf = gaussianBasin(x, y, 0.18, 0.12, 0.96, 0.72, -0.18);
-
-        const csBasin = gaussianBasin(x, y, -1.58, -1.02, 0.34, 0.28, -0.62);
-        const mathBasin = gaussianBasin(x, y, -1.56, 1.04, 0.36, 0.30, -0.68);
-        const systemsBasin = gaussianBasin(x, y, 1.56, -1.02, 0.40, 0.32, -0.56);
-        const projectsBasin = gaussianBasin(x, y, 1.48, 1.08, 0.38, 0.32, -0.58);
-
-        const ridgeNorth = 0.7 * Math.exp(-(((x + 0.08) ** 2) / 1.36 + ((y + 0.78 + 0.12 * Math.sin(1.4 * x)) ** 2) / 0.15));
-        const ridgeDiagonal = 0.5 * Math.exp(-(((x - 0.86 + 0.1 * Math.sin(1.8 * y)) ** 2) / 0.2 + ((y - 0.06) ** 2) / 0.84));
-        const ridgeSouth = 0.2 * Math.exp(-(((x + 0.12) ** 2) / 1.8 + ((y - 0.98 - 0.08 * Math.cos(1.7 * x)) ** 2) / 0.22));
-
-        const warpedCoupling = 0.08 * x * y - 0.034 * x + 0.02 * y;
-        const lowFrequencyRoughness =
-          0.08 * Math.sin(1.32 * x - 0.16) * Math.cos(1.08 * y + 0.18) +
-          0.04 * Math.sin(2.3 * x + 1.5 * y + 0.2) +
-          0.032 * Math.cos(2.8 * y - 0.7 * x + 0.4);
-
-        const localCrinkles =
-          gaussianBasin(x, y, -0.34, 0.64, 0.12, 0.08, 0.10) +
-          gaussianBasin(x, y, 1.08, 0.28, 0.10, 0.12, -0.08) +
-          gaussianBasin(x, y, -0.92, -0.12, 0.16, 0.08, 0.08) +
-          gaussianBasin(x, y, 0.92, -0.44, 0.10, 0.10, 0.06);
-
-        return broadBowl + mlBasin + mlShelf + csBasin + mathBasin + systemsBasin + projectsBasin + ridgeNorth + ridgeDiagonal + ridgeSouth + warpedCoupling + lowFrequencyRoughness + localCrinkles;
-      }
-
-      function finiteGradient(x, y) {
-        const h = 0.016;
-        return {
-          dx: (lossSurface(x + h, y) - lossSurface(x - h, y)) / (2 * h),
-          dy: (lossSurface(x, y + h) - lossSurface(x, y - h)) / (2 * h)
-        };
-      }
-
-      function clampToDomain(x, y) {
-        const [minX, maxX] = landscapeConfig.domainX;
-        const [minY, maxY] = landscapeConfig.domainY;
-        return {
-          x: clamp(x, minX, maxX),
-          y: clamp(y, minY, maxY)
-        };
-      }
-
-      function findLocalMinimum(seedX, seedY) {
-        let x = seedX;
-        let y = seedY;
-        let step = 0.12;
-        let best = lossSurface(x, y);
-
-        for (let i = 0; i < 60; i += 1) {
-          const grad = finiteGradient(x, y);
-          const mag = Math.hypot(grad.dx, grad.dy) || 1;
-          const candidate = clampToDomain(
-            x - (grad.dx / mag) * step,
-            y - (grad.dy / mag) * step
-          );
-          const value = lossSurface(candidate.x, candidate.y);
-
-          if (value < best) {
-            x = candidate.x;
-            y = candidate.y;
-            best = value;
-            step = Math.min(step * 1.08, 0.18);
-          } else {
-            step *= 0.58;
-          }
-
-          if (step < 0.0025) break;
-        }
-
-        return { x, y, z: best };
-      }
-
-      const regionMinimumSeeds = new Map([
-        ["computer-science", { x: -1.58, y: -1.02 }],
-        ["mathematics", { x: -1.56, y: 1.02 }],
-        ["machine-learning", { x: 0.28, y: 0.24 }],
-        ["systems", { x: 1.56, y: -1.02 }],
-        ["projects", { x: 1.48, y: 1.06 }]
-      ]);
-
-      const regionMinima = new Map(
-        Array.from(regionMinimumSeeds.entries()).map(([key, seed]) => [key, findLocalMinimum(seed.x, seed.y)])
-      );
-
-      function getRegionWeights(x, y) {
-        const raw = {};
-        let total = 0;
-
-        regionFields.forEach((field) => {
-          const dx = (x - field.center.x) / field.sigmaX;
-          const dy = (y - field.center.y) / field.sigmaY;
-          const radial = Math.exp(-(dx * dx + dy * dy));
-          const directional = 1 + 0.08 * Math.sin(1.35 * x + field.center.x) * Math.cos(1.18 * y - field.center.y);
-          const value = Math.max(0.0001, radial * field.boost * directional);
-          raw[field.key] = value;
-          total += value;
-        });
-
-        const normalized = {};
-        regionFields.forEach((field) => {
-          normalized[field.key] = raw[field.key] / total;
-        });
-        return normalized;
-      }
-
-      function blendRegionColor(weights, alphaScale = 1) {
-        let r = 0;
-        let g = 0;
-        let b = 0;
-        let dominant = 0;
-
-        regionFields.forEach((field) => {
-          const weight = weights[field.key];
-          r += field.color[0] * weight;
-          g += field.color[1] * weight;
-          b += field.color[2] * weight;
-          dominant = Math.max(dominant, weight);
-        });
-
-        const alpha = (0.04 + dominant * 0.08) * alphaScale;
-        return rgba([Math.round(r), Math.round(g), Math.round(b)], alpha);
-      }
-
-      if (!window.HomeGeometry) {
-        throw new Error(
-          "[homepage] Geometry helper failed to load from js/home/geometry.js."
-        );
-      }
-      
-      function rawProjectPointWithCamera(x, y, z, camera) {
-        return window.HomeGeometry.rawProjectPointWithCamera(x, y, z, camera);
-      }
-
-      function rawProjectPoint(x, y, z) {
-        return rawProjectPointWithCamera(x, y, z, landscapeConfig);
-      }
-
-      function projectPoint(x, y, z) {
-        const point = rawProjectPoint(x, y, z);
-        return {
-          x: point.x * projectionFit.scale + projectionFit.offsetX,
-          y: point.y * projectionFit.scale + projectionFit.offsetY,
-          z: point.z
-        };
-      }
-
-      function sampleLandscape() {
-        const [minX, maxX] = landscapeConfig.domainX;
-        const [minY, maxY] = landscapeConfig.domainY;
-        const rows = [];
-        const cells = [];
-
-        for (let yi = 0; yi < landscapeConfig.gridY; yi += 1) {
-          const y = minY + (yi / (landscapeConfig.gridY - 1)) * (maxY - minY);
-          const row = [];
-          for (let xi = 0; xi < landscapeConfig.gridX; xi += 1) {
-            const x = minX + (xi / (landscapeConfig.gridX - 1)) * (maxX - minX);
-            row.push({ x, y, z: lossSurface(x, y) });
-          }
-          rows.push(row);
-        }
-
-        for (let yi = 0; yi < rows.length - 1; yi += 1) {
-          for (let xi = 0; xi < rows[yi].length - 1; xi += 1) {
-            const p00 = rows[yi][xi];
-            const p10 = rows[yi][xi + 1];
-            const p11 = rows[yi + 1][xi + 1];
-            const p01 = rows[yi + 1][xi];
-            const cx = (p00.x + p10.x + p11.x + p01.x) / 4;
-            const cy = (p00.y + p10.y + p11.y + p01.y) / 4;
-            cells.push({
-              yi,
-              xi,
-              centerX: cx,
-              centerY: cy,
-              weights: getRegionWeights(cx, cy)
-            });
-          }
-        }
-
-        return { rows, cells };
-      }
-
-      function getCameraEnvelope() {
-        const yawRange = baseLandscapeConfig.yawRange;
-        const pitchRange = baseLandscapeConfig.pitchRange;
-        const baselineAzimuth = baseLandscapeConfig.baselineAzimuth;
-        const baselineElevation = baseLandscapeConfig.baselineElevation;
-
-        return [
-          { azimuth: baselineAzimuth, elevation: baselineElevation },
-          { azimuth: baselineAzimuth - yawRange, elevation: baselineElevation - pitchRange },
-          { azimuth: baselineAzimuth - yawRange, elevation: baselineElevation + pitchRange },
-          { azimuth: baselineAzimuth + yawRange, elevation: baselineElevation - pitchRange },
-          { azimuth: baselineAzimuth + yawRange, elevation: baselineElevation + pitchRange },
-          { azimuth: baselineAzimuth, elevation: baselineElevation - pitchRange },
-          { azimuth: baselineAzimuth, elevation: baselineElevation + pitchRange },
-          { azimuth: baselineAzimuth - yawRange, elevation: baselineElevation },
-          { azimuth: baselineAzimuth + yawRange, elevation: baselineElevation }
-        ];
-      }
-
-      function computeProjectionFit(sample) {
-        const { domainX, domainY, planeZ } = landscapeConfig;
-        const [minX, maxX] = domainX;
-        const [minY, maxY] = domainY;
-        const cameras = getCameraEnvelope();
-        const points = [];
-
-        cameras.forEach((camera) => {
-          sample.rows.forEach((row) => row.forEach((point) => points.push(rawProjectPointWithCamera(point.x, point.y, point.z, camera))));
-          [
-            rawProjectPointWithCamera(minX, minY, planeZ, camera),
-            rawProjectPointWithCamera(maxX, minY, planeZ, camera),
-            rawProjectPointWithCamera(maxX, maxY, planeZ, camera),
-            rawProjectPointWithCamera(minX, maxY, planeZ, camera)
-          ].forEach((point) => points.push(point));
-        });
-
-        const minProjectedX = Math.min(...points.map((point) => point.x));
-        const maxProjectedX = Math.max(...points.map((point) => point.x));
-        const minProjectedY = Math.min(...points.map((point) => point.y));
-        const maxProjectedY = Math.max(...points.map((point) => point.y));
-
-        const target = { minX: -360, maxX: 1534, minY: -72, maxY: 980 };
-        const width = Math.max(1, maxProjectedX - minProjectedX);
-        const height = Math.max(1, maxProjectedY - minProjectedY);
-        const targetWidth = target.maxX - target.minX;
-        const targetHeight = target.maxY - target.minY;
-        const scale = Math.min(targetWidth / width, targetHeight / height);
-
-        projectionFit.scale = scale;
-        projectionFit.offsetX = target.minX + (targetWidth - width * scale) / 2 - minProjectedX * scale - 28;
-        projectionFit.offsetY = target.minY + (targetHeight - height * scale) / 2 - minProjectedY * scale - 74;
-      }
-
-      function pointsString(points) {
-        return window.HomeGeometry.pointsString(points);
-      }
-
-      if (typeof window.createHomeRenderer !== "function") {
-        throw new Error(
-          "[homepage] Renderer helper failed to load from js/home/renderer.js."
-        );
-      }
-
-      const homeRenderer = window.createHomeRenderer({
-        landscapeConfig,
-        planeLayer,
-        wireBase,
-        wireAccent,
-        floorContours,
-        projectPoint,
-        pointsString
-      });
-
-      function buildPlane() {
-        homeRenderer.buildPlane();
-      }
-
-      function buildRegionLayers(sample) {
-        const theme = getTheme(activeKey);
-        const selectedColor = theme.rgb;
-        const selectedMinimum = regionMinima.get(activeKey);
-        const selectedField = regionFieldMap.get(activeKey);
-        const falloffX = selectedField.sigmaX * 0.92;
-        const falloffY = selectedField.sigmaY * 0.92;
-
-        let baseMarkup = "";
-        let activePlaneMarkup = "";
-        let activeSurfaceMarkup = "";
-
-        sample.cells.forEach((cell) => {
-          const { yi, xi, centerX, centerY, weights } = cell;
-          const p00 = sample.rows[yi][xi];
-          const p10 = sample.rows[yi][xi + 1];
-          const p11 = sample.rows[yi + 1][xi + 1];
-          const p01 = sample.rows[yi + 1][xi];
-
-          const dx = (centerX - selectedMinimum.x) / falloffX;
-          const dy = (centerY - selectedMinimum.y) / falloffY;
-          const basinField = Math.exp(-(dx * dx + dy * dy));
-          const influence = basinField * (0.42 + (weights[activeKey] || 0) * 0.88);
-
-          const planePolygon = [
-            projectPoint(p00.x, p00.y, landscapeConfig.planeZ),
-            projectPoint(p10.x, p10.y, landscapeConfig.planeZ),
-            projectPoint(p11.x, p11.y, landscapeConfig.planeZ),
-            projectPoint(p01.x, p01.y, landscapeConfig.planeZ)
-          ];
-
-          baseMarkup += `<polygon points="${pointsString(planePolygon)}" fill="${blendRegionColor(weights, 0.84)}"></polygon>`;
-
-          if (influence > 0.035) {
-            activePlaneMarkup += `<polygon points="${pointsString(planePolygon)}" fill="${rgba(selectedColor, 0.038 + influence * 0.26)}"></polygon>`;
-
-            const surfacePolygon = [
-              projectPoint(p00.x, p00.y, p00.z),
-              projectPoint(p10.x, p10.y, p10.z),
-              projectPoint(p11.x, p11.y, p11.z),
-              projectPoint(p01.x, p01.y, p01.z)
-            ];
-
-            const averageZ = (p00.z + p10.z + p11.z + p01.z) / 4;
-            const depthBoost = clamp((-averageZ - 0.02) / 0.92, 0, 1);
-            const alpha = 0.02 + influence * (0.08 + depthBoost * 0.24);
-
-            activeSurfaceMarkup += `<polygon points="${pointsString(surfacePolygon)}" fill="${rgba(selectedColor, alpha)}"></polygon>`;
-          }
-        });
-
-        planeBase.innerHTML = baseMarkup;
-        planeActive.innerHTML = activePlaneMarkup;
-        surfaceActive.innerHTML = activeSurfaceMarkup;
-      }
-
-      function buildWireframe(sample) {
-        homeRenderer.buildWireframe(sample);
-      }
-
-      function buildFloorContours() {
-        homeRenderer.buildFloorContours();
-      }
-
-      function buildMapButtonAnchors() {
-        mapButtonAnchors.innerHTML = "";
-
-        const baseOffsets = {
-          "computer-science": { dx: 0, dy: -92 },
-          mathematics: { dx: 0, dy: -106 },
-          "machine-learning": { dx: 0, dy: -138 },
-          systems: { dx: 0, dy: -92 },
-          projects: { dx: 0, dy: -106 }
-        };
-
-        const depths = regions.map((region) => -regionMinima.get(region.key).z);
-        const minDepth = Math.min(...depths);
-        const maxDepth = Math.max(...depths);
-        const depthRange = Math.max(0.001, maxDepth - minDepth);
-
-        regions.forEach((region) => {
-          const minimum = regionMinima.get(region.key);
-          const theme = getTheme(region.key);
-          const point = projectPoint(minimum.x, minimum.y, minimum.z);
-          const baseOffset = baseOffsets[region.key];
-          const active = region.key === activeKey;
-          const depth = -minimum.z;
-          const depthNorm = (depth - minDepth) / depthRange;
-          const depthLift = 10 + depthNorm * 34;
-          const offset = {
-            dx: baseOffset.dx,
-            dy: baseOffset.dy - depthLift
-          };
-          const lineX = point.x + offset.dx;
-          const lineEndY = point.y + offset.dy;
-          const buttonWidth = 262;
-          const buttonHeight = 52;
-          const buttonX = lineX - buttonWidth / 2;
-          const buttonY = lineEndY - buttonHeight;
-
-          const group = svgEl("g", {
-            class: `map-button-anchor${active ? " active" : ""}`
-          });
-
-          const connector = svgEl("path", {
-            class: "map-button-connector",
-            d: `M ${point.x.toFixed(1)} ${point.y.toFixed(1)} L ${lineX.toFixed(1)} ${lineEndY.toFixed(1)}`,
-            stroke: active ? rgba(theme.rgb, 0.95) : rgba(theme.rgb, 0.72)
-          });
-
-          const foreignObject = svgEl("foreignObject", {
-            x: buttonX.toFixed(1),
-            y: buttonY.toFixed(1),
-            width: buttonWidth.toFixed(1),
-            height: buttonHeight.toFixed(1)
-          });
-
-          const wrapper = document.createElement("div");
-          wrapper.setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
-          wrapper.style.width = `${buttonWidth}px`;
-          wrapper.style.height = `${buttonHeight}px`;
-          wrapper.style.display = "flex";
-          wrapper.style.alignItems = "center";
-          wrapper.style.justifyContent = "center";
-          wrapper.style.pointerEvents = "none";
-
-          const button = document.createElement("button");
-          button.type = "button";
-          button.className = `area-button${active ? " active" : ""}`;
-          button.dataset.area = region.key;
-          button.textContent = region.label;
-          button.style.width = `${buttonWidth}px`;
-          button.style.height = `${buttonHeight}px`;
-          button.style.minHeight = `${buttonHeight}px`;
-          button.style.pointerEvents = "auto";
-          button.style.color = active ? theme.accent : "";
-          button.style.borderColor = active ? rgba(theme.rgb, 0.82) : "";
-          button.style.background = active ? `rgb(${Math.round(theme.rgb[0] * 0.28 + 255 * 0.72)}, ${Math.round(theme.rgb[1] * 0.28 + 252 * 0.72)}, ${Math.round(theme.rgb[2] * 0.28 + 245 * 0.72)})` : "";
-          button.setAttribute("aria-pressed", active ? "true" : "false");
-
-          button.addEventListener("click", () => setActive(region.key));
-          button.addEventListener("mouseenter", () => {
-            if (!isDraggingLandscape) setActive(region.key);
-          });
-          button.addEventListener("focus", () => {
-            if (!isDraggingLandscape) setActive(region.key);
-          });
-
-          wrapper.appendChild(button);
-          foreignObject.appendChild(wrapper);
-          group.appendChild(connector);
-          group.appendChild(foreignObject);
-          mapButtonAnchors.appendChild(group);
-        });
-      }
-
-      function buildMinimums() {
-        minimums.innerHTML = "";
-
-        regionMinima.forEach((minimum, key) => {
-          const theme = getTheme(key);
-          const surfacePoint = projectPoint(minimum.x, minimum.y, minimum.z);
-          const planePoint = projectPoint(minimum.x, minimum.y, landscapeConfig.planeZ);
-          const active = key === activeKey;
-
-          if (active) {
-            minimums.appendChild(svgEl("line", {
-              class: "projection",
-              x1: surfacePoint.x.toFixed(1),
-              y1: surfacePoint.y.toFixed(1),
-              x2: planePoint.x.toFixed(1),
-              y2: planePoint.y.toFixed(1),
-              stroke: theme.halo
-            }));
-          }
-
-          const group = svgEl("g", {
-            class: `minimum-anchor${active ? " active" : ""}`,
-            tabindex: "0",
-            role: "button",
-            "aria-label": `Select ${regions.find((region) => region.key === key)?.label || key}`,
-            transform: `translate(${surfacePoint.x.toFixed(1)} ${surfacePoint.y.toFixed(1)})`
-          });
-
-          const halo = svgEl("circle", {
-            class: "halo",
-            r: active ? "14.4" : "11.6",
-            fill: theme.halo
-          });
-
-          const ring = svgEl("circle", {
-            class: "ring",
-            r: active ? "6.4" : "5.4",
-            stroke: theme.ring
-          });
-
-          const core = svgEl("circle", {
-            class: "core",
-            r: active ? "3.45" : "2.95",
-            fill: theme.accent
-          });
-
-          group.appendChild(halo);
-          group.appendChild(ring);
-          group.appendChild(core);
-
-          group.addEventListener("click", () => setActive(key));
-          group.addEventListener("mouseenter", () => {
-            if (!isDraggingLandscape) setActive(key);
-          });
-          group.addEventListener("focus", () => {
-            if (!isDraggingLandscape) setActive(key);
-          });
-          group.addEventListener("keydown", (event) => {
-            if (event.key === "Enter" || event.key === " ") {
-              event.preventDefault();
-              setActive(key);
-            }
-          });
-
-          minimums.appendChild(group);
-        });
-      }
-
-      function updateOverlay(region) {
-        homeOverlay.updateOverlay(region);
-      }
-
-      function updateSelectorStates() {
-        selectorMap.forEach((button, key) => {
-          const active = key === activeKey;
-          button.classList.toggle("active", active);
-          button.style.color = active ? getTheme(key).accent : "";
-          button.style.borderColor = active ? getTheme(key).border : "";
-          button.style.background = active ? getTheme(key).soft : "";
-          button.setAttribute("aria-current", active ? "true" : "false");
-        });
-      }
-
-      function renderLandscape() {
-        const sample = cachedLandscape;
-        buildPlane();
-        buildRegionLayers(sample);
-        buildFloorContours();
-        buildWireframe(sample);
-        buildMapButtonAnchors();
-        buildMinimums();
-      }
-
-      function rerenderLandscape() {
-        Object.assign(landscapeConfig, getResolvedCameraConfig());
-        renderLandscape();
-        updateCameraInputs();
-      }
-
-      function scheduleLandscapeRerender() {
-        if (rerenderToken !== null) return;
-        rerenderToken = requestAnimationFrame(() => {
-          rerenderToken = null;
-          rerenderLandscape();
-        });
-      }
-
-      if (typeof window.createHomeCamera !== "function") {
-        throw new Error(
-          "[homepage] Camera helper failed to load from js/home/camera.js."
-        );
-      }
-
-      const homeCamera = window.createHomeCamera({
-        cameraHorizontal,
-        cameraVertical,
-        cameraReset,
-        baseLandscapeConfig,
-        dragCameraOffset,
-        clamp,
-        requestRender: scheduleLandscapeRerender
-      });
-          
-
-      function setActive(key) {
-        activeKey = key;
-        const region = regions.find((item) => item.key === key) || regions[0];
-        updateOverlay(region);
-        updateSelectorStates();
-        rerenderLandscape();
-      }
-
-      function buildSelectors() {
-        selectorRow.innerHTML = "";
-        selectorMap.clear();
-
-        regions.forEach((region) => {
-          const link = document.createElement("a");
-          link.className = "selector-pill";
-          link.href = region.href;
-          link.setAttribute("data-region-key", region.key);
-          link.innerHTML = `<span>${region.label}</span>`;
-          link.addEventListener("mouseenter", () => {
-            if (!isDraggingLandscape) setActive(region.key);
-          });
-          link.addEventListener("focus", () => {
-            if (!isDraggingLandscape) setActive(region.key);
-          });
-          selectorRow.appendChild(link);
-          selectorMap.set(region.key, link);
-        });
-      }
-
-      function getProjectedTargets() {
-        return regions.map((region) => {
-          const minimum = regionMinima.get(region.key);
-          return {
-            key: region.key,
-            surfacePoint: projectPoint(minimum.x, minimum.y, minimum.z),
-            planePoint: projectPoint(minimum.x, minimum.y, landscapeConfig.planeZ)
-          };
-        });
-      }
-
-      function bindHoverTracking() {
-        mapFrame.addEventListener("pointermove", (event) => {
-          if (isDraggingLandscape) return;
-          if (event.target.closest(".selected-card, .mobile-card, .selector-row")) return;
-
-          const rect = mapSvg.getBoundingClientRect();
-          const localX = ((event.clientX - rect.left) / rect.width) * 1520;
-          const localY = ((event.clientY - rect.top) / rect.height) * 920;
-
-          let nearest = null;
-          let nearestDistance = Infinity;
-
-          getProjectedTargets().forEach((target) => {
-            const ds = Math.hypot(target.surfacePoint.x - localX, target.surfacePoint.y - localY);
-            const dp = Math.hypot(target.planePoint.x - localX, target.planePoint.y - localY);
-            const distance = Math.min(ds, dp);
-            if (distance < nearestDistance) {
-              nearestDistance = distance;
-              nearest = target.key;
-            }
-          });
-
-          if (nearest && nearest !== activeKey) {
-            setActive(nearest);
-          }
-        });
-      }
-
-      cachedLandscape = sampleLandscape();
-      computeProjectionFit(cachedLandscape);
-      Object.assign(landscapeConfig, getResolvedCameraConfig());
-
-      buildSelectors();
-      homeCamera.bindInputs();
-      bindCameraDrag();
-      bindHoverTracking();
-      setActive(activeKey);
-      updateCameraInputs();
-    </script>
-  </body>
+      acc += tok; p.textContent = acc; log.scrollTop = log.scrollHeight; await sleep(5 + Math.random()*10);
+    }
+    p.classList.remove("caret"); p.innerHTML = fmt(para);
+  }
+}
+async function ask(q){
+  q = q.trim(); if (!q || busy) return;
+  busy = true; send.disabled = true; input.value = "";
+  document.body.classList.remove("empty", "nav-open");
+  add("user").textContent = q;
+  const t = pick(q);
+  if (t) setAccent(COLORS[t.color]);
+  const bot = add("bot");
+  if (t){
+    const tag = document.createElement("div"); tag.className = "tag";
+    tag.textContent = TAGS[t.id]; tag.style.color = `rgb(${COLORS[t.color]})`; bot.appendChild(tag);
+  }
+  await sleep(250);
+  await stream(bot, t ? (typeof t.answer === "function" ? t.answer() : t.answer) : FALLBACK);
+  busy = false; send.disabled = false; input.focus({ preventScroll:true });
+}
+
+document.getElementById("ask").addEventListener("submit", e=>{ e.preventDefault(); ask(input.value); });
+const chipsEl = document.getElementById("chips");
+for (const c of CHIPS){
+  const b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = c;
+  b.onclick = ()=>ask(c); chipsEl.appendChild(b);
+}
+
+document.getElementById("new").onclick = ()=>{
+  if (busy) return;
+  log.innerHTML = ""; document.body.classList.add("empty"); document.body.classList.remove("nav-open");
+  setAccent(COLORS.research);
+  input.focus({ preventScroll:true });
+};
+document.getElementById("menu").onclick = ()=>document.body.classList.toggle("nav-open");
+document.querySelector(".main").addEventListener("click", e=>{ if (e.target.id !== "menu") document.body.classList.remove("nav-open"); });
+
+const root = document.documentElement;
+document.getElementById("theme").onclick = ()=>{
+  const dark = root.dataset.theme ? root.dataset.theme==="dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  root.dataset.theme = dark ? "light" : "dark";
+};
+</script>
+</body>
 </html>
